@@ -3,8 +3,8 @@ package frc.robot.utility;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -36,8 +36,8 @@ public class Localizer {
     // private PhotonCamera camera = new PhotonCamera("photonvision");
     private NetworkingServer server;
     private SwerveDriveSubsystem drive;
-    private WPI_Pigeon2 pigeon = new WPI_Pigeon2(15);
-    public static final AHRS navxGyro = new AHRS(SPI.Port.kMXP);
+    private Pigeon2 pigeon = new Pigeon2(15);
+    public static final AHRS navxGyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
 
     public Rotation2d pigeonOffset = new Rotation2d();
@@ -119,6 +119,7 @@ public class Localizer {
      */
     public double getRate() {
         // return navxGyro.getRate();
+        // TODO: Use pigeon.angularVelocityZWorld() instead
         return pigeon.getRate();
     }
 
