@@ -12,14 +12,18 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import frc.robot.subsystems.drive.TunerConstants.TunerSwerveDrivetrain;
@@ -44,6 +48,69 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+    private static final double XBOX_DEADBAND = 0.15;
+    private double deadband(double input) {
+        if (Math.abs(input) > XBOX_DEADBAND)
+            return input;
+        else 
+            return 0;
+    }
+
+    public final TranslationalDrivebase translational = new TranslationalDrivebase() {
+        @Override
+        public void setVelocity(Translation2d velocity) {
+            setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(velocity.getX(), velocity.getY(), getState().Speeds.omegaRadiansPerSecond)));
+        }
+
+        @Override
+        public Translation2d getVelocity() {
+            ChassisSpeeds speeds = getState().Speeds;
+            return new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+        }
+        
+        @Override
+        public Command translationalDrive(CommandXboxController xbox) {
+            return run(() -> {
+                double v_x = deadband(xbox.getLeftY());
+                double v_y = deadband(xbox.getLeftX());
+                // double magnitude = Math.sqrt(v_x * v_x + v_y * v_y);
+                // if (magnitude > TunerConstants.MAX_SPEED) {
+                //     v_x *= TunerConstants.MAX_SPEED / magnitude;
+                //     v_y *= TunerConstants.MAX_SPEED / magnitude;
+                // }
+                v_x *= TunerConstants.MAX_SPEED;
+                v_y *= TunerConstants.MAX_SPEED;
+                setVelocity(new Translation2d(v_x, v_y));
+            });
+        }
+    };
+
+
+    public final RotationalDrivebase rotational = new RotationalDrivebase() {
+        @Override
+        public void setRotationalVelocity(Rotation2d omega) {
+            ChassisSpeeds currentSpeeds = getState().Speeds;
+            setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(currentSpeeds.vxMetersPerSecond, currentSpeeds.vxMetersPerSecond, omega.getRadians())));
+        }
+
+        @Override
+        public Rotation2d getRotationalVelocity() {
+            ChassisSpeeds speeds = getState().Speeds;
+            return new Rotation2d(speeds.omegaRadiansPerSecond);
+        }
+
+        @Override
+        public Command rotationalDrive(CommandXboxController xbox) {
+            return run(() -> {
+                setRotationalVelocity(new Rotation2d(TunerConstants.MAX_ANGULAR_SPEED * deadband(xbox.getRightX())));
+            });
+        }
+    };
+
+    ///////////////////////////////////////
+    ///// Generated stuff begins here /////
+    ///////////////////////////////////////
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(

@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  */
 public interface TranslationalDrivebase extends Subsystem {
     /**
-     * Sets the velocity in meters per second.
+     * Sets the robot-oriented velocity in meters per second.
      * 
      * @param velocity The desired velocity in meters per second.
      */
     public void setVelocity(Translation2d velocity);
 
     /**
-     * Returns the current velocity in meters per second.
+     * Returns the current robot-oriented velocity in meters per second.
      * 
      * @return The current velocity in meters per second.
      */
