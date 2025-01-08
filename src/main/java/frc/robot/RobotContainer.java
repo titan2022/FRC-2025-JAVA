@@ -9,10 +9,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.drive.CTRESwerveDrivetrain;
+import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.RotationalDrivebase;
 import frc.robot.subsystems.drive.TranslationalDrivebase;
 import frc.robot.subsystems.drive.TunerConstants;
+import frc.robot.utility.Localizer;
 import frc.robot.utility.Telemetry;
 
 public class RobotContainer {
@@ -20,7 +21,10 @@ public class RobotContainer {
     public final CommandXboxController driveController = new CommandXboxController(0); // My joystick
     public final CommandXboxController robotController = new CommandXboxController(1); // My joystick
 
-    public final CTRESwerveDrivetrain drivetrain = new CTRESwerveDrivetrain(); // My drivetrain
+    public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(); // My drivetrain
+
+    public final Localizer localizer = new Localizer(drivetrain, false, 0);
+
     public final TranslationalDrivebase translationalDrivetrain = drivetrain.translational;
     public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
 
@@ -33,24 +37,27 @@ public class RobotContainer {
     );
 
     private void configureBindings() {
-        translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController));
-        rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController));
+        translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController, localizer));
+        rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController, localizer));
+
+        // Starting with the implementation of CommandSwerveDrivetrain, field-orientation is handled by the commands and 
+        // not by the swerve subsystem.
 
         // Drivetrain will execute this command periodically
 
-        driveController.a().onTrue(drivetrain.runOnce(drivetrain::setFieldControl));
-        driveController.x().onTrue(drivetrain.runOnce(drivetrain::setRobotControl));
-        driveController.y().whileTrue(brakeDrivetrain);
+        // driveController.a().onTrue(drivetrain.runOnce(drivetrain::setFieldControl));
+        // driveController.x().onTrue(drivetrain.runOnce(drivetrain::setRobotControl));
+        // driveController.y().whileTrue(brakeDrivetrain);
         
-        // driveController.b().whileTrue(drivetrain
-        //     .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))));
-        // reset the field-centric heading on left bumper press
-        driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+        // // driveController.b().whileTrue(drivetrain
+        // //     .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))));
+        // // reset the field-centric heading on left bumper press
+        // driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
         
-        // if (Utils.isSimulation()) {
-            //   drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
-            // }
-            // drivetrain.registerTelemetry(logger::telemeterize);
+        // // if (Utils.isSimulation()) {
+        //     //   drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+        //     // }
+        //     // drivetrain.registerTelemetry(logger::telemeterize);
             
     }
 

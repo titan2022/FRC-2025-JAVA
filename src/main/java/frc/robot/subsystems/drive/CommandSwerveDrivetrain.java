@@ -25,8 +25,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
+import frc.robot.commands.drive.RotationalDriveCommand;
+import frc.robot.commands.drive.TranslationalDriveCommand;
 import frc.robot.subsystems.drive.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.utility.Localizer;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -60,7 +62,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public final TranslationalDrivebase translational = new TranslationalDrivebase() {
         @Override
         public void setVelocity(Translation2d velocity) {
-            setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(velocity.getX(), velocity.getY(), getState().Speeds.omegaRadiansPerSecond)));
+            setVelocities(new ChassisSpeeds(velocity.getX(), velocity.getY(), getState().Speeds.omegaRadiansPerSecond));
         }
 
         @Override
@@ -69,20 +71,25 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             return new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
         }
         
+        // @Override
+        // public Command translationalDrive(CommandXboxController xbox) {
+        //     return run(() -> {
+        //         double v_x = deadband(xbox.getLeftY());
+        //         double v_y = deadband(xbox.getLeftX());
+        //         // double magnitude = Math.sqrt(v_x * v_x + v_y * v_y);
+        //         // if (magnitude > TunerConstants.MAX_SPEED) {
+        //         //     v_x *= TunerConstants.MAX_SPEED / magnitude;
+        //         //     v_y *= TunerConstants.MAX_SPEED / magnitude;
+        //         // }
+        //         v_x *= TunerConstants.MAX_SPEED;
+        //         v_y *= TunerConstants.MAX_SPEED;
+        //         setVelocity(new Translation2d(v_x, v_y));
+        //     });
+        // }
+
         @Override
-        public Command translationalDrive(CommandXboxController xbox) {
-            return run(() -> {
-                double v_x = deadband(xbox.getLeftY());
-                double v_y = deadband(xbox.getLeftX());
-                // double magnitude = Math.sqrt(v_x * v_x + v_y * v_y);
-                // if (magnitude > TunerConstants.MAX_SPEED) {
-                //     v_x *= TunerConstants.MAX_SPEED / magnitude;
-                //     v_y *= TunerConstants.MAX_SPEED / magnitude;
-                // }
-                v_x *= TunerConstants.MAX_SPEED;
-                v_y *= TunerConstants.MAX_SPEED;
-                setVelocity(new Translation2d(v_x, v_y));
-            });
+        public Command translationalDrive(CommandXboxController xbox, Localizer localizer) {
+            return new TranslationalDriveCommand(translational, localizer, xbox.getHID(), TunerConstants.MAX_SPEED);
         }
     };
 
@@ -91,7 +98,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         @Override
         public void setRotationalVelocity(Rotation2d omega) {
             ChassisSpeeds currentSpeeds = getState().Speeds;
-            setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(currentSpeeds.vxMetersPerSecond, currentSpeeds.vxMetersPerSecond, omega.getRadians())));
+            setVelocities(new ChassisSpeeds(currentSpeeds.vxMetersPerSecond, currentSpeeds.vxMetersPerSecond, omega.getRadians()));
         }
 
         @Override
@@ -100,13 +107,36 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             return new Rotation2d(speeds.omegaRadiansPerSecond);
         }
 
+        // @Override
+        // public Command rotationalDrive(CommandXboxController xbox) {
+        //     return run(() -> {
+        //         setRotationalVelocity(new Rotation2d(TunerConstants.MAX_ANGULAR_SPEED * deadband(xbox.getRightX())));
+        //     });
+        // }
+
         @Override
-        public Command rotationalDrive(CommandXboxController xbox) {
-            return run(() -> {
-                setRotationalVelocity(new Rotation2d(TunerConstants.MAX_ANGULAR_SPEED * deadband(xbox.getRightX())));
-            });
+        public Command rotationalDrive(CommandXboxController xbox, Localizer localizer) {
+            return new RotationalDriveCommand(rotational, localizer, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
         }
     };
+
+    public void setVelocities(ChassisSpeeds speeds) {
+        setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds));
+    }
+
+    public ChassisSpeeds getVelocities() {
+        return getState().Speeds;
+    }
+
+    public void brake() {
+        setVelocities(new ChassisSpeeds(0, 0, 0));
+        setControl(new SwerveRequest.SwerveDriveBrake());
+    }
+
+    public CommandSwerveDrivetrain() {
+        this(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
+    }
+
 
     ///////////////////////////////////////
     ///// Generated stuff begins here /////

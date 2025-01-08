@@ -16,7 +16,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.drive.SwerveDriveSubsystem;
+import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.utility.localization.AprilTag;
 import frc.robot.utility.networking.NetworkingCall;
 import frc.robot.utility.networking.NetworkingServer;
@@ -35,7 +35,7 @@ import frc.robot.utility.networking.types.NetworkingTag;
 public class Localizer {
     // private PhotonCamera camera = new PhotonCamera("photonvision");
     private NetworkingServer server;
-    private SwerveDriveSubsystem drive;
+    private CommandSwerveDrivetrain drive;
     private Pigeon2 pigeon = new Pigeon2(15);
     public static final AHRS navxGyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
@@ -66,7 +66,7 @@ public class Localizer {
      * @param withCoprocessor Initiate coprocessor networking server
      * @param port Coprocessor port
      */
-    public Localizer(SwerveDriveSubsystem drive, boolean withCoprocessor, int port) {
+    public Localizer(CommandSwerveDrivetrain drive, boolean withCoprocessor, int port) {
         this.drive = drive;
         if (withCoprocessor) {
             server = new NetworkingServer(port);
