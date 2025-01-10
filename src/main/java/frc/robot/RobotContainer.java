@@ -18,27 +18,27 @@ import frc.robot.utility.Telemetry;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
-    public final CommandXboxController driveController = new CommandXboxController(0); // My joystick
-    public final CommandXboxController robotController = new CommandXboxController(1); // My joystick
+    // public final CommandXboxController driveController = new CommandXboxController(0); // My joystick
+    // public final CommandXboxController robotController = new CommandXboxController(1); // My joystick
 
-    public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(); // My drivetrain
+    // public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(); // My drivetrain
 
-    public final Localizer localizer = new Localizer(drivetrain, false, 0);
+    public final Localizer localizer = new Localizer(null, false, 0);
 
-    public final TranslationalDrivebase translationalDrivetrain = drivetrain.translational;
-    public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
+    // public final TranslationalDrivebase translationalDrivetrain = drivetrain.translational;
+    // public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
 
     // private final Telemetry logger = new Telemetry(TunerConstants.MAX_SPEED);
 
-    private final Command brakeDrivetrain = new RunCommand(() -> {
-        drivetrain.brake();
-        }, 
-        translationalDrivetrain, rotationalDrivebase
-    );
+    // private final Command brakeDrivetrain = new RunCommand(() -> {
+    //     drivetrain.brake();
+    //     }, 
+    //     translationalDrivetrain, rotationalDrivebase
+    // );
 
     private void configureBindings() {
-        translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController, localizer));
-        rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController, localizer));
+        // translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController, localizer));
+        // rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController, localizer));
 
         // Starting with the implementation of CommandSwerveDrivetrain, field-orientation is handled by the commands and 
         // not by the swerve subsystem.
@@ -59,6 +59,10 @@ public class RobotContainer {
         //     // }
         //     // drivetrain.registerTelemetry(logger::telemeterize);
             
+    }
+
+    public void robotPeriodic() {
+        localizer.step();
     }
 
     public RobotContainer() {

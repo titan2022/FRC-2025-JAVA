@@ -2,6 +2,9 @@ package frc.robot.utility;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.studica.frc.AHRS;
@@ -36,8 +39,8 @@ public class Localizer {
     // private PhotonCamera camera = new PhotonCamera("photonvision");
     private NetworkingServer server;
     private CommandSwerveDrivetrain drive;
-    private Pigeon2 pigeon = new Pigeon2(15);
-    public static final AHRS navxGyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
+    // private Pigeon2 pigeon = new Pigeon2(15);
+    // public static final AHRS navxGyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
 
     public Rotation2d pigeonOffset = new Rotation2d();
@@ -47,7 +50,8 @@ public class Localizer {
     private Translation2d cameraBasedGlobalPosition = new Translation2d();
     private Rotation2d globalHeading = new Rotation2d();
     private Rotation2d globalOrientation = new Rotation2d();
-    private Rotation2d globalOrientationFromTags = new Rotation2d();
+    private Pose3d globalPose = new Pose3d();
+    // private Rotation2d globalOrientationFromTags = new Rotation2d();
     // private Rotation2d localOrientation = new Rotation2d();
     private double noteDistance = -1;
     private Rotation3d noteRotation = new Rotation3d();
@@ -60,6 +64,9 @@ public class Localizer {
     private Rotation2d speakerRobotOrientation = new Rotation2d();
 
     public Pose2d startingPose2d = new Pose2d(); 
+
+    public VisionLocalization visionLocalization = new VisionLocalization("Arducam");
+
     /**
      * Localizer constructor
      * 
@@ -67,10 +74,10 @@ public class Localizer {
      * @param port Coprocessor port
      */
     public Localizer(CommandSwerveDrivetrain drive, boolean withCoprocessor, int port) {
-        this.drive = drive;
-        if (withCoprocessor) {
-            server = new NetworkingServer(port);
-        }
+        // this.drive = drive;
+        // if (withCoprocessor) {
+        //     server = new NetworkingServer(port);
+        // }
     }
 
     /**
@@ -108,7 +115,7 @@ public class Localizer {
     }
 
     public void resetHeading(Rotation2d startingAngle) {
-        pigeonOffset = pigeon.getRotation2d().plus(startingAngle);
+        // pigeonOffset = pigeon.getRotation2d().plus(startingAngle);
     }
 
 
@@ -120,7 +127,8 @@ public class Localizer {
     public double getRate() {
         // return navxGyro.getRate();
         // TODO: Use pigeon.angularVelocityZWorld() instead
-        return pigeon.getRate();
+        // return pigeon.getRate();
+        return 0;
     }
 
     /**
@@ -174,7 +182,7 @@ public class Localizer {
         SmartDashboard.putNumber("reset_pose_x", pose.getX());
         globalPosition = pose.getTranslation();
         // if(DriverStation.getAlliance().equals(Alliance.Blue)){
-            pigeonOffset = pigeon.getRotation2d().plus(new Rotation2d(Math.PI/2)).minus(pose.getRotation());
+            // pigeonOffset = pigeon.getRotation2d().plus(new Rotation2d(Math.PI/2)).minus(pose.getRotation());
         // }
         // else{
         //     pigeonOffset = pigeon.getRotation2d().minus(new Rotation2d(Math.PI/2)).minus(pose.getRotation());
@@ -233,24 +241,25 @@ public class Localizer {
     public void setup() {
         // resetHeading();
 
-        if (server != null) {
-            server.subscribe("pose", (NetworkingCall<NetworkingPose>)(NetworkingPose pose) -> {
-                SmartDashboard.putNumber("poseX", pose.position.getX());
-                SmartDashboard.putNumber("poseZ", pose.position.getZ());
-                speakerRobotPosition = new Translation2d(pose.position.getX(), pose.position.getZ());
-                speakerRobotOrientation = Rotation2d.fromRadians(pose.rotation.getY());
-            });
+        // if (server != null) {
+        //     server.subscribe("pose", (NetworkingCall<NetworkingPose>)(NetworkingPose pose) -> {
+        //         SmartDashboard.putNumber("poseX", pose.position.getX());
+        //         SmartDashboard.putNumber("poseZ", pose.position.getZ());
+        //         speakerRobotPosition = new Translation2d(pose.position.getX(), pose.position.getZ());
+        //         speakerRobotOrientation = Rotation2d.fromRadians(pose.rotation.getY());
+        //     });
     
-            server.subscribe("speaker",  (NetworkingCall<NetworkingPose>)(NetworkingPose speaker) -> {
-                speakerHeading = Rotation2d.fromRadians(speaker.rotation.getY());
-                SmartDashboard.putNumber("speakerHeading", speakerHeading.getDegrees());
-            });
+        //     server.subscribe("speaker",  (NetworkingCall<NetworkingPose>)(NetworkingPose speaker) -> {
+        //         speakerHeading = Rotation2d.fromRadians(speaker.rotation.getY());
+        //         SmartDashboard.putNumber("speakerHeading", speakerHeading.getDegrees());
+        //     });
 
-            server.subscribe("visible", (NetworkingCall<Translation3d>)(Translation3d fakeVec) -> {
-                speakerTagVisible = fakeVec.getX() > 0;
-                SmartDashboard.putBoolean("Tag Visible", speakerTagVisible);
-            });
-        }
+        //     server.subscribe("visible", (NetworkingCall<Translation3d>)(Translation3d fakeVec) -> {
+        //         speakerTagVisible = fakeVec.getX() > 0;
+        //         SmartDashboard.putBoolean("Tag Visible", speakerTagVisible);
+        //     });
+        // }
+        
     }
 
     private AprilTag idToTag(int id){
@@ -286,34 +295,21 @@ public class Localizer {
      * @param dt The amount of time past since the last update, in seconds
      */
     public synchronized void step(double dt) {
-        globalHeading = pigeon.getRotation2d().minus(pigeonOffset);
+        // globalHeading = pigeon.getRotation2d().minus(pigeonOffset);
+        // globalOrientation = globalHeading.minus(new Rotation2d(Math.PI / 2));
+        Optional<EstimatedRobotPose> estimatedPose = visionLocalization.getEstimatedGlobalPose(globalPose);
+        if(estimatedPose.isEmpty()) {
+            SmartDashboard.putBoolean("Can get pose", false);
+            return;
+        }
+        globalPose = estimatedPose.get().estimatedPose;
+        globalHeading = globalPose.toPose2d().getRotation();
         globalOrientation = globalHeading.minus(new Rotation2d(Math.PI / 2));
         SmartDashboard.putNumber("heading", globalHeading.getRadians());
-        // var result = camera.getLatestResult();
-        // if (result.hasTargets()) {
-        //     PhotonTrackedTarget target = result.getBestTarget();
-        //     int targetID = target.getFiducialId();
-            
-        //     double poseAmbiguity = target.getPoseAmbiguity();
-        //     Transform3d bestCameraToTarget = target.getBestCameraToTarget();
-        //     Rotation3d toRobotRotation = new Rotation3d((90-50.5)*DEG, 1, -16.94*DEG);
-        //     Translation3d translation = bestCameraToTarget.getTranslation();
-        //     translation.rotateBy(toRobotRotation);
-        //     Translation2d t2d = translation.toTranslation2d();
-        //     t2d.rotateBy(globalHeading);
-        //     t2d.plus((new Translation2d(-9.628, -11.624).rotateBy(globalHeading)));
-        //     globalPosition = idToTag(targetID).getPosition().minus(t2d);
-        // }
-
-        // Integrating robot position using swerve pose
-        ChassisSpeeds swerveSpeeds = drive.getVelocities();
-        Translation2d swerveVel = new Translation2d(swerveSpeeds.vxMetersPerSecond, swerveSpeeds.vyMetersPerSecond);
-        Translation2d navXVel = new Translation2d(0, 0);
-        // there was a times .5 for some reason, lmk if that's important
-        Translation2d odometryVel = swerveVel.plus(navXVel).rotateBy(globalHeading);
-        SmartDashboard.putNumber("odometryvx", odometryVel.getX());
-        SmartDashboard.putNumber("odometryvy", odometryVel.getY());
-        globalPosition = globalPosition.plus(odometryVel.times(0.02));
+        globalPosition = globalPose.toPose2d().getTranslation();
+        SmartDashboard.putNumber("translation_x", globalPosition.getX());
+        SmartDashboard.putNumber("translation_y", globalPosition.getY());
+        SmartDashboard.putBoolean("Can get pose", true);
     }
     
     public Translation2d getSpeakerLocation(){

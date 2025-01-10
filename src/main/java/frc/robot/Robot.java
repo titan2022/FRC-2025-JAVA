@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
+    robotContainer.robotPeriodic();
   }
 
   @Override
@@ -40,7 +41,7 @@ public class Robot extends TimedRobot {
     // if (m_autonomousCommand != null) {
     //   m_autonomousCommand.schedule();
     // }
-    robotContainer.translationalDrivetrain.setVelocity(new Translation2d(0, 1));
+    // robotContainer.translationalDrivetrain.setVelocity(new Translation2d(0, 1));
   }
 
   @Override
