@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 
-public class YAGSLSwerveDrivetrain {
+public class YAGSLSwerveDrivetrain implements Drivetrain {
     private static File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
     public SwerveDrive swerveDrive;
 
@@ -71,6 +71,9 @@ public class YAGSLSwerveDrivetrain {
         }
     };
 
+    public TranslationalDrivebase getTranslational() {
+        return translational;
+    }
 
     public final RotationalDrivebase rotational = new RotationalDrivebase() {
         @Override
@@ -97,6 +100,10 @@ public class YAGSLSwerveDrivetrain {
             return new RotationalDriveCommand(rotational, localizer, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
         }
     };
+
+    public RotationalDrivebase getRotational() {
+        return rotational;
+    }
 
     public void setVelocities(ChassisSpeeds speeds) {
         swerveDrive.drive(speeds);

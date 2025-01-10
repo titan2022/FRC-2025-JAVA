@@ -34,7 +34,7 @@ import frc.robot.utility.Localizer;
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
-public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem, Drivetrain {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -93,6 +93,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     };
 
+    public TranslationalDrivebase getTranslational() {
+        return translational;
+    }
 
     public final RotationalDrivebase rotational = new RotationalDrivebase() {
         @Override
@@ -119,6 +122,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             return new RotationalDriveCommand(rotational, localizer, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
         }
     };
+
+    public RotationalDrivebase getRotational() {
+        return rotational;
+    }
 
     public void setVelocities(ChassisSpeeds speeds) {
         setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds));
