@@ -1,11 +1,13 @@
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -18,15 +20,14 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.drive.RotationalDriveCommand;
-import frc.robot.commands.drive.TranslationalDriveCommand;
 import frc.robot.subsystems.drive.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.utility.Localizer;
 
@@ -62,6 +63,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public final TranslationalDrivebase translational = new TranslationalDrivebase() {
         @Override
         public void setVelocity(Translation2d velocity) {
+            SmartDashboard.putNumber("v_input_x", velocity.getX());
+            SmartDashboard.putNumber("v_input_y", velocity.getY());
             setVelocities(new ChassisSpeeds(velocity.getX(), velocity.getY(), getState().Speeds.omegaRadiansPerSecond));
         }
 
@@ -71,26 +74,28 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             return new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
         }
         
-        // @Override
-        // public Command translationalDrive(CommandXboxController xbox) {
-        //     return run(() -> {
-        //         double v_x = deadband(xbox.getLeftY());
-        //         double v_y = deadband(xbox.getLeftX());
-        //         // double magnitude = Math.sqrt(v_x * v_x + v_y * v_y);
-        //         // if (magnitude > TunerConstants.MAX_SPEED) {
-        //         //     v_x *= TunerConstants.MAX_SPEED / magnitude;
-        //         //     v_y *= TunerConstants.MAX_SPEED / magnitude;
-        //         // }
-        //         v_x *= TunerConstants.MAX_SPEED;
-        //         v_y *= TunerConstants.MAX_SPEED;
-        //         setVelocity(new Translation2d(v_x, v_y));
-        //     });
-        // }
-
         @Override
-        public Command translationalDrive(CommandXboxController xbox, Localizer localizer) {
-            return new TranslationalDriveCommand(translational, localizer, xbox.getHID(), TunerConstants.MAX_SPEED);
+        public Command translationalDrive(CommandXboxController xbox) {
+            return run(() -> {
+                double v_x = deadband(xbox.getLeftY());
+                double v_y = deadband(xbox.getLeftX());
+                // double magnitude = Math.sqrt(v_x * v_x + v_y * v_y);
+                // if (magnitude > TunerConstants.MAX_SPEED) {
+                //     v_x *= TunerConstants.MAX_SPEED / magnitude;
+                //     v_y *= TunerConstants.MAX_SPEED / magnitude;
+                // }
+                v_x *= TunerConstants.MAX_SPEED;
+                v_y *= TunerConstants.MAX_SPEED;
+                SmartDashboard.putNumber("x_input_vel", v_x);
+                SmartDashboard.putNumber("y_input_vel", v_y);
+                setVelocity(new Translation2d(v_x, v_y));
+            });
         }
+
+        // @Override
+        // public Command translationalDrive(CommandXboxController xbox, Localizer localizer) {
+        //     return new TranslationalDriveCommand(translational, localizer, xbox.getHID(), TunerConstants.MAX_SPEED);
+        // }
     };
 
 
@@ -115,8 +120,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         // }
 
         @Override
-        public Command rotationalDrive(CommandXboxController xbox, Localizer localizer) {
-            return new RotationalDriveCommand(rotational, localizer, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
+        public Command rotationalDrive(CommandXboxController xbox) {
+            return new RotationalDriveCommand(rotational, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
         }
     };
 

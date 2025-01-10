@@ -4,19 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.utility.Constants.Unit;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
-
-  private RobotContainer robotContainer;
+  private final XboxController xbox = new XboxController(0);
+  public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(); // My drivetrain
 
   @Override
   public void robotInit() {
-    robotContainer = new RobotContainer();
+    
   }
 
   @Override
@@ -40,24 +42,27 @@ public class Robot extends TimedRobot {
     // if (m_autonomousCommand != null) {
     //   m_autonomousCommand.schedule();
     // }
-    robotContainer.translationalDrivetrain.setVelocity(new Translation2d(0, 1));
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    
+    // drivetrain.translational.setVelocity(new Translation2d(0, 1));
+    drivetrain.rotational.setRotationalVelocity(new Rotation2d(5 * Unit.DEG));
+  }
 
   @Override
   public void autonomousExit() {}
 
   @Override
   public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    drivetrain.translational.setVelocity(new Translation2d(xbox.getLeftX() * 0.5, xbox.getLeftY() * 0.5));
+  }
 
   @Override
   public void teleopExit() {}

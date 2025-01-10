@@ -24,6 +24,6 @@ public interface RotationalDrivebase extends Subsystem {
      */
     public Rotation2d getRotationalVelocity();
 
-    public Command rotationalDrive(CommandXboxController xbox, Localizer localizer);
+    public Command rotationalDrive(CommandXboxController xbox);
 
 }
