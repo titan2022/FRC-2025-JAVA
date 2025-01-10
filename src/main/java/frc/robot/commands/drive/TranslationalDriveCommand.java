@@ -8,12 +8,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.subsystems.drive.TranslationalDrivebase;
-import frc.robot.utility.Localizer;
 
 public class TranslationalDriveCommand extends Command {
     private TranslationalDrivebase drive;
     private XboxController xbox;
-    private Localizer localizer;
     private double maxVel;
     private boolean isFieldOriented = true;
     private Rotation2d phiOffset = new Rotation2d(0);
@@ -31,13 +29,14 @@ public class TranslationalDriveCommand extends Command {
      *                  direction, in
      *                  meters per second.
      */
-    public TranslationalDriveCommand(TranslationalDrivebase drive, Localizer localizer, XboxController xbox,
+    public TranslationalDriveCommand(TranslationalDrivebase drive, XboxController xbox,
             double maxVel) {
         this.drive = drive;
-        this.localizer = localizer;
         this.xbox = xbox;
         this.maxVel = maxVel;
         addRequirements(drive);
+
+        SmartDashboard.putBoolean("cmd_started", true);
     }
 
     @Override
@@ -64,14 +63,14 @@ public class TranslationalDriveCommand extends Command {
         //     yOffset = xbox.getLeftY();
         // }
 
-        if (xbox.getBButtonPressed() && localizer != null) {
-            isFieldOriented = !isFieldOriented;
-            SmartDashboard.putBoolean("isFieldOriented", isFieldOriented);
-        }
+        // if (xbox.getBButtonPressed() && localizer != null) {
+        //     isFieldOriented = !isFieldOriented;
+        //     SmartDashboard.putBoolean("isFieldOriented", isFieldOriented);
+        // }
 
-        if (xbox.getAButtonPressed()) {
-            phiOffset = localizer.getOrientation();
-        }
+        // if (xbox.getAButtonPressed()) {
+        //     phiOffset = localizer.getOrientation();
+        // }
 
         double speedMult = 1;
         if (xbox.getRightBumper()) {
@@ -92,13 +91,13 @@ public class TranslationalDriveCommand extends Command {
         Translation2d velocity = new Translation2d(scaleVelocity(joyX), scaleVelocity(joyY));
         // Translation2d velocity = new Translation2d(x, y);
 
-        if (isFieldOriented) {
-            Rotation2d heading = new Rotation2d(Math.PI / 2).minus(localizer.getHeading().minus(phiOffset));
-            velocity = velocity.rotateBy(heading);
-        }
+        // if (isFieldOriented) {
+        //     Rotation2d heading = new Rotation2d(Math.PI / 2).minus(localizer.getHeading().minus(phiOffset));
+        //     velocity = velocity.rotateBy(heading);
+        // }
 
-        SmartDashboard.putNumber("Target Velocity X", velocity.getX());
-        SmartDashboard.putNumber("Target Velocity Y", velocity.getY());
+        SmartDashboard.putNumber("Target Velocity X", velocity.times(speedMult).getX());
+        SmartDashboard.putNumber("Target Velocity Y", velocity.times(speedMult).getY());
         drive.setVelocity(velocity.times(speedMult));
     }
 

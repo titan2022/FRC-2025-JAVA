@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.subsystems.drive.RotationalDrivebase;
-import frc.robot.utility.Localizer;
 
 import static frc.robot.utility.Constants.Unit.*;
 
@@ -15,7 +14,6 @@ public class RotationalDriveCommand extends Command {
     private RotationalDrivebase drive;
     private XboxController xbox;
     private double maxRate, omega;
-    private Localizer localizer;
 
     /**
      * Controls the rotational velocity of the drivebase with a joystick.
@@ -25,23 +23,11 @@ public class RotationalDriveCommand extends Command {
      * @param xbox      The joystick controller to use.
      * @param maxRate  The maximum rotational velocity in radians per second.
      */
-    public RotationalDriveCommand(RotationalDrivebase drive, Localizer localizer, XboxController xbox, double maxRate) {
+    public RotationalDriveCommand(RotationalDrivebase drive, XboxController xbox, double maxRate) {
         this.drive = drive;
-        this.localizer = localizer;
         this.xbox = xbox;
         this.maxRate = maxRate;
         addRequirements(drive);
-    }
-
-    /**
-     * Controls the rotational velocity of the drivebase with a joystick.
-     * 
-     * @param drivebase The drivebase to control.
-     * @param xbox      The joystick controller to use.
-     * @param maxRate  The maximum rotational velocity in radians per second.
-     */
-    public RotationalDriveCommand(RotationalDrivebase drivebase, XboxController xbox, double maxRate) {
-        this(drivebase, null, xbox, maxRate);
     }
 
     /**
@@ -70,21 +56,9 @@ public class RotationalDriveCommand extends Command {
 
     @Override
     public void execute() {
-        double drift = 0.0;
         double joy = applyDeadband(xbox.getRightX(), 0.1);
-        if (localizer != null && joy > 0.1) {
-            drift = -localizer.getRate() * DEG / S - omega;
-        }
-        omega = -scaleVelocity(joy);
-        // SmartDashboard.putNumber("Target Omega", new Rotation2d(omega - 0.5 * drift).getDegrees());
-
-        
-        double speedMult = 1;
-        if (xbox.getRightBumper()) {
-            speedMult = 0.25;
-        }
-        
-        drive.setRotationalVelocity(new Rotation2d(omega - 0.5 * drift).times(speedMult));
+        SmartDashboard.putNumber("rot_input", joy);
+        drive.setRotationalVelocity(new Rotation2d(joy));
     }
 
     @Override
