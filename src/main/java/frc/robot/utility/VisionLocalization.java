@@ -38,13 +38,14 @@ public class VisionLocalization {
         //create the PhotonPoseEstimator with the field layout, strategy of
         photonPoseEstimator = new PhotonPoseEstimator(
             aprilTagFieldLayout, //json lahyout of april tags
-            PoseStrategy.CLOSEST_TO_REFERENCE_POSE, //strategy to calculate pose position
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, //strategy to calculate pose position
             robotToCam //relative position of camera to robot
         );
     }
     
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose3d prevEstimatedRobotPose) {
         //updates stored reference pose when you use the closest_to_reference_pose strategy
+        // experiementing with different strategies
         photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
 
         Optional<EstimatedRobotPose> result = photonPoseEstimator.update(camera.getLatestResult());
