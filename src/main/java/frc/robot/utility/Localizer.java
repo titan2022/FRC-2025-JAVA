@@ -307,6 +307,7 @@ public class Localizer {
 
     public synchronized void step(double dt) {
 
+        int cameraCnt = 1;
 
         for(VisionLocalization localizer : localizers){
             // globalHeading = pigeon.getRotation2d().minus(pigeonOffset);
@@ -319,12 +320,13 @@ public class Localizer {
             globalPose = estimatedPose.get().estimatedPose;
             globalHeading = globalPose.toPose2d().getRotation();
             globalOrientation = globalHeading.minus(new Rotation2d(Math.PI / 2));
-            SmartDashboard.putNumber("heading", globalHeading.getRadians());
+            SmartDashboard.putNumber("heading" + cameraCnt, globalHeading.getRadians());
             globalPosition = globalPose.toPose2d().getTranslation();
-            SmartDashboard.putNumber("translation_x", globalPosition.getX());
-            SmartDashboard.putNumber("translation_y", globalPosition.getY());
-            SmartDashboard.putBoolean("Can get pose", true);
+            SmartDashboard.putNumber("translation_x" + cameraCnt, globalPosition.getX());
+            SmartDashboard.putNumber("translation_y" + cameraCnt, globalPosition.getY());
+            SmartDashboard.putBoolean("Can get pose" + cameraCnt, true);
 
+            cameraCnt++;
         }
 
         

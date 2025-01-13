@@ -87,6 +87,7 @@ public class VisionLocalization {
         // We also set a strategy, but we're not sure if it impacts anything.
         // If it does we need to figure another way of changing it
         EstimatedRobotPose tempEstimatedPose = new EstimatedRobotPose(tempPose3d, -1.0, new ArrayList<PhotonTrackedTarget>(), PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
+        
         result = Optional.ofNullable(tempEstimatedPose);
         
         // return results
