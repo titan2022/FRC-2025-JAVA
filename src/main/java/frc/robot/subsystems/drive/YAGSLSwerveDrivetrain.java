@@ -66,8 +66,8 @@ public class YAGSLSwerveDrivetrain implements Drivetrain {
         // }
 
         @Override
-        public Command translationalDrive(CommandXboxController xbox, Localizer localizer) {
-            return new TranslationalDriveCommand(translational, localizer, xbox.getHID(), TunerConstants.MAX_SPEED);
+        public Command translationalDrive(CommandXboxController xbox) {
+            return new TranslationalDriveCommand(translational, xbox.getHID(), TunerConstants.MAX_SPEED);
         }
     };
 
@@ -96,8 +96,8 @@ public class YAGSLSwerveDrivetrain implements Drivetrain {
         // }
 
         @Override
-        public Command rotationalDrive(CommandXboxController xbox, Localizer localizer) {
-            return new RotationalDriveCommand(rotational, localizer, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
+        public Command rotationalDrive(CommandXboxController xbox) {
+            return new RotationalDriveCommand(rotational, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
         }
     };
 
