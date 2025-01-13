@@ -37,6 +37,14 @@ public class Robot extends TimedRobot {
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.Position);
  
+  private static final double XBOX_DEADBAND = 0.15;
+  private double deadband(double input) {
+      if (Math.abs(input) > XBOX_DEADBAND)
+          return input;
+      else 
+          return 0;
+  }
+
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
@@ -62,16 +70,15 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    // translationalDrivetrain.removeDefaultCommand();
-    // rotationalDrivebase.removeDefaultCommand();
+    translationalDrivetrain.removeDefaultCommand();
+    rotationalDrivebase.removeDefaultCommand();
     // m_autonomousCommand = robotContainer.getAutonomousCommand();
 
     // if (m_autonomousCommand != null) {
     //   m_autonomousCommand.schedule();
     // }
-    // robotContainer.translationalDrivetrain.setVelocity(new Translation2d(0, 1));
-
-    
+    translationalDrivetrain.setVelocity(new Translation2d(0, 1));
+    // rotationalDrivebase.setRotationalVelocity(new Rotation2d(1));
   }
 
   @Override
@@ -90,14 +97,14 @@ public class Robot extends TimedRobot {
 
     
 
-    // translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController));
-    // rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController));
+    translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController));
+    rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController));
   }
 
   @Override
   public void teleopPeriodic() {
-    translationalDrivetrain.setVelocity(new Translation2d(driveController.getLeftX() * 0.5, driveController.getLeftY() * 0.5));
-    rotationalDrivebase.setRotationalVelocity(new Rotation2d(driveController.getRightX() * 0.5));
+    // translationalDrivetrain.setVelocity(new Translation2d(deadband(driveController.getLeftX()) * 0.5, deadband(driveController.getLeftY()) * 0.5));
+    // rotationalDrivebase.setRotationalVelocity(new Rotation2d(deadband(driveController.getRightX()) * 0.5));
 
     // drivetrain.setControl(
     //   m_driveRequest.withVelocityX(-driveController.getLeftY())

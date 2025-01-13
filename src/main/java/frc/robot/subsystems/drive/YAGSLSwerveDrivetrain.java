@@ -49,26 +49,26 @@ public class YAGSLSwerveDrivetrain implements Drivetrain {
             return new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
         }
         
-        // @Override
-        // public Command translationalDrive(CommandXboxController xbox) {
-        //     return run(() -> {
-        //         double v_x = deadband(xbox.getLeftY());
-        //         double v_y = deadband(xbox.getLeftX());
-        //         // double magnitude = Math.sqrt(v_x * v_x + v_y * v_y);
-        //         // if (magnitude > TunerConstants.MAX_SPEED) {
-        //         //     v_x *= TunerConstants.MAX_SPEED / magnitude;
-        //         //     v_y *= TunerConstants.MAX_SPEED / magnitude;
-        //         // }
-        //         v_x *= TunerConstants.MAX_SPEED;
-        //         v_y *= TunerConstants.MAX_SPEED;
-        //         setVelocity(new Translation2d(v_x, v_y));
-        //     });
-        // }
-
         @Override
         public Command translationalDrive(CommandXboxController xbox) {
-            return new TranslationalDriveCommand(translational, xbox.getHID(), TunerConstants.MAX_SPEED);
+            return run(() -> {
+                double v_x = deadband(xbox.getLeftY());
+                double v_y = deadband(xbox.getLeftX());
+                // double magnitude = Math.sqrt(v_x * v_x + v_y * v_y);
+                // if (magnitude > TunerConstants.MAX_SPEED) {
+                //     v_x *= TunerConstants.MAX_SPEED / magnitude;
+                //     v_y *= TunerConstants.MAX_SPEED / magnitude;
+                // }
+                v_x *= TunerConstants.MAX_SPEED;
+                v_y *= TunerConstants.MAX_SPEED;
+                setVelocity(new Translation2d(v_x, v_y));
+            });
         }
+
+        // @Override
+        // public Command translationalDrive(CommandXboxController xbox) {
+        //     return new TranslationalDriveCommand(translational, xbox.getHID(), TunerConstants.MAX_SPEED);
+        // }
     };
 
     public TranslationalDrivebase getTranslational() {
@@ -88,17 +88,17 @@ public class YAGSLSwerveDrivetrain implements Drivetrain {
             return new Rotation2d(speeds.omegaRadiansPerSecond);
         }
 
-        // @Override
-        // public Command rotationalDrive(CommandXboxController xbox) {
-        //     return run(() -> {
-        //         setRotationalVelocity(new Rotation2d(TunerConstants.MAX_ANGULAR_SPEED * deadband(xbox.getRightX())));
-        //     });
-        // }
-
         @Override
         public Command rotationalDrive(CommandXboxController xbox) {
-            return new RotationalDriveCommand(rotational, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
+            return run(() -> {
+                setRotationalVelocity(new Rotation2d(TunerConstants.MAX_ANGULAR_SPEED * deadband(xbox.getRightX())));
+            });
         }
+
+        // @Override
+        // public Command rotationalDrive(CommandXboxController xbox) {
+        //     return new RotationalDriveCommand(rotational, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
+        // }
     };
 
     public RotationalDrivebase getRotational() {
