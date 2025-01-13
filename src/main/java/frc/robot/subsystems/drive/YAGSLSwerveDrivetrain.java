@@ -40,7 +40,9 @@ public class YAGSLSwerveDrivetrain implements Drivetrain {
     public final TranslationalDrivebase translational = new TranslationalDrivebase() {
         @Override
         public void setVelocity(Translation2d velocity) {
-            swerveDrive.drive(new ChassisSpeeds(velocity.getX(), velocity.getY(), swerveDrive.getRobotVelocity().omegaRadiansPerSecond));
+            // swerveDrive.drive(new ChassisSpeeds(velocity.getX(), velocity.getY(), swerveDrive.getRobotVelocity().omegaRadiansPerSecond));
+            swerveDrive.drive(new ChassisSpeeds(velocity.getX(), velocity.getY(), 0));
+
         }
 
         @Override

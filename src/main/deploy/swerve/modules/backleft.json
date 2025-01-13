@@ -19,7 +19,7 @@
     "id": 50,
     "canbus": "CANivore"
   },
-  "absoluteEncoderInverted": true,
+  "absoluteEncoderInverted": false,
   "inverted": {
     "drive": false,
     "angle": false

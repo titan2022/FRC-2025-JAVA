@@ -77,13 +77,13 @@ public class Robot extends TimedRobot {
     // if (m_autonomousCommand != null) {
     //   m_autonomousCommand.schedule();
     // }
-    translationalDrivetrain.setVelocity(new Translation2d(0, 1));
-    // rotationalDrivebase.setRotationalVelocity(new Rotation2d(1));
+    
   }
 
   @Override
   public void autonomousPeriodic() {
-    // rotationalDrivebase.setRotationalVelocity(new Rotation2d(15 * Unit.DEG));
+    translationalDrivetrain.setVelocity(new Translation2d(0, 1));
+    // rotationalDrivebase.setRotationalVelocity(new Rotation2d(1));
   }
 
   @Override

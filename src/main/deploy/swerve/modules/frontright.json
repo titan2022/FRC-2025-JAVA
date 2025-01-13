@@ -10,8 +10,8 @@
     "canbus": "CANivore"
   },
   "inverted": {
-    "drive": true,
-    "angle": true
+    "drive": false,
+    "angle": false
   },
   "angle": {
     "type": "falcon",
@@ -23,5 +23,5 @@
     "id": 52,
     "canbus": "CANivore"
   },
-  "absoluteEncoderInverted": true
+  "absoluteEncoderInverted": false
 }
