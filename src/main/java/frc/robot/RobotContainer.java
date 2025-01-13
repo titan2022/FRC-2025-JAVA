@@ -8,13 +8,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.RotationalDrivebase;
 import frc.robot.subsystems.drive.TranslationalDrivebase;
+import frc.robot.subsystems.drive.YAGSLSwerveDrivetrain;
+import frc.robot.utility.Localizer;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
-    
+    public final CommandXboxController driveController = new CommandXboxController(0); // My joystick
+    public final CommandXboxController robotController = new CommandXboxController(1); // My joystick
+
+    public final YAGSLSwerveDrivetrain drivetrain = new YAGSLSwerveDrivetrain(); // My drivetrain
+
+    public final Localizer localizer = new Localizer(drivetrain, false, 0);
+
+    public final TranslationalDrivebase translationalDrivetrain = drivetrain.translational;
+    public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
 
     // private final Telemetry logger = new Telemetry(TunerConstants.MAX_SPEED);
 
