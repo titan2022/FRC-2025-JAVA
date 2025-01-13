@@ -8,10 +8,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -23,19 +20,17 @@ public class Robot extends TimedRobot {
 
   private RobotContainer robotContainer;
   
-  public final XboxController driveController = new XboxController(0); // My joystick
+  public final CommandXboxController driveController = new CommandXboxController(0); // My joystick
     public final CommandXboxController robotController = new CommandXboxController(1); // My joystick
 
     public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(); // My drivetrain
     // public final TranslationalDrivebase translationalDrivetrain = drivetrain.translational;
     // public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
 
-    private final SwerveRequest.FieldCentricFacingAngle m_driveRequest = new SwerveRequest.FieldCentricFacingAngle()
+    private final SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
     .withDeadband(1.0 * 0.1).withRotationalDeadband(15 * Unit.DEG * 0.1) // Add a 10% deadband
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.Position);
-
-    private Rotation2d swerveAngleOffset = new Rotation2d(0);
  
   @Override
   public void robotInit() {
@@ -99,18 +94,10 @@ public class Robot extends TimedRobot {
     // translationalDrivetrain.setVelocity(new Translation2d(driveController.getLeftX() * 0.5, driveController.getLeftY() * 0.5));
     // rotationalDrivebase.setRotationalVelocity(new Rotation2d(driveController.getRightX() * 0.5));
 
-    swerveAngleOffset = swerveAngleOffset.plus(new Rotation2d(-driveController.getRightX() * 0.02));
-
-    SmartDashboard.putNumber("rot", swerveAngleOffset.getDegrees());
-
-    if (driveController.getBButtonPressed()) {
-      swerveAngleOffset = new Rotation2d();
-    }
-
     drivetrain.setControl(
-      m_driveRequest.withTargetDirection(swerveAngleOffset)
-          .withVelocityX(-driveController.getLeftY())
-          .withVelocityY(-driveController.getLeftX())
+      m_driveRequest.withVelocityX(-driveController.getLeftY())
+         .withVelocityY(-driveController.getLeftX())
+         .withRotationalRate(-driveController.getRightX())
    );
   }
 
