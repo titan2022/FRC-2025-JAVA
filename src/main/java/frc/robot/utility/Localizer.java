@@ -1,5 +1,6 @@
 package frc.robot.utility;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Optional;
@@ -66,6 +67,10 @@ public class Localizer {
     public Pose2d startingPose2d = new Pose2d(); 
 
     public VisionLocalization visionLocalization = new VisionLocalization("Arducam");
+    public VisionLocalization visionLocalization2 = new VisionLocalization("Arducam2");
+    public ArrayList<VisionLocalization> localizers;
+    
+
 
     /**
      * Localizer constructor
@@ -78,6 +83,9 @@ public class Localizer {
         // if (withCoprocessor) {
         //     server = new NetworkingServer(port);
         // }
+        localizers = new ArrayList<>();
+        localizers.add(visionLocalization);
+        localizers.add(visionLocalization2);
     }
 
     /**
@@ -86,6 +94,7 @@ public class Localizer {
      * @return Position in meters from bottom left corner
      */
     public Translation2d getPosition() {
+
         return globalPosition;
     }
 
@@ -294,22 +303,34 @@ public class Localizer {
      * 
      * @param dt The amount of time past since the last update, in seconds
      */
+
+
     public synchronized void step(double dt) {
-        // globalHeading = pigeon.getRotation2d().minus(pigeonOffset);
-        // globalOrientation = globalHeading.minus(new Rotation2d(Math.PI / 2));
-        Optional<EstimatedRobotPose> estimatedPose = visionLocalization.getEstimatedGlobalPose(globalPose);
-        if(estimatedPose.isEmpty()) {
-            SmartDashboard.putBoolean("Can get pose", false);
-            return;
+
+
+        for(VisionLocalization localizer : localizers){
+            // globalHeading = pigeon.getRotation2d().minus(pigeonOffset);
+            // globalOrientation = globalHeading.minus(new Rotation2d(Math.PI / 2));
+            Optional<EstimatedRobotPose> estimatedPose = localizer.getEstimatedGlobalPose(globalPose);
+            if(estimatedPose.isEmpty()) {
+                SmartDashboard.putBoolean("Can get pose", false);
+                return;
+            }
+            globalPose = estimatedPose.get().estimatedPose;
+            globalHeading = globalPose.toPose2d().getRotation();
+            globalOrientation = globalHeading.minus(new Rotation2d(Math.PI / 2));
+            SmartDashboard.putNumber("heading", globalHeading.getRadians());
+            globalPosition = globalPose.toPose2d().getTranslation();
+            SmartDashboard.putNumber("translation_x", globalPosition.getX());
+            SmartDashboard.putNumber("translation_y", globalPosition.getY());
+            SmartDashboard.putBoolean("Can get pose", true);
+
         }
-        globalPose = estimatedPose.get().estimatedPose;
-        globalHeading = globalPose.toPose2d().getRotation();
-        globalOrientation = globalHeading.minus(new Rotation2d(Math.PI / 2));
-        SmartDashboard.putNumber("heading", globalHeading.getRadians());
-        globalPosition = globalPose.toPose2d().getTranslation();
-        SmartDashboard.putNumber("translation_x", globalPosition.getX());
-        SmartDashboard.putNumber("translation_y", globalPosition.getY());
-        SmartDashboard.putBoolean("Can get pose", true);
+
+        
+
+
+
     }
     
     public Translation2d getSpeakerLocation(){
