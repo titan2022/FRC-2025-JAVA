@@ -41,8 +41,12 @@ public class VisionLocalization {
         
         //create the PhotonPoseEstimator with the field layout, strategy of
         photonPoseEstimator = new PhotonPoseEstimator(
-            aprilTagFieldLayout, //json lahyout of april tags
+            aprilTagFieldLayout, //json layout of april tags
             PoseStrategy.CLOSEST_TO_REFERENCE_POSE, //strategy to calculate pose position
+
+            // ********instead of using a strategy get the raw value by dividing. somewhere in the docs.
+            // *******set the value using that and use this strategy later on in the last part with parameters
+
             robotToCam //relative position of camera to robot
         );
         
@@ -72,30 +76,36 @@ public class VisionLocalization {
     
 
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose3d prevEstimatedRobotPose) {
-        //updates stored reference pose when you use the closest_to_reference_pose strategy
+        // Update the reference pose if using the CLOSEST_TO_REFERENCE_POSE strategy
         photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-        
-        // get the latest result
-        Optional<EstimatedRobotPose> result = photonPoseEstimator.update(camera.getLatestResult());
-        
-        // a Pose3d to transform based on the robotToCam transformation
-        Pose3d tempPose3d = result.get().estimatedPose.transformBy(robotToCam);
-        
-        // convert transformed result to an estimated RobotPose
-        // The parameters for Estimated Poses have negative time stamp because we're not using it
-
-        // We also set a strategy, but we're not sure if it impacts anything.
-        // If it does we need to figure another way of changing it
-        EstimatedRobotPose tempEstimatedPose = new EstimatedRobotPose(tempPose3d, -1.0, new ArrayList<PhotonTrackedTarget>(), PoseStrategy.CLOSEST_TO_REFERENCE_POSE);
-        
-        result = Optional.ofNullable(tempEstimatedPose);
-        
-        // return results
-        if (result.isPresent()) {
-            
-            return result;
-        } else {
-            return Optional.empty();
+    
+        // Get the latest result from the camera
+        PhotonPipelineResult cameraResult = camera.getLatestResult();
+        if (cameraResult == null || !cameraResult.hasTargets()) {
+            return Optional.empty(); // No targets, return empty
         }
+    
+        // Get the estimated pose from the pose estimator
+        Optional<EstimatedRobotPose> result = photonPoseEstimator.update(cameraResult);
+    
+        // If result is present, process it
+        if (result.isPresent()) {
+            // Transform the estimated pose based on the robot-to-camera transformation
+            Pose3d transformedPose = result.get().estimatedPose.transformBy(robotToCam);
+    
+            // Create a new EstimatedRobotPose with the transformed pose
+            EstimatedRobotPose updatedPose = new EstimatedRobotPose(
+                transformedPose,
+                result.get().timestampSeconds, // Use the original timestamp
+                result.get().targetsUsed,         // Pass through targets
+                PoseStrategy.CLOSEST_TO_REFERENCE_POSE // Retain strategy
+            );
+    
+            // Return the updated pose wrapped in Optional
+            return Optional.of(updatedPose);
+        }
+    
+        // Return empty if no pose was estimated
+        return Optional.empty();
     }
-}
+    }
