@@ -1,0 +1,65 @@
+package frc.robot;
+
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import org.littletonrobotics.junction.Logger; //team who made it
+
+public class SimulatePose3d extends CommandBase {
+    private Pose3d currentPose;
+    private Translation3d direction;
+    private double speed; 
+    private double period; 
+    private Logger logger = Logger.getInstance();
+
+    public SimulatePose3d(Pose3d initialPose, Translation3d direction, double speed, double period) {
+        this.currentPose = initialPose;
+        this.direction = direction;
+        this.speed = speed;
+        this.period = period;
+
+        this.direction = new Translation3d(
+                direction.getX() / magnitude,
+                direction.getY() / magnitude,
+                direction.getZ() / magnitude
+        );
+        initialize();
+        for(int i = 0; i < 100; i++){
+            execute();
+        }        
+    }
+    
+    @Override
+    public void initialize() {
+        logger.recordOutput("PoseSimulation/InitialPose", currentPose);
+    }
+
+    @Override
+    public void execute() {
+        Translation3d displacement = direction.times(speed * period);
+
+        currentPose = new Pose3d(
+                currentPose.getTranslation().plus(displacement),
+                currentPose.getRotation()
+        );
+
+        logger.recordOutput("PoseSimulation/CurrentPose", currentPose);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false; 
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        if (interrupted) {
+            logger.recordOutput("PoseSimulation/Status", "Interrupted");
+        } else {
+            logger.recordOutput("PoseSimulation/Status", "Completed");
+        }
+    }
+
+    SimulatePose3D tester = new SimulatePose3D(Pose3d(0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5),Translation3d(2,1,0.5),2,2);
+}
