@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.drive.RotationalDrivebase;
 import frc.robot.subsystems.drive.TranslationalDrivebase;
 import frc.robot.subsystems.drive.YAGSLSwerveDrivetrain;
 import frc.robot.utility.Constants.Unit;
+import edu.wpi.first.wpilibj.DataLogManager;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -40,6 +42,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
+    DataLogManager.start();
+    URCL.start();
+    URCL.start(DataLogManager.getLog());
   }
 
   @Override
