@@ -61,9 +61,4 @@ public class SimulatePose3d extends Command {
         }
     }
 
-    SimulatePose3d tester = new SimulatePose3d(
-        new Pose3d(new Translation3d(0.5, 0.5, 0.5), new Rotation3d(0.5, 0.5, 0.5)),
-        new Translation3d(1.5, 1.5, 1.5), 
-        2, 2
-    );
 }
