@@ -8,8 +8,10 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,15 +39,35 @@ public class Robot extends TimedRobot {
     .withDeadband(1.0 * 0.1).withRotationalDeadband(15 * Unit.DEG * 0.1) // Add a 10% deadband
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.Position);
- 
+  
+  private Pose2d currentPose;
+  private Translation2d direction;
+  private double speed;
+  private PoseLogger2d poseLogger;
+
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
+
+    NetworkTableInstance.getDefault().startServer();
+
+    currentPose = new Pose2d(
+      new Translation2d(1.0, 0.5), 
+      new Rotation2d(1.0)          
+    );
+
+    direction = new Translation2d(1.0, 0.5);
+
+    speed = 1.0;
+
+    poseLogger = new PoseLogger2d(currentPose, direction, speed, 0.2);
+
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
+    poseLogger.execute();
 
     // SmartDashboard.putNumber("curr_velx", translationalDrivetrain.getVelocity().getX());
     // SmartDashboard.putNumber("curr_vely", translationalDrivetrain.getVelocity().getY());
