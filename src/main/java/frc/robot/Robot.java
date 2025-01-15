@@ -48,21 +48,17 @@ public class Robot extends TimedRobot {
 
     robotContainer = new RobotContainer();
 
-    NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    inst.stopServer();
-    inst.startServer();
-
-    robotContainer = new RobotContainer();
-
-    System.out.println("NT Connection Status: " + inst.isConnected());
+    NetworkTableInstance.getDefault().startServer();
 
     PoseLogger2d log = new PoseLogger2d(
         new Pose2d(new Translation2d(0.5, 0.5), new Rotation2d()),
         new Translation2d(1.5, 1.5),
-        2, 0.02
-    );
+        2, 0.02);
 
     CommandScheduler.getInstance().schedule(log);
+
+    System.out.println("NT Connection Status: " + NetworkTableInstance.getDefault().isConnected());
+
 
   }
 
@@ -81,13 +77,6 @@ public class Robot extends TimedRobot {
     //     new Pose3d(new Translation3d(0.5, 0.5, 0.5), new Rotation3d(0.5, 0.5, 0.5)),
     //     new Translation3d(1.5, 1.5, 1.5),
     //     2, 2);
-
-    new PoseLogger2d(
-        new Pose2d(new Translation2d(0.5, 0.5), new Rotation2d()),
-        new Translation2d(1.5, 1.5),
-        2, 0.02
-    ).execute();
-
   }
 
   @Override

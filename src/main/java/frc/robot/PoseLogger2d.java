@@ -28,8 +28,7 @@ public class PoseLogger2d extends Command {
 
     @Override
     public void initialize() {
-        System.out.println("[PoseLogger2d] Initialized");
-        currentPosePublisher.set(currentPose);
+        System.out.println("PoseLogger2d initialized");
     }
 
     @Override
@@ -44,8 +43,7 @@ public class PoseLogger2d extends Command {
         // printed
         // currentPose is changing as well, so currentPose is being appropriately
         // updated
-
-        System.out.println("[PoseLogger2d] Executing - Current Pose: " + currentPose);
+        System.out.println("currentPose: " + currentPose);
         currentPosePublisher.set(currentPose);
     }
 
