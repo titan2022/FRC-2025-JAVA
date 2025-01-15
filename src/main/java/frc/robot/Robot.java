@@ -8,13 +8,13 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystemCoral;
 import frc.robot.subsystems.drive.RotationalDrivebase;
 import frc.robot.subsystems.drive.TranslationalDrivebase;
 import frc.robot.subsystems.drive.YAGSLSwerveDrivetrain;
@@ -24,10 +24,11 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer robotContainer;
-  
+  private IntakeSubsystemCoral intake = new IntakeSubsystemCoral();
+
   public final CommandXboxController driveController = new CommandXboxController(0); // My joystick
   public final CommandXboxController robotController = new CommandXboxController(1); // My joystick
-
+  
   public final YAGSLSwerveDrivetrain drivetrain = new YAGSLSwerveDrivetrain(); // My drivetrain
   public final TranslationalDrivebase translationalDrivetrain = drivetrain.translational;
   public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
+    SmartDashboard.putNumber("Desired Intake Speed", 0.75);
   }
 
   @Override
@@ -111,6 +113,12 @@ public class Robot extends TimedRobot {
     //      .withVelocityY(-driveController.getLeftX())
     //      .withRotationalRate(-driveController.getRightX())
     // );
+
+    
+    if (robotController.y().getAsBoolean()) { //using the y button as set intake speed
+    intake.setWheelSpeed(SmartDashboard.getNumber("Desired Intake Speed", 0));
+    } else if (robotController.a().getAsBoolean()) //using the a button as stop intake
+     intake.stop();
   }
 
   @Override
