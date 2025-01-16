@@ -18,23 +18,29 @@ public enum AprilTag implements FieldObject {
     // EAST is towards the Red Alliance Area
     // WEST is towards the Blue Alliance Area
     // 1 in = 0.0254 m
-    // See https://docs.google.com/spreadsheets/d/1aTBUTqv_QWHWGeNzhRpJv8-SgyZ2aXf8bqGZQpopXcw/edit?usp=sharing
-    BLUE_SOURCE_SOUTH(1, new Translation3d(15.079472, 0.245872, 1.355852), new Rotation2d(2.0943951023932)), 
-    BLUE_SOURCE_NORTH(2, new Translation3d(16.185134, 0.883666, 1.355852), new Rotation2d(2.0943951023932)),
-    RED_SOURCE_SOUTH(10, new Translation3d(1.461516, 0.245872, 1.355852), new Rotation2d(1.0471975511966)), 
-    RED_SOURCE_NORTH(9, new Translation3d(0.356108, 0.883666, 1.355852), new Rotation2d(1.0471975511966)),
-    RED_SPEAKER_SOUTH(3, new Translation3d(16.579342, 4.982718, 1.451102), new Rotation2d(3.14159265358979)), 
-    RED_SPEAKER_CENTER(4, new Translation3d(16.579342, 5.547868, 1.451102), new Rotation2d(3.14159265358979)),
-    BLUE_SPEAKER_SOUTH(8, new Translation3d(-0.0381, 4.982718, 1.451102), new Rotation2d(0)), 
-    BLUE_SPEAKER_NORTH(7, new Translation3d(-0.0381, 5.547868, 1.451102), new Rotation2d(0)),
-    RED_AMP(5, new Translation3d(14.700758, 8.2042, 1.355852), new Rotation2d(4.71238898038469)), 
-    BLUE_AMP(6, new Translation3d(1.8415, 8.2042, 1.355852), new Rotation2d(4.71238898038469)),
-    RED_STAGE_SOUTH(11, new Translation3d(11.904726, 3.713226, 1.3208), new Rotation2d(5.23598775598299)), 
-    RED_STAGE_NORTH(12, new Translation3d(11.904726, 4.49834, 1.3208), new Rotation2d(1.0471975511966)), 
-    RED_STAGE_WEST(13, new Translation3d(11.220196, 4.105148, 1.3208), new Rotation2d(3.14159265358979)),
-    BLUE_STAGE_SOUTH(16, new Translation3d(4.641342, 3.713226, 1.3208), new Rotation2d(4.18879020478639)), 
-    BLUE_STAGE_NORTH(15, new Translation3d(4.641342, 4.49834, 1.3208), new Rotation2d(2.0943951023932)), 
-    BLUE_STAGE_EAST(14, new Translation3d(5.320792, 4.105148, 1.3208), new Rotation2d(0)),
+ 
+    RED_SOUTH_CORAL_STATION(1, new Translation3d(16.697198, 0.655320, 1.485900), new Rotation2d(2.1991100000000)),
+    RED_NORTH_CORAL_STATION(2, new Translation3d(16.697198, 7.396480, 1.485900), new Rotation2d(4.0840700000000)),
+    RED_ALGAE_STATION(3, new Translation3d(11.560810, 8.055610, 1.301750), new Rotation2d(4.7123900000000)),
+    RED_NORTH_BARGE(4, new Translation3d(9.276080, 6.137656, 1.867916), new Rotation2d(0.0000000000000)),
+    RED_SOUTH_BARGE(5, new Translation3d(9.276080, 1.914906, 1.867916), new Rotation2d(0.0000000000000)),
+    RED_SOUTH_EAST_CORAL(6, new Translation3d(13.474446, 3.306318, 0.308102), new Rotation2d(5.2359900000000)),
+    RED_EAST_CORAL(7, new Translation3d(13.890498, 4.025900, 0.308102), new Rotation2d(0.0000000000000)),
+    RED_NORTH_EAST_CORAL(8, new Translation3d(13.474446, 4.745482, 0.308102), new Rotation2d(1.0472000000000)),
+    RED_NORTH_WEST_CORAL(9, new Translation3d(12.643358, 4.745482, 0.308102), new Rotation2d(2.0944000000000)),
+    RED_WEST_CORAL(10, new Translation3d(12.227306, 4.025900, 0.308102), new Rotation2d(3.1415900000000)),
+    RED_SOUTH_WEST_CORAL(11, new Translation3d(12.643358, 3.306318, 0.308102), new Rotation2d(4.1887900000000)),
+    BLUE_SOUTH_CORAL_STATION(12, new Translation3d(0.851154, 0.655320, 1.485900), new Rotation2d(0.9424780000000)),
+    BLUE_NOTH_CORAL_STATION(13, new Translation3d(0.851154, 7.396480, 1.485900), new Rotation2d(5.3407100000000)),
+    BLUE_NORTH_BARGE(14, new Translation3d(8.272272, 6.137656, 1.867916), new Rotation2d(3.1415900000000)),
+    BLUE_SOUTH_BARGE(15, new Translation3d(8.272272, 1.914906, 1.867916), new Rotation2d(3.1415900000000)),
+    BLUE_ALGAE_STATION(16, new Translation3d(5.987542, -0.003810, 1.301750), new Rotation2d(1.5708000000000)),
+    BLUE_SOUTH_WEST_CORAL(17, new Translation3d(4.073906, 3.306318, 0.308102), new Rotation2d(4.1887900000000)),
+    BLUE_WEST_CORAL(18, new Translation3d(3.657600, 4.025900, 0.308102), new Rotation2d(3.1415900000000)),
+    BLUE_NORTH_WEST_CORAL(19, new Translation3d(4.073906, 4.745482, 0.308102), new Rotation2d(2.0944000000000)),
+    BLUE_NORTH_EAST_CORAL(20, new Translation3d(4.904740, 4.745482, 0.308102), new Rotation2d(1.0472000000000)),
+    BLUE_EAST_CORAL(21, new Translation3d(5.321046, 4.025900, 0.308102), new Rotation2d(0.0000000000000)),
+    BLUE_SOUTH_EAST_CORAL(22, new Translation3d(4.904740, 3.306318, 0.308102), new Rotation2d(5.2359900000000)),
     ;
 
     private int id;
