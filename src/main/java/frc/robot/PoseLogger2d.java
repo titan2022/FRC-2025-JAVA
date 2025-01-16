@@ -1,36 +1,24 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.networktables.StructTopic;
-import edu.wpi.first.networktables.Topic;
+import edu.wpi.first.wpilibj2.command.Command;
+import org.littletonrobotics.junction.Logger;
 
 public class PoseLogger2d extends Command {
     private Pose2d currentPose;
-    private Translation2d direction;
-    private double speed;
-    private double period;
-    private final StructPublisher<Pose2d> currentPosePublisher;
+    private final Translation2d direction;
+    private final double speed;
+    private final double period;
 
     public PoseLogger2d(Pose2d initialPose, Translation2d direction, double speed, double period) {
         this.currentPose = initialPose;
         this.speed = speed;
         this.period = period;
-
+        
+        // Normalizes direction vector, and sets direction vector to 0 if magnitude is 0 to prevent division error
         double magnitude = direction.getNorm();
         this.direction = (magnitude != 0) ? direction.div(magnitude) : new Translation2d(0, 0);
-        
-        Topic poseTopic = NetworkTableInstance.getDefault()
-            .getTopic("PoseSimulation/CurrentPose");
-
-        poseTopic.setRetained(true);
-
-        this.currentPosePublisher = NetworkTableInstance.getDefault()
-            .getStructTopic("PoseSimulation/CurrentPose", Pose2d.struct)
-            .publish();
     }
 
     @Override
@@ -47,13 +35,8 @@ public class PoseLogger2d extends Command {
             currentPose.getRotation()
         );
 
-        System.out.println("Updated Pose: " + currentPose);
-        System.out.println("Pose - X: " + currentPose.getTranslation().getX());
-        System.out.println("Pose - Y: " + currentPose.getTranslation().getY());
-        System.out.println("Pose - Rotation: " + currentPose.getRotation().getDegrees());
-
-
-        currentPosePublisher.set(currentPose);
+        // Log the current pose
+        Logger.recordOutput("PoseSimulation/CurrentPose", currentPose);
     }
 
     @Override
@@ -66,4 +49,3 @@ public class PoseLogger2d extends Command {
         System.out.println("PoseLogger2d ended");
     }
 }
-

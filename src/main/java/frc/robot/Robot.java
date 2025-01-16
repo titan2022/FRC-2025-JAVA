@@ -13,6 +13,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -23,11 +25,18 @@ import frc.robot.subsystems.drive.TranslationalDrivebase;
 import frc.robot.subsystems.drive.YAGSLSwerveDrivetrain;
 import frc.robot.utility.Constants.Unit;
 
-public class Robot extends TimedRobot {
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer robotContainer;
-  
+
   public final CommandXboxController driveController = new CommandXboxController(0); // My joystick
   public final CommandXboxController robotController = new CommandXboxController(1); // My joystick
 
@@ -36,10 +45,10 @@ public class Robot extends TimedRobot {
   public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
 
   private final SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
-    .withDeadband(1.0 * 0.1).withRotationalDeadband(15 * Unit.DEG * 0.1) // Add a 10% deadband
-    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-    .withSteerRequestType(SteerRequestType.Position);
-  
+      .withDeadband(1.0 * 0.1).withRotationalDeadband(15 * Unit.DEG * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+      .withSteerRequestType(SteerRequestType.Position);
+
   private Pose2d currentPose;
   private Translation2d direction;
   private double speed;
@@ -47,41 +56,50 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+
+    Logger.recordMetadata("ProjectName", "MyProject");
+
+    if (isReal()) {
+      Logger.addDataReceiver(new WPILOGWriter()); 
+      Logger.addDataReceiver(new NT4Publisher());
+      new PowerDistribution(1, ModuleType.kRev); 
+    } else {
+      setUseTiming(false);
+      String logPath = LogFileUtil.findReplayLog();
+      Logger.setReplaySource(new WPILOGReader(logPath));
+      Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+    }
+
+    setUseTiming(false);
+
+    Logger.start();
+
     robotContainer = new RobotContainer();
-
-    NetworkTableInstance.getDefault().startServer();
-
-    currentPose = new Pose2d(
-      new Translation2d(0.1, 0.05), 
-      new Rotation2d(0.1)          
-    );
-
-    direction = new Translation2d(0.1, 0.05);
-
-    speed = 0.1;
-
-    poseLogger = new PoseLogger2d(currentPose, direction, speed, 0.2);
-
   }
 
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run(); 
-    poseLogger.execute();
+    CommandScheduler.getInstance().run();
 
-    // SmartDashboard.putNumber("curr_velx", translationalDrivetrain.getVelocity().getX());
-    // SmartDashboard.putNumber("curr_vely", translationalDrivetrain.getVelocity().getY());
-    // SmartDashboard.putNumber("curr_omega", rotationalDrivebase.getRotationalVelocity().getDegrees());
+    // SmartDashboard.putNumber("curr_velx",
+    // translationalDrivetrain.getVelocity().getX());
+    // SmartDashboard.putNumber("curr_vely",
+    // translationalDrivetrain.getVelocity().getY());
+    // SmartDashboard.putNumber("curr_omega",
+    // rotationalDrivebase.getRotationalVelocity().getDegrees());
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+  }
 
   @Override
   public void autonomousInit() {
@@ -90,11 +108,10 @@ public class Robot extends TimedRobot {
     // m_autonomousCommand = robotContainer.getAutonomousCommand();
 
     // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.schedule();
+    // m_autonomousCommand.schedule();
     // }
     // robotContainer.translationalDrivetrain.setVelocity(new Translation2d(0, 1));
 
-    
   }
 
   @Override
@@ -103,7 +120,8 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+  }
 
   @Override
   public void teleopInit() {
@@ -111,26 +129,26 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    
-
     // translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController));
     // rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController));
   }
 
   @Override
   public void teleopPeriodic() {
-    translationalDrivetrain.setVelocity(new Translation2d(driveController.getLeftX() * 0.5, driveController.getLeftY() * 0.5));
+    translationalDrivetrain
+        .setVelocity(new Translation2d(driveController.getLeftX() * 0.5, driveController.getLeftY() * 0.5));
     rotationalDrivebase.setRotationalVelocity(new Rotation2d(driveController.getRightX() * 0.5));
 
     // drivetrain.setControl(
-    //   m_driveRequest.withVelocityX(-driveController.getLeftY())
-    //      .withVelocityY(-driveController.getLeftX())
-    //      .withRotationalRate(-driveController.getRightX())
+    // m_driveRequest.withVelocityX(-driveController.getLeftY())
+    // .withVelocityY(-driveController.getLeftX())
+    // .withRotationalRate(-driveController.getRightX())
     // );
   }
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+  }
 
   @Override
   public void testInit() {
@@ -138,11 +156,14 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   @Override
-  public void testExit() {}
+  public void testExit() {
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+  }
 }
