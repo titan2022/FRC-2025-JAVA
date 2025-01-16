@@ -52,13 +52,13 @@ public class Robot extends TimedRobot {
     NetworkTableInstance.getDefault().startServer();
 
     currentPose = new Pose2d(
-      new Translation2d(1.0, 0.5), 
-      new Rotation2d(1.0)          
+      new Translation2d(0.1, 0.05), 
+      new Rotation2d(0.1)          
     );
 
-    direction = new Translation2d(1.0, 0.5);
+    direction = new Translation2d(0.1, 0.05);
 
-    speed = 1.0;
+    speed = 0.1;
 
     poseLogger = new PoseLogger2d(currentPose, direction, speed, 0.2);
 
