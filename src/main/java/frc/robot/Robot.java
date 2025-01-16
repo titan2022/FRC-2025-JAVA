@@ -23,73 +23,65 @@ import frc.robot.utility.Constants.Unit;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer robotContainer;
   private IntakeSubsystemCoral intake = new IntakeSubsystemCoral();
 
   public final CommandXboxController driveController = new CommandXboxController(0); // My joystick
   public final CommandXboxController robotController = new CommandXboxController(1); // My joystick
-  
+
   public final YAGSLSwerveDrivetrain drivetrain = new YAGSLSwerveDrivetrain(); // My drivetrain
   public final TranslationalDrivebase translationalDrivetrain = drivetrain.translational;
   public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
 
   private final SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
-    .withDeadband(1.0 * 0.1).withRotationalDeadband(15 * Unit.DEG * 0.1) // Add a 10% deadband
-    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-    .withSteerRequestType(SteerRequestType.Position);
- 
+      .withDeadband(1.0 * 0.1).withRotationalDeadband(15 * Unit.DEG * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+      .withSteerRequestType(SteerRequestType.Position);
+
   private static final double XBOX_DEADBAND = 0.15;
+
   private double deadband(double input) {
-      if (Math.abs(input) > XBOX_DEADBAND)
-          return input;
-      else 
-          return 0;
+    if (Math.abs(input) > XBOX_DEADBAND)
+      return input;
+    else
+      return 0;
   }
 
   @Override
   public void robotInit() {
-    robotContainer = new RobotContainer();
     SmartDashboard.putNumber("Desired Intake Speed", 0.75);
   }
 
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run(); 
-
-    // SmartDashboard.putNumber("curr_velx", translationalDrivetrain.getVelocity().getX());
-    // SmartDashboard.putNumber("curr_vely", translationalDrivetrain.getVelocity().getY());
-    // SmartDashboard.putNumber("curr_omega", rotationalDrivebase.getRotationalVelocity().getDegrees());
+    CommandScheduler.getInstance().run();
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+  }
 
   @Override
   public void autonomousInit() {
     translationalDrivetrain.removeDefaultCommand();
     rotationalDrivebase.removeDefaultCommand();
-    // m_autonomousCommand = robotContainer.getAutonomousCommand();
-
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.schedule();
-    // }
-    
   }
 
   @Override
   public void autonomousPeriodic() {
     translationalDrivetrain.setVelocity(new Translation2d(0, 1));
-    // rotationalDrivebase.setRotationalVelocity(new Rotation2d(1));
   }
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+  }
 
   @Override
   public void teleopInit() {
@@ -97,32 +89,22 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    
-
     translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController));
     rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController));
   }
 
   @Override
   public void teleopPeriodic() {
-    // translationalDrivetrain.setVelocity(new Translation2d(deadband(driveController.getLeftX()) * 0.5, deadband(driveController.getLeftY()) * 0.5));
-    // rotationalDrivebase.setRotationalVelocity(new Rotation2d(deadband(driveController.getRightX()) * 0.5));
 
-    // drivetrain.setControl(
-    //   m_driveRequest.withVelocityX(-driveController.getLeftY())
-    //      .withVelocityY(-driveController.getLeftX())
-    //      .withRotationalRate(-driveController.getRightX())
-    // );
-
-    
-    if (robotController.y().getAsBoolean()) { //using the y button as set intake speed
-    intake.setWheelSpeed(SmartDashboard.getNumber("Desired Intake Speed", 0));
-    } else if (robotController.a().getAsBoolean()) //using the a button as stop intake
-     intake.stop();
+    if (robotController.y().getAsBoolean()) { // using the y button as set intake speed
+      intake.setWheelSpeed(SmartDashboard.getNumber("Desired Intake Speed", 0));
+    } else if (robotController.a().getAsBoolean()) // using the a button as stop intake
+      intake.stop();
   }
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+  }
 
   @Override
   public void testInit() {
@@ -130,11 +112,14 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   @Override
-  public void testExit() {}
+  public void testExit() {
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+  }
 }
