@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.littletonrobotics.urcl.URCL;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -50,6 +52,9 @@ public class Robot extends TimedRobot {
     robotContainer = new RobotContainer();
 
     NetworkTableInstance.getDefault().startServer();
+  
+    DataLogManager.start();
+    URCL.start();
 
     currentPose = new Pose2d(
       new Translation2d(0.1, 0.05), 
@@ -68,7 +73,6 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
     poseLogger.execute();
-
     // SmartDashboard.putNumber("curr_velx", translationalDrivetrain.getVelocity().getX());
     // SmartDashboard.putNumber("curr_vely", translationalDrivetrain.getVelocity().getY());
     // SmartDashboard.putNumber("curr_omega", rotationalDrivebase.getRotationalVelocity().getDegrees());
