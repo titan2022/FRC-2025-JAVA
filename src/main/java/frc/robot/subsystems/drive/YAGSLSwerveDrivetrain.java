@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.drive.RotationalDriveCommand;
 import frc.robot.commands.drive.TranslationalDriveCommand;
-import frc.robot.utility.Localizer;
 import swervelib.parser.SwerveParser;
 import swervelib.SwerveDrive;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,7 +28,7 @@ public class YAGSLSwerveDrivetrain implements Drivetrain {
         }
     }
 
-    private static final double XBOX_DEADBAND = 0.15;
+    private static final double XBOX_DEADBAND = 0.2;
     private double deadband(double input) {
         if (Math.abs(input) > XBOX_DEADBAND)
             return input;
@@ -41,8 +40,11 @@ public class YAGSLSwerveDrivetrain implements Drivetrain {
         @Override
         public void setVelocity(Translation2d velocity) {
             // swerveDrive.drive(new ChassisSpeeds(velocity.getX(), velocity.getY(), swerveDrive.getRobotVelocity().omegaRadiansPerSecond));
-            swerveDrive.drive(new ChassisSpeeds(velocity.getX(), velocity.getY(), 0));
+            // swerveDrive.drive(new ChassisSpeeds(velocity.getX(), velocity.getY(), 0));
 
+            
+            ChassisSpeeds currentSpeeds = swerveDrive.getRobotVelocity();
+            setVelocities(new ChassisSpeeds(velocity.getX(), velocity.getY(), currentSpeeds.omegaRadiansPerSecond));
         }
 
         @Override
@@ -54,8 +56,8 @@ public class YAGSLSwerveDrivetrain implements Drivetrain {
         @Override
         public Command translationalDrive(CommandXboxController xbox) {
             return run(() -> {
-                double v_x = deadband(xbox.getLeftY());
-                double v_y = deadband(xbox.getLeftX());
+                double v_x = deadband(xbox.getLeftX());
+                double v_y = deadband(xbox.getLeftY());
                 // double magnitude = Math.sqrt(v_x * v_x + v_y * v_y);
                 // if (magnitude > TunerConstants.MAX_SPEED) {
                 //     v_x *= TunerConstants.MAX_SPEED / magnitude;

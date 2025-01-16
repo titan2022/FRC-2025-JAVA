@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -28,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.drive.RotationalDriveCommand;
 import frc.robot.commands.drive.TranslationalDriveCommand;
 import frc.robot.subsystems.drive.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.utility.Localizer;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -74,8 +74,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         // @Override
         // public Command translationalDrive(CommandXboxController xbox) {
         //     return run(() -> {
-        //         double v_x = deadband(xbox.getLeftY());
-        //         double v_y = deadband(xbox.getLeftX());
+        //         double v_x = deadband(xbox.getLeftX());
+        //         double v_y = deadband(xbox.getLeftY());
         //         // double magnitude = Math.sqrt(v_x * v_x + v_y * v_y);
         //         // if (magnitude > TunerConstants.MAX_SPEED) {
         //         //     v_x *= TunerConstants.MAX_SPEED / magnitude;
@@ -103,7 +103,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         @Override
         public void setRotationalVelocity(Rotation2d omega) {
             ChassisSpeeds currentSpeeds = getState().Speeds;
-            setVelocities(new ChassisSpeeds(currentSpeeds.vxMetersPerSecond, currentSpeeds.vxMetersPerSecond, omega.getRadians()));
+            setVelocities(new ChassisSpeeds(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond, omega.getRadians()));
+            SmartDashboard.putNumber("x_input_vel", currentSpeeds.vxMetersPerSecond);
+            SmartDashboard.putNumber("y_input_vel", currentSpeeds.vyMetersPerSecond);   
         }
 
         @Override
@@ -211,7 +213,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     );
 
     /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineSteer;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -317,9 +319,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @param direction Direction of the SysId Dynamic test
      * @return Command to run
      */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.dynamic(direction);
-    }
+    //public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        //return m_sysIdRoutineToApply.dynamic(direction);
+    //}
 
     @Override
     public void periodic() {

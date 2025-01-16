@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.RotationalDrivebase;
 import frc.robot.subsystems.drive.TranslationalDrivebase;
 import frc.robot.subsystems.drive.YAGSLSwerveDrivetrain;
@@ -23,7 +22,7 @@ import frc.robot.utility.Constants.Unit;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer robotContainer;
+  // private RobotContainer robotContainer;
   
   public final CommandXboxController driveController = new CommandXboxController(0); // My joystick
   public final CommandXboxController robotController = new CommandXboxController(1); // My joystick
@@ -37,7 +36,7 @@ public class Robot extends TimedRobot {
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.Position);
  
-  private static final double XBOX_DEADBAND = 0.15;
+  private static final double XBOX_DEADBAND = 0.2;
   private double deadband(double input) {
       if (Math.abs(input) > XBOX_DEADBAND)
           return input;
@@ -47,7 +46,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    robotContainer = new RobotContainer();
+    // robotContainer = new RobotContainer();
   }
 
   @Override
@@ -70,8 +69,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    translationalDrivetrain.removeDefaultCommand();
-    rotationalDrivebase.removeDefaultCommand();
+    // translationalDrivetrain.removeDefaultCommand();
+    // rotationalDrivebase.removeDefaultCommand();
     // m_autonomousCommand = robotContainer.getAutonomousCommand();
 
     // if (m_autonomousCommand != null) {
@@ -82,7 +81,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    translationalDrivetrain.setVelocity(new Translation2d(0, 1));
+    translationalDrivetrain.setVelocity(new Translation2d(1, 0));
     // rotationalDrivebase.setRotationalVelocity(new Rotation2d(1));
   }
 
@@ -97,14 +96,14 @@ public class Robot extends TimedRobot {
 
     
 
-    translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController));
-    rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController));
+    //translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController));
+    //rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController));
   }
 
   @Override
   public void teleopPeriodic() {
-    // translationalDrivetrain.setVelocity(new Translation2d(deadband(driveController.getLeftX()) * 0.5, deadband(driveController.getLeftY()) * 0.5));
-    // rotationalDrivebase.setRotationalVelocity(new Rotation2d(deadband(driveController.getRightX()) * 0.5));
+    translationalDrivetrain.setVelocity(new Translation2d(deadband(driveController.getLeftX()) * 0.5, deadband(driveController.getLeftY()) * 0.5));
+    rotationalDrivebase.setRotationalVelocity(new Rotation2d(deadband(driveController.getRightX())));
 
     // drivetrain.setControl(
     //   m_driveRequest.withVelocityX(-driveController.getLeftY())
@@ -114,7 +113,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+
+  }
 
   @Override
   public void testInit() {
