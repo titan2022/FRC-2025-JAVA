@@ -31,6 +31,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.littletonrobotics.urcl.URCL;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -54,13 +55,10 @@ public class Robot extends LoggedRobot {
   private double speed;
   private PoseLogger2d poseLogger;
 
-  @Override
-  public void robotInit() {
-
-    Logger.recordMetadata("ProjectName", "MyProject");
+  public Robot() {
+    Logger.recordMetadata("PoseEstimator", "currentPose");
 
     if (isReal()) {
-      Logger.addDataReceiver(new WPILOGWriter()); 
       Logger.addDataReceiver(new NT4Publisher());
       new PowerDistribution(1, ModuleType.kRev); 
     } else {
@@ -70,10 +68,12 @@ public class Robot extends LoggedRobot {
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
     }
 
-    setUseTiming(false);
-
+    Logger.registerURCL(URCL.startExternal());
     Logger.start();
 
+  }
+  @Override
+  public void robotInit() {
     robotContainer = new RobotContainer();
   }
 
