@@ -34,6 +34,9 @@ import frc.robot.utility.networking.types.NetworkingTag;
  */
 public class Localizer {
     // private PhotonCamera camera = new PhotonCamera("photonvision");
+    /*
+     * 
+     */
     private NetworkingServer server;
     private Drivetrain drive;
     private Pigeon2 pigeon = new Pigeon2(15);
@@ -90,7 +93,6 @@ public class Localizer {
      *         y-axis).
      */
     public Rotation2d getOrientation() {
-        // return Rotation2d.fromDegrees(-navxGyro.getAngle() + 90);
         return globalOrientation;
     }
 
@@ -102,8 +104,6 @@ public class Localizer {
      * Resets rotational offset 
      */
     public void resetHeading() {
-        // navxGyro.reset();
-        // localOffset = pigeon.getRotation2d();
         resetHeading(Rotation2d.fromDegrees(0));
     }
 
@@ -119,8 +119,7 @@ public class Localizer {
      */
     public double getRate() {
         // return navxGyro.getRate();
-        // TODO: Use pigeon.angularVelocityZWorld() instead
-        return pigeon.getRate();
+        return pigeon.getAngularVelocityZWorld().getValueAsDouble();
     }
 
     /**
