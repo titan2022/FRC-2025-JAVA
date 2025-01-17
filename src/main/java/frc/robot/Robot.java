@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -25,6 +26,7 @@ import frc.robot.subsystems.drive.TranslationalDrivebase;
 import frc.robot.subsystems.drive.YAGSLSwerveDrivetrain;
 import frc.robot.utility.Constants.Unit;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -50,35 +52,52 @@ public class Robot extends LoggedRobot {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
       .withSteerRequestType(SteerRequestType.Position);
 
-  private Pose2d currentPose;
+  @AutoLogOutput
+  private Pose2d currentPose = new Pose2d();
   private Translation2d direction;
   private double speed;
   private PoseLogger2d poseLogger;
+  private double period; 
 
   public Robot() {
-    Logger.recordMetadata("PoseEstimator", "currentPose");
+    Logger.recordMetadata("PoseEstimator", "I hope this works");
 
     if (isReal()) {
       Logger.addDataReceiver(new NT4Publisher());
-      new PowerDistribution(1, ModuleType.kRev); 
     } else {
       setUseTiming(false);
       String logPath = LogFileUtil.findReplayLog();
       Logger.setReplaySource(new WPILOGReader(logPath));
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+      System.out.println("Logging to: " + logPath);
     }
 
     Logger.registerURCL(URCL.startExternal());
+    System.out.println("AdvantageKit Logger starting...");
     Logger.start();
-
   }
+
   @Override
   public void robotInit() {
     robotContainer = new RobotContainer();
+
+    direction = new Translation2d(0.1, 0.1);
+    period = 0.02;
+    speed = 0.1;
+
+    double magnitude = direction.getNorm();
+    this.direction = (magnitude != 0) ? direction.div(magnitude) : new Translation2d(0, 0);
+
   }
 
   @Override
   public void robotPeriodic() {
+    Translation2d displacement = direction.times(speed * period);
+
+    currentPose = currentPose.plus(new Transform2d(displacement, new Rotation2d()));
+
+
+    Logger.recordOutput("currentPose", currentPose);
     CommandScheduler.getInstance().run();
 
     // SmartDashboard.putNumber("curr_velx",
