@@ -31,6 +31,7 @@ public class YAGSLSwerveDrivetrain extends SubsystemBase {
         swerveDrive.setHeadingCorrection(false);
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
+        swerveDrive.setModuleStateOptimization(false);
         // swerveDrive.pushOffsetsToEncoders();
     }
 
