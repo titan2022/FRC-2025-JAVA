@@ -89,7 +89,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         //     });
         // }
 
-        @Override
+        @Override @Deprecated
         public Command translationalDrive(CommandXboxController xbox) {
             return new TranslationalDriveCommand(translational, xbox.getHID(), TunerConstants.MAX_SPEED);
         }
@@ -116,7 +116,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         //     });
         // }
 
-        @Override
+        @Override @Deprecated
         public Command rotationalDrive(CommandXboxController xbox) {
             return new RotationalDriveCommand(rotational, xbox.getHID(), TunerConstants.MAX_ANGULAR_SPEED);
         }
