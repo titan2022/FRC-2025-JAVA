@@ -94,6 +94,8 @@ public class Robot extends TimedRobot {
   private void configureBindings() {
     // See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/RobotContainer.java#L53
 
+    // If you modify these controls please update the diagram at https://docs.google.com/drawings/d/1UsU1iyQz4MPWa87oXD0FYGqLXIfGtkn2a595sXWU3uo/edit.
+
     configureDriveBindings();
 
     driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
