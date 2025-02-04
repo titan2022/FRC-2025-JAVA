@@ -101,11 +101,18 @@ public class Robot extends TimedRobot {
         point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
     ));
 
+    // Dpad buttons
     driveController.pov(0).whileTrue(drivetrain.applyRequest(() ->
         forwardStraight.withVelocityX(0.5).withVelocityY(0))
     );
+    driveController.pov(90).whileTrue(drivetrain.applyRequest(() ->
+        forwardStraight.withVelocityX(0).withVelocityY(0.5))
+    );
     driveController.pov(180).whileTrue(drivetrain.applyRequest(() ->
         forwardStraight.withVelocityX(-0.5).withVelocityY(0))
+    );
+    driveController.pov(270).whileTrue(drivetrain.applyRequest(() ->
+        forwardStraight.withVelocityX(0).withVelocityY(-0.5))
     );
 
     // // Run SysId routines when holding back/start and X/Y.
