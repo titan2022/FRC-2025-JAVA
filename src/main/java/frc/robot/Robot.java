@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
     configureBindings();
   }
 
-  private void configureBindings() {
+  private void configureDriveBindings() {
     // See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/RobotContainer.java#L53
 
     if(isFieldOriented) {
@@ -82,6 +82,19 @@ public class Robot extends TimedRobot {
           )
       );
     }
+  }
+
+  private void toggleFieldOriented() {
+    if(isFieldOriented) isFieldOriented = false;
+    else isFieldOriented = true;
+
+    configureDriveBindings();
+  }
+
+  private void configureBindings() {
+    // See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/RobotContainer.java#L53
+
+    configureDriveBindings();
 
     driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     driveController.b().whileTrue(drivetrain.applyRequest(() ->
@@ -104,6 +117,9 @@ public class Robot extends TimedRobot {
 
     // reset the field-centric heading on left bumper press
     driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+    // toggle field-oriented/robot-oriented on X
+    driveController.x().onTrue(drivetrain.runOnce(() -> toggleFieldOriented()));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
 }
