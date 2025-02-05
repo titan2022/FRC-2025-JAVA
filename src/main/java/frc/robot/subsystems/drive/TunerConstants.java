@@ -24,6 +24,10 @@ public class TunerConstants {
     public static final double MAX_SPEED = 3; // m/s
     /// The max angular speed, in radians per second
     public static final double MAX_ANGULAR_SPEED = 2; // rad/s
+    /// The deadband, as a fraction of 1
+    public static final double DEADBAND = 0.15;
+    /// The speed of dpad strafing, in meters per second
+    public static final double DPAD_STRAFE_SPEED = 0.5; // m/s
 
     ///////////////////////////////////////
     ///// Generated stuff begins here /////

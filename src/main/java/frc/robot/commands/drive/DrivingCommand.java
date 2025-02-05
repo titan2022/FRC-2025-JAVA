@@ -19,12 +19,12 @@ public class DrivingCommand extends Command {
   private CommandXboxController driveController;
 
   private final SwerveRequest.RobotCentric robotCentricDriveRequest = new SwerveRequest.RobotCentric()
-            .withDeadband(TunerConstants.MAX_SPEED * 0.1).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * 0.1) // Add a 10% deadband
+            .withDeadband(TunerConstants.MAX_SPEED * TunerConstants.DEADBAND).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * TunerConstants.DEADBAND) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
 			.withSteerRequestType(SteerRequestType.Position);
 
   private final SwerveRequest.FieldCentric fieldCentricDriveRequest = new SwerveRequest.FieldCentric()
-            .withDeadband(TunerConstants.MAX_SPEED * 0.1).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * 0.1) // Add a 10% deadband
+            .withDeadband(TunerConstants.MAX_SPEED * TunerConstants.DEADBAND).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * TunerConstants.DEADBAND) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
 			.withSteerRequestType(SteerRequestType.Position);
 
@@ -59,23 +59,23 @@ public class DrivingCommand extends Command {
     // Dpad buttons
     driveController.pov(0).whileTrue(drivetrain.applyRequest(() ->
         (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(0.5).withVelocityY(0)
-          : robotCentricStrafe.withVelocityX(0.5).withVelocityY(0))
+          ? fieldCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
+          : robotCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
     ));
     driveController.pov(90).whileTrue(drivetrain.applyRequest(() ->
         (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(0).withVelocityY(-0.5)
-          : robotCentricStrafe.withVelocityX(0).withVelocityY(-0.5))
+          ? fieldCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED)
+          : robotCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED))
     ));
     driveController.pov(180).whileTrue(drivetrain.applyRequest(() ->
         (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(-0.5).withVelocityY(0)
-          : robotCentricStrafe.withVelocityX(-0.5).withVelocityY(0))
+          ? fieldCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
+          : robotCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
     ));
     driveController.pov(270).whileTrue(drivetrain.applyRequest(() ->
         (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(0).withVelocityY(0.5)
-          : robotCentricStrafe.withVelocityX(0).withVelocityY(0.5))
+          ? fieldCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED)
+          : robotCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED))
     ));
 
     // // Run SysId routines when holding back/start and X/Y.

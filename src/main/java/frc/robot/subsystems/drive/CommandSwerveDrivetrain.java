@@ -51,7 +51,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    private static final double XBOX_DEADBAND = 0.15;
+    private static final double XBOX_DEADBAND = TunerConstants.DEADBAND;
     private double deadband(double input) {
         if (Math.abs(input) > XBOX_DEADBAND)
             return input;
