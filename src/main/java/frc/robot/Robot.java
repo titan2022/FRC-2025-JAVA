@@ -29,10 +29,10 @@ public class Robot extends TimedRobot {
   // public final TranslationalDrivebase translationalDrivetrain = drivetrain.translational;
   // public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
 
-  private final SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
-    .withDeadband(1.0 * 0.1).withRotationalDeadband(15 * Unit.DEG * 0.1) // Add a 10% deadband
-    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-    .withSteerRequestType(SteerRequestType.Position);
+  // private final SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
+  //   .withDeadband(1.0 * 0.1).withRotationalDeadband(15 * Unit.DEG * 0.1) // Add a 10% deadband
+  //   .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+  //   .withSteerRequestType(SteerRequestType.Position);
 
   private final SwerveRequest.RobotCentric robotCentricDriveRequest = new SwerveRequest.RobotCentric()
             .withDeadband(TunerConstants.MAX_SPEED * 0.1).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * 0.1) // Add a 10% deadband
@@ -205,7 +205,7 @@ public class Robot extends TimedRobot {
               fieldCentricDriveRequest
                   .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED) // Drive forward with negative Y (forward)
                   .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED) // Drive left with negative X (left)
-                  .withRotationalRate(-driveController.getRightX()) // Drive counterclockwise with negative X (left)
+                  .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
       );
     } else {
       // Note that X is defined as forward according to WPILib convention,
@@ -214,7 +214,7 @@ public class Robot extends TimedRobot {
               robotCentricDriveRequest
                   .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED) // Drive forward with negative Y (forward)
                   .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED) // Drive left with negative X (left)
-                  .withRotationalRate(-driveController.getRightX()) // Drive counterclockwise with negative X (left)
+                  .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
       );
     }
   }
