@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.drive.DrivingCommand;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.utility.Constants.Unit;
 
@@ -26,75 +27,13 @@ public class Robot extends TimedRobot {
   public final CommandXboxController robotController = new CommandXboxController(1); // My driveController
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(); // My drivetrain
-
-  private final SwerveRequest.RobotCentric robotCentricDriveRequest = new SwerveRequest.RobotCentric()
-            .withDeadband(TunerConstants.MAX_SPEED * 0.1).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-			.withSteerRequestType(SteerRequestType.Position);
-
-  private final SwerveRequest.FieldCentric fieldCentricDriveRequest = new SwerveRequest.FieldCentric()
-            .withDeadband(TunerConstants.MAX_SPEED * 0.1).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
-			.withSteerRequestType(SteerRequestType.Position);
-
-  private boolean isFieldOriented = false;
-
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
  
+  private DrivingCommand drivingCommand = new DrivingCommand(drivetrain, driveController);
+
   @Override
   public void robotInit() {
-    configureBindings();
+    drivetrain.setDefaultCommand(drivingCommand);
   }
-
-  private void toggleFieldOriented() {
-    if(isFieldOriented) isFieldOriented = false;
-    else isFieldOriented = true;
-  }
-
-  private void configureBindings() {
-    // See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/RobotContainer.java#L53
-
-    // If you modify these controls please update the diagram at https://docs.google.com/drawings/d/1UsU1iyQz4MPWa87oXD0FYGqLXIfGtkn2a595sXWU3uo/edit.
-
-    driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    // driveController.b().whileTrue(drivetrain.applyRequest(() ->
-    //     point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
-    // ));
-
-    // Dpad buttons
-    driveController.pov(0).whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(0.5).withVelocityY(0))
-    );
-    driveController.pov(90).whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(0).withVelocityY(0.5))
-    );
-    driveController.pov(180).whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(-0.5).withVelocityY(0))
-    );
-    driveController.pov(270).whileTrue(drivetrain.applyRequest(() ->
-        forwardStraight.withVelocityX(0).withVelocityY(-0.5))
-    );
-
-    // // Run SysId routines when holding back/start and X/Y.
-    // // Note that each routine should be run exactly once in a single log.
-    // driveController.back().and(driveController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    // driveController.back().and(driveController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    // driveController.start().and(driveController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    // driveController.start().and(driveController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-    // reset the field-centric heading on left bumper press
-    driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-    // field-oriented x
-    driveController.x().onTrue(drivetrain.runOnce(() -> isFieldOriented = true));
-    // robot-oriented y
-    driveController.y().onTrue(drivetrain.runOnce(() -> isFieldOriented = false));
-
-    // drivetrain.registerTelemetry(logger::telemeterize);
-}
 
   @Override
   public void robotPeriodic() {
@@ -159,25 +98,7 @@ public class Robot extends TimedRobot {
     //      .withRotationalRate(-driveController.getRightX())
    	// );
 
-	if(isFieldOriented) {
-      // Note that X is defined as forward according to WPILib convention,
-      // and Y is defined as to the left according to WPILib convention.
-      drivetrain.setControl(
-              fieldCentricDriveRequest
-                  .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED) // Drive forward with negative Y (forward)
-                  .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED) // Drive left with negative X (left)
-                  .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
-      );
-    } else {
-      // Note that X is defined as forward according to WPILib convention,
-      // and Y is defined as to the left according to WPILib convention.
-      drivetrain.setControl(
-              robotCentricDriveRequest
-                  .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED) // Drive forward with negative Y (forward)
-                  .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED) // Drive left with negative X (left)
-                  .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
-      );
-    }
+	
   }
 
   @Override
