@@ -26,13 +26,6 @@ public class Robot extends TimedRobot {
   public final CommandXboxController robotController = new CommandXboxController(1); // My driveController
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(); // My drivetrain
-  // public final TranslationalDrivebase translationalDrivetrain = drivetrain.translational;
-  // public final RotationalDrivebase rotationalDrivebase = drivetrain.rotational;
-
-  // private final SwerveRequest.RobotCentric m_driveRequest = new SwerveRequest.RobotCentric()
-  //   .withDeadband(1.0 * 0.1).withRotationalDeadband(15 * Unit.DEG * 0.1) // Add a 10% deadband
-  //   .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-  //   .withSteerRequestType(SteerRequestType.Position);
 
   private final SwerveRequest.RobotCentric robotCentricDriveRequest = new SwerveRequest.RobotCentric()
             .withDeadband(TunerConstants.MAX_SPEED * 0.1).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * 0.1) // Add a 10% deadband
@@ -56,41 +49,9 @@ public class Robot extends TimedRobot {
     configureBindings();
   }
 
-  private void configureDriveBindings() {
-    // See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/RobotContainer.java#L53
-
-    // if(isFieldOriented) {
-    //   // Note that X is defined as forward according to WPILib convention,
-    //   // and Y is defined as to the left according to WPILib convention.
-    //   drivetrain.setDefaultCommand(
-    //       // Drivetrain will execute this command periodically
-    //       drivetrain.applyRequest(() ->
-    //           fieldCentricDriveRequest
-    //               .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED) // Drive forward with negative Y (forward)
-    //               .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED) // Drive left with negative X (left)
-    //               .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
-    //       )
-    //   );
-    // } else {
-    //   // Note that X is defined as forward according to WPILib convention,
-    //   // and Y is defined as to the left according to WPILib convention.
-    //   drivetrain.setDefaultCommand(
-    //       // Drivetrain will execute this command periodically
-    //       drivetrain.applyRequest(() ->
-    //           robotCentricDriveRequest
-    //               .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED) // Drive forward with negative Y (forward)
-    //               .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED) // Drive left with negative X (left)
-    //               .withRotationalRate(-driveController.getRightX()) // Drive counterclockwise with negative X (left)
-    //       )
-    //   );
-    // }
-  }
-
   private void toggleFieldOriented() {
     if(isFieldOriented) isFieldOriented = false;
     else isFieldOriented = true;
-
-    configureDriveBindings();
   }
 
   private void configureBindings() {
@@ -98,12 +59,10 @@ public class Robot extends TimedRobot {
 
     // If you modify these controls please update the diagram at https://docs.google.com/drawings/d/1UsU1iyQz4MPWa87oXD0FYGqLXIfGtkn2a595sXWU3uo/edit.
 
-    configureDriveBindings();
-
     driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    driveController.b().whileTrue(drivetrain.applyRequest(() ->
-        point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
-    ));
+    // driveController.b().whileTrue(drivetrain.applyRequest(() ->
+    //     point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
+    // ));
 
     // Dpad buttons
     driveController.pov(0).whileTrue(drivetrain.applyRequest(() ->
@@ -129,8 +88,10 @@ public class Robot extends TimedRobot {
     // reset the field-centric heading on left bumper press
     driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    // toggle field-oriented/robot-oriented on X
-    driveController.x().onTrue(drivetrain.runOnce(() -> toggleFieldOriented()));
+    // field-oriented x
+    driveController.x().onTrue(drivetrain.runOnce(() -> isFieldOriented = true));
+    // robot-oriented y
+    driveController.y().onTrue(drivetrain.runOnce(() -> isFieldOriented = false));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
 }

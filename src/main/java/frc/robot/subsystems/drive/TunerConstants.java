@@ -21,7 +21,7 @@ public class TunerConstants {
 
     // Max speed
     /// The max speed, in meters per second
-    public static final double MAX_SPEED = 1; // m/s
+    public static final double MAX_SPEED = 3; // m/s
     /// The max angular speed, in radians per second
     public static final double MAX_ANGULAR_SPEED = 2; // rad/s
 
