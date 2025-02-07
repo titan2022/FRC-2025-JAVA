@@ -7,11 +7,17 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.drive.DrivingCommand;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -30,18 +36,19 @@ public class Robot extends TimedRobot {
  
   private DrivingCommand drivingCommand = new DrivingCommand(drivetrain, driveController);
 
+  // Create auto chooser using all the autos in the project
+  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+
   @Override
   public void robotInit() {
     drivetrain.setDefaultCommand(drivingCommand);
+
+    setUpAutos();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
-
-    // SmartDashboard.putNumber("curr_velx", translationalDrivetrain.getVelocity().getX());
-    // SmartDashboard.putNumber("curr_vely", translationalDrivetrain.getVelocity().getY());
-    // SmartDashboard.putNumber("curr_omega", rotationalDrivebase.getRotationalVelocity().getDegrees());
   }
 
   @Override
@@ -53,23 +60,39 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledExit() {}
 
+  public void setUpAutos() {
+    // Register named commands
+    NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
+    NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
+    NamedCommands.registerCommand("print hello", Commands.print("hello"));
+
+    // Use event markers as triggers
+    new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
+
+    // Add the auto chooser to the SmartDashboard so we can select the auto from the dropdown
+    SmartDashboard.putData(autoChooser);
+
+    // Set the default option for autoChooser
+    // autoChooser.setDefaultOption();
+  }
+
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
+  }
+
   @Override
   public void autonomousInit() {
-    // translationalDrivetrain.removeDefaultCommand();
-    // rotationalDrivebase.removeDefaultCommand();
-    // m_autonomousCommand = robotContainer.getAutonomousCommand();
+    // See https://github.com/mjansen4857/pathplanner/blob/main/examples/java/src/main/java/frc/robot/Robot.java#L58
+    m_autonomousCommand = getAutonomousCommand();
 
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.schedule();
-    // }
-    // robotContainer.translationalDrivetrain.setVelocity(new Translation2d(0, 1));
-
-    
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
   }
 
   @Override
   public void autonomousPeriodic() {
-    // rotationalDrivebase.setRotationalVelocity(new Rotation2d(15 * Unit.DEG));
   }
 
   @Override
