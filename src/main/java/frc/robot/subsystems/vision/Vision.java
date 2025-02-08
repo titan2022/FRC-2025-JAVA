@@ -119,6 +119,7 @@ public class Vision extends SubsystemBase {
           continue;
         }
 
+        // FIXME: How to do this without knowing average tag distance?
         // Calculate standard deviations
         double stdDevFactor =
             Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
