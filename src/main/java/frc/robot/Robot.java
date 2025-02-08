@@ -41,8 +41,8 @@ public class Robot extends TimedRobot {
   // Create auto chooser using all the autos in the project
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
-  private final VisionIOTitanProcessing titanProcessing = new VisionIOTitanProcessing(5800);
-  private final Vision vision = new Vision(drivetrain::addVisionMeasurement, titanProcessing);
+  // private final VisionIOTitanProcessing titanProcessing = new VisionIOTitanProcessing(5800);
+  // private final Vision vision = new Vision(drivetrain::addVisionMeasurement, titanProcessing);
 
   @Override
   public void robotInit() {
