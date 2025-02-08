@@ -21,11 +21,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.drive.DrivingCommand;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.utility.Localizers;
+import frc.robot.utility.OdometryLocalizer;
+import frc.robot.utility.TitanProcessingLocalizer;
 import frc.robot.utility.Constants.Unit;
 
 import frc.robot.subsystems.drive.TunerConstants;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOTitanProcessing;
 
 
 public class Robot extends TimedRobot {
@@ -41,8 +42,10 @@ public class Robot extends TimedRobot {
   // Create auto chooser using all the autos in the project
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
-  // private final VisionIOTitanProcessing titanProcessing = new VisionIOTitanProcessing(5800);
-  // private final Vision vision = new Vision(drivetrain::addVisionMeasurement, titanProcessing);
+  private final Localizers localizers = new Localizers(
+    new OdometryLocalizer(drivetrain), 
+    new TitanProcessingLocalizer(5800)
+  );
 
   @Override
   public void robotInit() {
@@ -54,6 +57,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
+    localizers.step();
   }
 
   @Override

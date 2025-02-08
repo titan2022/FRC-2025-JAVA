@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.drive.RotationalDriveCommand;
 import frc.robot.commands.drive.TranslationalDriveCommand;
 import frc.robot.subsystems.drive.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.utility.Localizer;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
