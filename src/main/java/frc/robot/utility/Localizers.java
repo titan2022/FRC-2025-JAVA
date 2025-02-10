@@ -1,5 +1,6 @@
 package frc.robot.utility;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utility.Localizer.LocalizerMeasurement;
 import frc.robot.utility.networking.NetworkingCall;
 
@@ -56,6 +57,8 @@ public class Localizers {
    * Updates the state of the localization estimates
    */
   public void step() {
+    SmartDashboard.putNumber("vision - latency", visionLocalizer.getMeasurement().getLatency());
+    SmartDashboard.putNumber("vision - time since last message", visionLocalizer.getMeasurement().getTimeSince());
     odometryLocalizer.step();
     visionLocalizer.step();
   }

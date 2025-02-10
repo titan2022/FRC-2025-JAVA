@@ -2,6 +2,8 @@ package frc.robot.utility;
 
 import java.util.ArrayList;
 
+import com.ctre.phoenix6.Utils;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.utility.networking.NetworkingCall;
@@ -25,13 +27,33 @@ public abstract class Localizer {
      */
     public final Pose2d pose;
     /**
-     * The timestamp, with the same epoch as Utils.getCurrentTimeSeconds.
+     * The time of measurement, with the same epoch as Utils.getCurrentTimeSeconds.
      */
-    public final double timestamp;
+    public final double measurementTime;
 
-    public LocalizerMeasurement(Pose2d pose, double timestamp) {
+    /**
+     * The time the message arrived at the server, with the same epoch as Utils.getCurrentTimeSeconds.
+     */
+    public final double serverTime;
+
+    public LocalizerMeasurement(Pose2d pose, double measurementTime, double serverTime) {
       this.pose = pose;
-      this.timestamp = timestamp;
+      this.measurementTime = measurementTime;
+      this.serverTime = serverTime;
+    }
+
+    public LocalizerMeasurement(Pose2d pose, double measurementTime) {
+      this.pose = pose;
+      this.measurementTime = measurementTime;
+      this.serverTime = Utils.getCurrentTimeSeconds();
+    }
+
+    public double getLatency() {
+      return serverTime - measurementTime;
+    }
+
+    public double getTimeSince() {
+      return Utils.getCurrentTimeSeconds() - serverTime;
     }
   }
 

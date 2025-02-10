@@ -32,7 +32,7 @@ public class OdometryLocalizer extends Localizer {
   }
 
   public void addVisionMeasurement(LocalizerMeasurement measurement) {
-    drivetrain.addVisionMeasurement(measurement.pose, measurement.timestamp);
+    drivetrain.addVisionMeasurement(measurement.pose, measurement.measurementTime);
   }
 
   public LocalizerMeasurement getMeasurement() {
