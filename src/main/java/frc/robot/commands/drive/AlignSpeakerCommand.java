@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.RotationalDrivebase;
-import frc.robot.utility.Localizer;
+import frc.robot.utility.LocalizerOLD;
 
 /** An example command that uses an example subsystem. */
 public class AlignSpeakerCommand extends Command {
@@ -15,7 +15,7 @@ public class AlignSpeakerCommand extends Command {
     public static final Rotation2d OMEGA = Rotation2d.fromDegrees(35);
     private static final Rotation2d SPIN_OFFSET = Rotation2d.fromDegrees(0);
     private RotationalDrivebase drivebase;
-    private Localizer localizer;
+    private LocalizerOLD localizer;
     private Rotation2d omega;
     private Rotation2d deltaAngle;
     private Rotation2d setAngle;
@@ -23,7 +23,7 @@ public class AlignSpeakerCommand extends Command {
     // private double time;
     // private double endTime;
 
-    public AlignSpeakerCommand(RotationalDrivebase driveBase, Localizer localizer) {
+    public AlignSpeakerCommand(RotationalDrivebase driveBase, LocalizerOLD localizer) {
         this.drivebase = driveBase;
         this.localizer = localizer;
         // time = theta.getRadians() / this.omega.getRadians();
