@@ -3,7 +3,7 @@ package frc.robot.commands.drive;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.RotationalDrivebase;
-import frc.robot.utility.Localizer;
+import frc.robot.utility.LocalizerOLD;
 
 /** An example command that uses an example subsystem. */
 public class FieldRotationCommand extends Command {
@@ -11,14 +11,14 @@ public class FieldRotationCommand extends Command {
     public static final Rotation2d deadBand = Rotation2d.fromDegrees(1);
     public static final Rotation2d OMEGA = Rotation2d.fromDegrees(45);
     private RotationalDrivebase drivebase;
-    private Localizer localizer;
+    private LocalizerOLD localizer;
     private Rotation2d omega;
     private Rotation2d theta;
     private Rotation2d targetAngle;
     // private double time;
     // private double endTime;
 
-    public FieldRotationCommand(Rotation2d theta, Rotation2d omega, RotationalDrivebase driveBase, Localizer localizer) {
+    public FieldRotationCommand(Rotation2d theta, Rotation2d omega, RotationalDrivebase driveBase, LocalizerOLD localizer) {
         this.drivebase = driveBase;
         this.localizer = localizer;
         this.theta = theta;
@@ -28,7 +28,7 @@ public class FieldRotationCommand extends Command {
         addRequirements(driveBase);
     }
 
-    public FieldRotationCommand(Rotation2d theta, RotationalDrivebase driveBase, Localizer localizer) {
+    public FieldRotationCommand(Rotation2d theta, RotationalDrivebase driveBase, LocalizerOLD localizer) {
         this(theta, OMEGA, driveBase, localizer);
     }
 
