@@ -112,6 +112,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         if(velocity >= MANUAL_ELEVATION_VELOCITY * MANUAL_ELEVATION_DEADBAND) {
           leftMotor.set(velocity);
           rightMotor.set(velocity);
+        } else {
+          leftMotor.stopMotor();
+          rightMotor.stopMotor();
         }
       }
     );
