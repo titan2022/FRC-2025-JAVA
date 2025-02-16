@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.drive.DrivingCommand;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.utility.Localizers;
 import frc.robot.utility.OdometryLocalizer;
@@ -36,6 +38,8 @@ public class Robot extends TimedRobot {
   public final CommandXboxController robotController = new CommandXboxController(1); // My driveController
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(); // My drivetrain
+
+  public final ElevatorSubsystem elevator = new ElevatorSubsystem();
  
   private DrivingCommand drivingCommand = new DrivingCommand(drivetrain, driveController);
 
@@ -52,6 +56,15 @@ public class Robot extends TimedRobot {
     drivetrain.setDefaultCommand(drivingCommand);
 
     setUpAutos();
+
+    // Elevator controls
+    // Left dpad is elevate to coral intake level
+    robotController.pov(270).onTrue(elevator.elevateCommand(ElevationTarget.CoralIntake));
+    robotController.pov(180).onTrue(elevator.elevateCommand(ElevationTarget.L1));
+    robotController.pov(90).onTrue(elevator.elevateCommand(ElevationTarget.L2));
+    robotController.pov(0).onTrue(elevator.elevateCommand(ElevationTarget.L2));
+
+    elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
   }
 
   @Override
@@ -112,11 +125,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    
-
-    // translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController));
-    // rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController));
   }
 
   @Override
