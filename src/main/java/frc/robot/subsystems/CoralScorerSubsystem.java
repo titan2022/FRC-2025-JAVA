@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utility.Constants.Unit;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
@@ -21,7 +23,7 @@ public class CoralScorerSubsystem extends SubsystemBase {
   private static final double SCORE_CORAL_SPEED = 1.0; // out of 1.0
   private static final double DEALGIFY_SPEED = 0.5; // out of 1.0
 
-  private static final double SCORE_CORAL_TIMEOUT = 1;
+  private static final long SCORE_CORAL_TIMEOUT = 1 * 1000000; // microseconds
 
   public CoralScorerSubsystem() {
     // Brake the scoring motor while not in use
@@ -58,7 +60,7 @@ public class CoralScorerSubsystem extends SubsystemBase {
   }
 
   private class TimedScoreCoralCommand extends Command {
-    private double startTime;
+    private long startTime; // relative to RobotController.getFPGATime()
     private CoralScorerSubsystem coralScorer;
 
     public TimedScoreCoralCommand(CoralScorerSubsystem coralScorer) {
@@ -68,14 +70,14 @@ public class CoralScorerSubsystem extends SubsystemBase {
 
     @Override // Called at beginning of command
     public void initialize() {
-      startTime = Timer.getFPGATimestamp();
+      startTime = RobotController.getFPGATime();
 
       scoreCoral();
     }
 
     @Override
     public boolean isFinished() {
-      return Timer.getFPGATimestamp() >= startTime + SCORE_CORAL_TIMEOUT;
+      return RobotController.getFPGATime() >= startTime + SCORE_CORAL_TIMEOUT;
     }
   }
 
