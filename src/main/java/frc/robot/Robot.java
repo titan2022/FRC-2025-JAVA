@@ -19,7 +19,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
+import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.CoralScorerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
@@ -47,6 +49,7 @@ public class Robot extends TimedRobot {
 
   // Subsystems
   private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
+  private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
 
   private final Localizers localizers = new Localizers(
@@ -91,6 +94,15 @@ public class Robot extends TimedRobot {
     robotController.pov(0).onTrue(elevator.elevateCommand(ElevationTarget.L2));
 
     elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
+
+    // Coral intake controls
+
+    // Elevate down to the coral intake level,
+    // then run the coral intake and scorer motors to move the coral in.
+    robotController.leftBumper().onTrue(
+      elevator.elevateCommand(ElevationTarget.CoralIntake)
+      .andThen(new CoralIntakeCommand(coralIntake, coralScorer))
+    );
   }
 
   public void setUpAutos() {
