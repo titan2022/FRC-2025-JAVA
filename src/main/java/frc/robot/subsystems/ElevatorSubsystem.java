@@ -29,6 +29,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static double MANUAL_ELEVATION_VELOCITY = 0.5;
   private static double MANUAL_ELEVATION_DEADBAND = 0.15;
 
+  private double currentVelocity;
+
   public ElevatorSubsystem() {
     // Brake the motors while not elevating
     leftMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -42,8 +44,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     setDefaultCommand(
       runOnce(
         () -> {
-          leftMotor.stopMotor();
-          rightMotor.stopMotor();
+          stopElevating();
         }
       )
       .andThen(run(() -> {}))
@@ -78,6 +79,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
+  public void elevateAtVelocity(double velocity) {
+    currentVelocity = velocity;
+    leftMotor.set(velocity);
+    rightMotor.set(velocity);
+  }
+
+  public void stopElevating() {
+    currentVelocity = 0;
+    leftMotor.stopMotor();
+    rightMotor.stopMotor();
+  }
+
   private class ElevateCommand extends Command {
     private final ElevatorSubsystem elevator;
     private final double target;
@@ -92,12 +105,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override // every 20ms
     public void execute() {
       latestMeasurement = getMeasurement();
-      leftMotor.set(
-        pid.calculate(target, latestMeasurement)
-      );
-      rightMotor.set(
-        pid.calculate(target, latestMeasurement)
-      );
+      elevateAtVelocity(pid.calculate(target, latestMeasurement));
     }
 
     @Override
@@ -117,8 +125,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command applyVelocityCommand(double velocity) {
     return runOnce(
       () -> {
-        leftMotor.set(velocity);
-        rightMotor.set(velocity);
+        elevateAtVelocity(velocity);
       }
     ).withName("Elevate with velocity");
   }
@@ -128,11 +135,9 @@ public class ElevatorSubsystem extends SubsystemBase {
       () -> {
         double velocity = controller.getLeftY() * MANUAL_ELEVATION_VELOCITY;
         if(velocity >= MANUAL_ELEVATION_VELOCITY * MANUAL_ELEVATION_DEADBAND) {
-          leftMotor.set(velocity);
-          rightMotor.set(velocity);
+          elevateAtVelocity(velocity);
         } else {
-          leftMotor.stopMotor();
-          rightMotor.stopMotor();
+          stopElevating();
         }
       }
     );
