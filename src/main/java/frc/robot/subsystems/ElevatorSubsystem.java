@@ -25,6 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   // TODO: Figure out good values for these constants
   // The unit is rotations of the motor (rotor, excluding gear ratio)
   private static double POSITION_DEADBAND = 0.05;
+
   private static double MANUAL_ELEVATION_VELOCITY = 0.5;
   private static double MANUAL_ELEVATION_DEADBAND = 0.15;
 
@@ -40,14 +41,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     // Set default command to turn off the left and right motors, and then idle
     setDefaultCommand(
       runOnce(
-          () -> {
-            leftMotor.disable();
-            rightMotor.disable();
-          })
-        .andThen(run(() -> {}))
-        .withName("Idle"));
-
-    
+        () -> {
+          leftMotor.stopMotor();
+          rightMotor.stopMotor();
+        }
+      )
+      .andThen(run(() -> {}))
+      .withName("Idle")
+    );
 
     resetMeasurement();
   }
@@ -77,19 +78,36 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
+  private class ElevateCommand extends Command {
+    private final ElevatorSubsystem elevator;
+    private final double target;
+    private double latestMeasurement;
+
+    public ElevateCommand(ElevatorSubsystem elevator, double target) {
+      this.elevator = elevator;
+      this.target = target;
+      addRequirements(elevator);
+    }
+
+    @Override // every 20ms
+    public void execute() {
+      latestMeasurement = getMeasurement();
+      leftMotor.set(
+        pid.calculate(target, latestMeasurement)
+      );
+      rightMotor.set(
+        pid.calculate(target, latestMeasurement)
+      );
+    }
+
+    @Override
+    public boolean isFinished() {
+      return Math.abs(latestMeasurement - target) < POSITION_DEADBAND;
+    }
+  }
+
   public Command elevateCommand(double target) {
-    return run(
-      () -> {
-        leftMotor.set(
-          pid.calculate(target, getMeasurement())
-        );
-        rightMotor.set(
-          pid.calculate(target, getMeasurement())
-        );
-      }
-    ).until(
-      () -> Math.abs(getMeasurement() - target) < POSITION_DEADBAND
-    ).withName("Elevate to target");
+    return new ElevateCommand(this, target);
   }
 
   public Command elevateCommand(ElevationTarget target) {
