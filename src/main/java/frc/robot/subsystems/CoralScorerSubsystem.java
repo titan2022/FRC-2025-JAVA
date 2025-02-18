@@ -12,7 +12,6 @@ import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 public class CoralScorerSubsystem extends SubsystemBase {
   // TODO: Specify CAN IDs
   private static final TalonFX scoringMotor = new TalonFX(0, "CANivore");
-  private static final TalonFX dealgifierMotor = new TalonFX(0, "CANivore");
   private static final Canandcolor canandcolor = new Canandcolor(0);
 
   // TODO: Measure this
@@ -21,21 +20,17 @@ public class CoralScorerSubsystem extends SubsystemBase {
   // TODO: Determine speed
   private static final double MOVE_CORAL_SPEED = 0.5; // out of 1.0
   private static final double SCORE_CORAL_SPEED = 1.0; // out of 1.0
-  private static final double DEALGIFY_SPEED = 0.5; // out of 1.0
 
   private static final long SCORE_CORAL_TIMEOUT = 1 * 1000000; // microseconds
 
   public CoralScorerSubsystem() {
     // Brake the scoring motor while not in use
     scoringMotor.setNeutralMode(NeutralModeValue.Brake);
-    // Allow the dealgifier to coast while not in use
-    dealgifierMotor.setNeutralMode(NeutralModeValue.Coast);
 
     setDefaultCommand(
       runOnce(
         () -> {
           stopMovingCoral();
-          stopDealgifying();
         }
       )
       .andThen(run(() -> {}))
@@ -101,17 +96,5 @@ public class CoralScorerSubsystem extends SubsystemBase {
    */
   public void stopMovingCoral() {
     scoringMotor.stopMotor();
-  }
-
-  /** Start dealgifying
-   */
-  public void startDealgifying() {
-    dealgifierMotor.set(DEALGIFY_SPEED);
-  }
-
-  /** Stop dealgifying
-   */
-  public void stopDealgifying() {
-    dealgifierMotor.stopMotor();
   }
 }
