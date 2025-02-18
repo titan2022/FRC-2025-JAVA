@@ -39,8 +39,6 @@ public class Robot extends TimedRobot {
   public final CommandXboxController robotController = new CommandXboxController(1); // My driveController
 
   public final CommandSwerveDrivetrain drivetrain = new CommandSwerveDrivetrain(); // My drivetrain
-
-  public final ElevatorSubsystem elevator = new ElevatorSubsystem();
  
   private DrivingCommand drivingCommand = new DrivingCommand(drivetrain, driveController);
 
@@ -49,6 +47,7 @@ public class Robot extends TimedRobot {
 
   // Subsystems
   private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
+  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
 
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
@@ -59,15 +58,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     setBindings();
     setUpAutos();
-
-    // Elevator controls
-    // Left dpad is elevate to coral intake level
-    robotController.pov(270).onTrue(elevator.elevateCommand(ElevationTarget.CoralIntake));
-    robotController.pov(180).onTrue(elevator.elevateCommand(ElevationTarget.L1));
-    robotController.pov(90).onTrue(elevator.elevateCommand(ElevationTarget.L2));
-    robotController.pov(0).onTrue(elevator.elevateCommand(ElevationTarget.L2));
-
-    elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
   }
 
   @Override
@@ -88,9 +78,19 @@ public class Robot extends TimedRobot {
   public void setBindings() {
     drivetrain.setDefaultCommand(drivingCommand);
 
+    // Coral scorer controls
     robotController.rightBumper().onTrue(
       coralScorer.timedScoreCoralCommand()
     );
+
+    // Elevator controls
+    // Left dpad is elevate to coral intake level
+    robotController.pov(270).onTrue(elevator.elevateCommand(ElevationTarget.CoralIntake));
+    robotController.pov(180).onTrue(elevator.elevateCommand(ElevationTarget.L1));
+    robotController.pov(90).onTrue(elevator.elevateCommand(ElevationTarget.L2));
+    robotController.pov(0).onTrue(elevator.elevateCommand(ElevationTarget.L2));
+
+    elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
   }
 
   public void setUpAutos() {
