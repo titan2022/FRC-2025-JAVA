@@ -31,12 +31,16 @@ public class CoralScorerSubsystem extends SubsystemBase {
     // Allow the dealgifier to coast while not in use
     dealgifierMotor.setNeutralMode(NeutralModeValue.Coast);
 
-    setDefaultCommand(run(
-      () -> {
-        stopMovingCoral();
-        stopDealgifying();
-      }
-    ));
+    setDefaultCommand(
+      runOnce(
+        () -> {
+          stopMovingCoral();
+          stopDealgifying();
+        }
+      )
+      .andThen(run(() -> {}))
+      .withName("Idle")
+    );
   }
 
   public boolean canContactCanandcolor() {

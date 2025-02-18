@@ -15,11 +15,15 @@ public class CoralIntakeSubsystem extends SubsystemBase {
   public CoralIntakeSubsystem() {
     intakeMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    setDefaultCommand(run(
-      () -> {
-        stopIntaking();
-      }
-    ));
+    setDefaultCommand(
+      runOnce(
+        () -> {
+          stopIntaking();
+        }
+      )
+      .andThen(run(() -> {}))
+      .withName("Idle")
+    );
   }
 
   public void startIntaking() {
