@@ -23,6 +23,7 @@ import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.CoralScorerSubsystem;
+import frc.robot.subsystems.DealgifierSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -51,6 +52,7 @@ public class Robot extends TimedRobot {
   private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
   private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+  private final DealgifierSubsystem dealgifierSubsystem = new DealgifierSubsystem();
 
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
@@ -103,6 +105,9 @@ public class Robot extends TimedRobot {
       elevator.elevateCommand(ElevationTarget.CoralIntake)
       .andThen(new CoralIntakeCommand(coralIntake, coralScorer))
     );
+
+    // Dealgifier controls
+    robotController.a().whileTrue(dealgifierSubsystem.dealgifyCommand());
   }
 
   public void setUpAutos() {
