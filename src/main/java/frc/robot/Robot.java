@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.drive.DrivingCommand;
+import frc.robot.subsystems.CoralScorerSubsystem;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.utility.Localizers;
 import frc.robot.utility.OdometryLocalizer;
@@ -42,6 +43,9 @@ public class Robot extends TimedRobot {
   // Create auto chooser using all the autos in the project
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
+  // Subsystems
+  private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
+
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
     new TitanProcessingLocalizer(5800)
@@ -49,8 +53,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    drivetrain.setDefaultCommand(drivingCommand);
-
+    setBindings();
     setUpAutos();
   }
 
@@ -68,6 +71,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledExit() {}
+
+  public void setBindings() {
+    drivetrain.setDefaultCommand(drivingCommand);
+
+    robotController.rightBumper().onTrue(
+      coralScorer.timedScoreCoralCommand()
+    );
+  }
 
   public void setUpAutos() {
     // Register named commands
