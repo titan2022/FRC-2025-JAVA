@@ -18,8 +18,8 @@ public class CoralScorerSubsystem extends SubsystemBase {
   private static final double PROXIMITY_THRESHOLD = 0.5;
 
   // TODO: Determine speed
-  private static final double MOVE_CORAL_SPEED = 0.5; // out of 1.0
-  private static final double SCORE_CORAL_SPEED = 1.0; // out of 1.0
+  private static final double MOVE_CORAL_SPEED = 5; // in volts
+  private static final double SCORE_CORAL_SPEED = 10; // in volts
 
   private static final long SCORE_CORAL_TIMEOUT = 1 * 1000000; // microseconds
 
@@ -49,13 +49,13 @@ public class CoralScorerSubsystem extends SubsystemBase {
   /** Start moving coral into the scorer
    */
   public void moveCoral() {
-    scoringMotor.set(MOVE_CORAL_SPEED);
+    scoringMotor.setVoltage(MOVE_CORAL_SPEED);
   }
 
   /** Start scoring coral into the scorer
    */
   public void scoreCoral() {
-    scoringMotor.set(SCORE_CORAL_SPEED);
+    scoringMotor.setVoltage(SCORE_CORAL_SPEED);
   }
 
   private class TimedScoreCoralCommand extends Command {
@@ -89,7 +89,7 @@ public class CoralScorerSubsystem extends SubsystemBase {
   /** Move coral back into the elevator
    */
   public void reverseMoveCoral() {
-    scoringMotor.set(-MOVE_CORAL_SPEED);
+    scoringMotor.setVoltage(-MOVE_CORAL_SPEED);
   }
   
   /** Stop moving coral

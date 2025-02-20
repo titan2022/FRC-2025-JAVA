@@ -10,7 +10,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
   private static final TalonFX intakeMotor = new TalonFX(0, "CANivore");
 
   // TODO: Figure out this speed
-  private static final double INTAKE_SPEED = 0.5; // out of 1.0 = max output
+  private static final double INTAKE_SPEED = 6; // in volts
 
   public CoralIntakeSubsystem() {
     intakeMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -27,7 +27,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
   }
 
   public void startIntaking() {
-    intakeMotor.set(INTAKE_SPEED);
+    intakeMotor.setVoltage(INTAKE_SPEED);
   }
 
   public void stopIntaking() {

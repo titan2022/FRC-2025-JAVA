@@ -23,10 +23,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final PIDController pid = new PIDController(1.0, 0.0, 0.0);
 
   // TODO: Figure out good values for these constants
-  // The unit is rotations of the motor (rotor, excluding gear ratio)
+  // The unit is rotations of the encoder/elevator axle
   private static double POSITION_DEADBAND = 0.05;
 
-  private static double MANUAL_ELEVATION_VELOCITY = 0.5;
+  private static double MANUAL_ELEVATION_MAX_VOLTAGE = 0.5;
   private static double MANUAL_ELEVATION_DEADBAND = 0.15;
 
   private double currentVelocity;
@@ -38,7 +38,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // TODO: Use a non-deprecated method
     // Invert the right motor
-    rightMotor.setInverted(false);
+    rightMotor.setInverted(true);
 
     // Set default command to turn off the left and right motors, and then idle
     setDefaultCommand(
@@ -64,6 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public enum ElevationTarget {
     // TODO: Get the real values of these
+    // Unit: rotations of the encoder/elevator axle
     CoralIntake(0),
     L1(10),
     L2(20),
@@ -79,10 +80,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
-  public void elevateAtVelocity(double velocity) {
+  public void elevateAtVoltage(double velocity) {
     currentVelocity = velocity;
-    leftMotor.set(velocity);
-    rightMotor.set(velocity);
+    leftMotor.setVoltage(velocity);
+    rightMotor.setVoltage(velocity);
   }
 
   public void stopElevating() {
@@ -105,7 +106,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override // every 20ms
     public void execute() {
       latestMeasurement = getMeasurement();
-      elevateAtVelocity(pid.calculate(target, latestMeasurement));
+      elevateAtVoltage(pid.calculate(target, latestMeasurement));
     }
 
     @Override
@@ -125,7 +126,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command applyVelocityCommand(double velocity) {
     return runOnce(
       () -> {
-        elevateAtVelocity(velocity);
+        elevateAtVoltage(velocity);
       }
     ).withName("Elevate with velocity");
   }
@@ -133,9 +134,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command manualElevationCommand(CommandXboxController controller) {
     return run(
       () -> {
-        double velocity = controller.getLeftY() * MANUAL_ELEVATION_VELOCITY;
-        if(velocity >= MANUAL_ELEVATION_VELOCITY * MANUAL_ELEVATION_DEADBAND) {
-          elevateAtVelocity(velocity);
+        double velocity = controller.getLeftY() * MANUAL_ELEVATION_MAX_VOLTAGE;
+        if(velocity >= MANUAL_ELEVATION_MAX_VOLTAGE * MANUAL_ELEVATION_DEADBAND) {
+          elevateAtVoltage(velocity);
         } else {
           stopElevating();
         }
