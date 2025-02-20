@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,7 +22,15 @@ public class ElevatorSubsystem extends SubsystemBase {
   // Programming manual: https://docs.wpilib.org/en/stable/docs/software/hardware-apis/sensors/encoders-software.html#quadrature-encoders-the-encoder-class
   private static final Encoder encoder = new Encoder(0, 0);
 
-  private static final PIDController pid = new PIDController(1.0, 0.0, 0.0);
+  private static final ProfiledPIDController pid = new ProfiledPIDController(
+    1.0, // kP
+    0.0, // kI
+    0.0, // kD
+    new TrapezoidProfile.Constraints(
+      8, // max velocity in volts
+      8 // max velocity in volts/second
+    )
+  );
 
   // TODO: Figure out good values for these constants
   // The unit is rotations of the encoder/elevator axle
