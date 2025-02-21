@@ -46,7 +46,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private static double ELEVATION_GEAR_RATIO = 6.4;
 
-  private static double MANUAL_ELEVATION_MAX_VOLTAGE = 6.0;
+  private static double MANUAL_UPWARDS_ELEVATION_MAX_VOLTAGE = 6.0;
+  private static double MANUAL_DOWNWARDS_ELEVATION_MAX_VOLTAGE = 3.0;
   private static double MANUAL_ELEVATION_DEADBAND = 0.15;
 
   private double currentVelocity;
@@ -166,9 +167,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command manualElevationCommand(CommandXboxController controller) {
     return run(
       () -> {
-        double velocity = controller.getLeftY() * MANUAL_ELEVATION_MAX_VOLTAGE;
-        if(Math.abs(velocity) >= MANUAL_ELEVATION_MAX_VOLTAGE * MANUAL_ELEVATION_DEADBAND) {
-          elevateAtVoltage(velocity);
+        double input = controller.getLeftY() ;
+        if(input >= MANUAL_ELEVATION_DEADBAND) {
+          elevateAtVoltage(input * MANUAL_UPWARDS_ELEVATION_MAX_VOLTAGE);
+        } else if(input <= -MANUAL_ELEVATION_DEADBAND) {
+          elevateAtVoltage(input * MANUAL_DOWNWARDS_ELEVATION_MAX_VOLTAGE);
         } else {
           stopElevating();
         }
