@@ -25,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   // private static final Encoder encoder = new Encoder(0, 0);
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-    1.0, // kP
+    6.0, // kP
     0.0, // kI
     0.0, // kD
     new TrapezoidProfile.Constraints(
@@ -46,7 +46,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private static double ELEVATION_GEAR_RATIO = 6.4;
 
-  private static double MANUAL_ELEVATION_MAX_VOLTAGE = 0.5;
+  private static double MANUAL_ELEVATION_MAX_VOLTAGE = 6.0;
   private static double MANUAL_ELEVATION_DEADBAND = 0.15;
 
   private double currentVelocity;
@@ -167,7 +167,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     return run(
       () -> {
         double velocity = controller.getLeftY() * MANUAL_ELEVATION_MAX_VOLTAGE;
-        if(velocity >= MANUAL_ELEVATION_MAX_VOLTAGE * MANUAL_ELEVATION_DEADBAND) {
+        if(Math.abs(velocity) >= MANUAL_ELEVATION_MAX_VOLTAGE * MANUAL_ELEVATION_DEADBAND) {
           elevateAtVoltage(velocity);
         } else {
           stopElevating();
