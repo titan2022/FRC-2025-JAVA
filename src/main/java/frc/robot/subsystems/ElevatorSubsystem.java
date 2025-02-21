@@ -51,7 +51,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static double MANUAL_DOWNWARDS_ELEVATION_MAX_VOLTAGE = 3.0;
   private static double MANUAL_ELEVATION_DEADBAND = 0.15;
 
-  private double currentVelocity;
+  private double currentVelocity = 0;
+  private double target = 0;
+  private boolean isManuallyElevating = false;
+  private int epoch = 0; // Increments every time we switch between manual and PID
 
   public ElevatorSubsystem() {
     // Brake the motors while not elevating
@@ -63,6 +66,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     rightMotor.setInverted(true);
 
     // Set default command to turn off the left and right motors, and then idle
+    // During normal operation the ManualElevationCommand should be running
     setDefaultCommand(
       runOnce(
         () -> {
@@ -139,12 +143,18 @@ public class ElevatorSubsystem extends SubsystemBase {
   private class ElevateCommand extends Command {
     private final ElevatorSubsystem elevator;
     private final double target;
+    private final int currentEpoch;
     private double latestMeasurement;
 
     public ElevateCommand(ElevatorSubsystem elevator, double target) {
       this.elevator = elevator;
       this.target = target;
-      addRequirements(elevator);
+      elevator.epoch++;
+      this.currentEpoch = elevator.epoch;
+
+      elevator.target = target;
+      // We don't actually use the elevator
+      // addRequirements(elevator);
     }
 
     @Override // every 20ms
@@ -155,7 +165,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public boolean isFinished() {
-      return Math.abs(latestMeasurement - target) < POSITION_DEADBAND;
+      return (
+        Math.abs(latestMeasurement - target) < POSITION_DEADBAND
+      ) || (
+        elevator.epoch != currentEpoch
+      );
     }
   }
 
@@ -175,18 +189,46 @@ public class ElevatorSubsystem extends SubsystemBase {
     ).withName("Elevate with velocity");
   }
 
-  public Command manualElevationCommand(CommandXboxController controller) {
-    return run(
-      () -> {
-        double input = controller.getLeftY() ;
-        if(input >= MANUAL_ELEVATION_DEADBAND) {
-          elevateAtVoltage(input * MANUAL_UPWARDS_ELEVATION_MAX_VOLTAGE);
-        } else if(input <= -MANUAL_ELEVATION_DEADBAND) {
-          elevateAtVoltage(input * MANUAL_DOWNWARDS_ELEVATION_MAX_VOLTAGE);
-        } else {
-          stopElevating();
+  private class ManualElevationCommand extends Command {
+    private final ElevatorSubsystem elevator;
+    private final CommandXboxController controller;
+
+    private double latestMeasurement;
+
+    public ManualElevationCommand(ElevatorSubsystem elevator, CommandXboxController controller) {
+      this.elevator = elevator;
+      this.controller = controller;
+      addRequirements(elevator);
+    }
+
+    @Override // every 20ms
+    public void execute() {
+      double input = controller.getLeftY();
+      if(input >= MANUAL_ELEVATION_DEADBAND) {
+        if(!isManuallyElevating) {
+          isManuallyElevating = true;
+          elevator.epoch++;
         }
+        elevateAtVoltage(input * MANUAL_UPWARDS_ELEVATION_MAX_VOLTAGE);
+      } else if(input <= -MANUAL_ELEVATION_DEADBAND) {
+        if(!isManuallyElevating) {
+          isManuallyElevating = true;
+          elevator.epoch++;
+        }
+        elevateAtVoltage(input * MANUAL_DOWNWARDS_ELEVATION_MAX_VOLTAGE);
+      } else {
+        if(isManuallyElevating) {
+          isManuallyElevating = false;
+          elevator.target = getMeasurement();
+          elevator.epoch++;
+        }
+        latestMeasurement = getMeasurement();
+        elevateAtVoltage(pid.calculate(target, latestMeasurement));
       }
-    );
+    }
+  }
+
+  public Command manualElevationCommand(CommandXboxController controller) {
+    return new ManualElevationCommand(null, controller);
   }
 }
