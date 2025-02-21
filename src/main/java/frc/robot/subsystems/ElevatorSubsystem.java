@@ -20,9 +20,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final TalonFX rightMotor = new TalonFX(41, "rio");
 
   // We have a REV through-bore encoder
-  // TODO: Specify DIO channels
   // Programming manual: https://docs.wpilib.org/en/stable/docs/software/hardware-apis/sensors/encoders-software.html#quadrature-encoders-the-encoder-class
-  // private static final Encoder encoder = new Encoder(0, 0);
+  private static final Encoder encoder = new Encoder(0, 1);
+
+  private static final boolean HAS_ENCODER = true;
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
     6.0, // kP
@@ -72,27 +73,35 @@ public class ElevatorSubsystem extends SubsystemBase {
       .withName("Idle")
     );
 
-    leftPositionStatusSignal = leftMotor.getRotorPosition();
-    rightPositionStatusSignal = rightMotor.getRotorPosition();
+    if(!HAS_ENCODER) {
+      leftPositionStatusSignal = leftMotor.getRotorPosition();
+      rightPositionStatusSignal = rightMotor.getRotorPosition();
+    }
 
     resetMeasurement();
   }
 
   public void resetMeasurement() {
-    // encoder.reset();
-    leftPositionStatusSignal.refresh();
-    initialLeft = leftPositionStatusSignal.getValueAsDouble();
-    rightPositionStatusSignal.refresh();
-    initialRight = rightPositionStatusSignal.getValueAsDouble();
+    if(HAS_ENCODER) {
+      encoder.reset();
+    } else {
+      leftPositionStatusSignal.refresh();
+      initialLeft = leftPositionStatusSignal.getValueAsDouble();
+      rightPositionStatusSignal.refresh();
+      initialRight = rightPositionStatusSignal.getValueAsDouble();
+    }
   }
 
   public double getMeasurement() {
-    // return encoder.getDistance();
-    double left = leftPositionStatusSignal.getValueAsDouble();
-    double right = rightPositionStatusSignal.getValueAsDouble();
-    double leftMeasurement = left - initialLeft;
-    double rightMeasurement = right - initialRight;
-    return ((leftMeasurement + rightMeasurement)/2)/ELEVATION_GEAR_RATIO;
+    if(HAS_ENCODER) {
+      return encoder.getDistance();
+    } else {
+      double left = leftPositionStatusSignal.getValueAsDouble();
+      double right = rightPositionStatusSignal.getValueAsDouble();
+      double leftMeasurement = left - initialLeft;
+      double rightMeasurement = right - initialRight;
+      return ((leftMeasurement + rightMeasurement)/2)/ELEVATION_GEAR_RATIO;
+    }
   }
 
   public enum ElevationTarget {
