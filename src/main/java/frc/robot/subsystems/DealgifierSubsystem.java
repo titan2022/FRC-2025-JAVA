@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DealgifierSubsystem extends SubsystemBase {
   // TODO: Specify CAN IDs
-  private static final TalonFX dealgifierMotor = new TalonFX(0, "CANivore");
+  private static final TalonFX dealgifierMotor = new TalonFX(0, "rio");
 
   // TODO: Determine this
   private static final double DEALGIFY_SPEED = 4; // in volts

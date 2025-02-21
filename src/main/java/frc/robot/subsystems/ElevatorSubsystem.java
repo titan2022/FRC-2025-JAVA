@@ -16,8 +16,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class ElevatorSubsystem extends SubsystemBase {
   // We have two Falcon 500s
   // TODO: Specify CAN IDs
-  private static final TalonFX leftMotor = new TalonFX(0, "CANivore");
-  private static final TalonFX rightMotor = new TalonFX(0, "CANivore");
+  private static final TalonFX leftMotor = new TalonFX(0, "rio");
+  private static final TalonFX rightMotor = new TalonFX(0, "rio");
 
   // We have a REV through-bore encoder
   // TODO: Specify DIO channels

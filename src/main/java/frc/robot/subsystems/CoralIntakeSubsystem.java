@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralIntakeSubsystem extends SubsystemBase {
   // TODO: Specify CAN IDs
-  private static final TalonFX intakeMotor = new TalonFX(0, "CANivore");
+  private static final TalonFX intakeMotor = new TalonFX(0, "rio");
 
   // TODO: Figure out this speed
   private static final double INTAKE_SPEED = 6; // in volts
