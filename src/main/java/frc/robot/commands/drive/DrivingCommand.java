@@ -51,7 +51,7 @@ public class DrivingCommand extends Command {
 
     // If you modify these controls please update the diagram at https://docs.google.com/drawings/d/1UsU1iyQz4MPWa87oXD0FYGqLXIfGtkn2a595sXWU3uo/edit.
 
-    driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // driveController.a().whileTrue(drivetrain.applyRequest(() -> brake));
     // driveController.b().whileTrue(drivetrain.applyRequest(() ->
     //     point.withModuleDirection(new Rotation2d(-driveController.getLeftY(), -driveController.getLeftX()))
     // ));
@@ -86,12 +86,12 @@ public class DrivingCommand extends Command {
     // driveController.start().and(driveController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // reset the field-centric heading on left bumper press
-    driveController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    driveController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    // field-oriented x
-    driveController.x().onTrue(drivetrain.runOnce(() -> isFieldOriented = true));
-    // robot-oriented y
-    driveController.y().onTrue(drivetrain.runOnce(() -> isFieldOriented = false));
+    // field-oriented
+    driveController.back().onTrue(drivetrain.runOnce(() -> isFieldOriented = true));
+    // robot-oriented
+    driveController.start().onTrue(drivetrain.runOnce(() -> isFieldOriented = false));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
   }
