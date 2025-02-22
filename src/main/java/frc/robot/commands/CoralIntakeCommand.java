@@ -27,6 +27,6 @@ public class CoralIntakeCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return scorer.canSeeCoral();
+    return scorer.coralFinishedIndexing();
   }
 }

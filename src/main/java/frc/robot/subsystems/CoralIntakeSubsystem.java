@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralIntakeSubsystem extends SubsystemBase {
   // TODO: Specify CAN IDs
-  private static final TalonFX intakeMotor = new TalonFX(0, "rio");
+  private static final TalonFX intakeMotor = new TalonFX(60, "rio");
 
   // TODO: Figure out this speed
-  private static final double INTAKE_SPEED = 6; // in volts
+  private static final double INTAKE_SPEED = -3; // in volts
 
   public CoralIntakeSubsystem() {
     intakeMotor.setNeutralMode(NeutralModeValue.Brake);
