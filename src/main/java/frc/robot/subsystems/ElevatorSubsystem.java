@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -14,6 +15,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ElevatorSubsystem extends SubsystemBase {
+  private static final int MAX_HEIGH_ENCODER_VALUE = 7495;
+
   // We have two Falcon 500s
   // TODO: Specify CAN IDs
   private static final TalonFX leftMotor = new TalonFX(40, "rio");
@@ -26,7 +29,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final boolean HAS_ENCODER = true;
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-    6.0, // kP
+    0.0000001, // kP
     0.0, // kI
     0.0, // kD
     new TrapezoidProfile.Constraints(
@@ -47,8 +50,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private static double ELEVATION_GEAR_RATIO = 6.4;
 
-  private static double MANUAL_UPWARDS_ELEVATION_MAX_VOLTAGE = 6.0;
-  private static double MANUAL_DOWNWARDS_ELEVATION_MAX_VOLTAGE = 3.0;
+  private static double MANUAL_UPWARDS_ELEVATION_MAX_VOLTAGE = 1.0;
+  private static double MANUAL_DOWNWARDS_ELEVATION_MAX_VOLTAGE = 0.5;
   private static double MANUAL_ELEVATION_DEADBAND = 0.15;
 
   private double currentVelocity = 0;
@@ -96,9 +99,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
+  private double getRevMeasurement() {
+    return -encoder.getDistance();
+  }
+
+  private double getFloatHeight() {
+    return getRevMeasurement() / MAX_HEIGH_ENCODER_VALUE;
+  }
+
   public double getMeasurement() {
     if(HAS_ENCODER) {
-      return encoder.getDistance();
+      return getRevMeasurement();
     } else {
       double left = leftPositionStatusSignal.getValueAsDouble();
       double right = rightPositionStatusSignal.getValueAsDouble();
@@ -219,16 +230,16 @@ public class ElevatorSubsystem extends SubsystemBase {
       } else {
         if(isManuallyElevating) {
           isManuallyElevating = false;
-          elevator.target = getMeasurement();
+          elevator.target = getFloatHeight();
           elevator.epoch++;
         }
-        latestMeasurement = getMeasurement();
+        latestMeasurement = getFloatHeight();
         elevateAtVoltage(pid.calculate(target, latestMeasurement));
       }
     }
   }
 
   public Command manualElevationCommand(CommandXboxController controller) {
-    return new ManualElevationCommand(null, controller);
+    return new ManualElevationCommand(this, controller);
   }
 }
