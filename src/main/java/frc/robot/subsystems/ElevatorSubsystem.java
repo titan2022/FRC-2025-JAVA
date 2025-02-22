@@ -29,12 +29,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final boolean HAS_ENCODER = true;
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-    0.0000001, // kP
+    12, // kP
     0.0, // kI
-    0.0, // kD
+    0.45, // kD
     new TrapezoidProfile.Constraints(
-      8, // max velocity in volts
-      8 // max velocity in volts/second
+      3, // max velocity in volts
+      2 // max velocity in volts/second
     )
   );
 
@@ -46,17 +46,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   // TODO: Figure out good values for these constants
   // The unit is rotations of the encoder/elevator axle
-  private static double POSITION_DEADBAND = 0.05;
+  private static double POSITION_DEADBAND = 0.025;
 
   private static double ELEVATION_GEAR_RATIO = 6.4;
 
-  private static double MANUAL_UPWARDS_ELEVATION_MAX_VOLTAGE = 1.0;
-  private static double MANUAL_DOWNWARDS_ELEVATION_MAX_VOLTAGE = 0.5;
-  private static double MANUAL_ELEVATION_DEADBAND = 0.15;
-
   private double currentVelocity = 0;
   private double target = 0;
-  private boolean isManuallyElevating = false;
+  private boolean isManuallyElevating = true;
   private int epoch = 0; // Increments every time we switch between manual and PID
 
   public ElevatorSubsystem() {
@@ -123,9 +119,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     // https://www.desmos.com/calculator/ocl2iqiu7n
     // Unit: rotations of the encoder/elevator axle
     CoralIntake(0),
-    L1(1.2633321268),
-    L2(2.26316329414),
-    L3(3.67201630267),
+    // L1(1.2633321268),
+    // L2(2.26316329414),
+    // L3(3.67201630267),
+    L1(0.5),
+    L2(0.75),
+    L3(1.0),
     AlgaeL2(1.8995883242),
     AlgaeL3(3.35388820397)
     ;
@@ -153,34 +152,43 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private class ElevateCommand extends Command {
     private final ElevatorSubsystem elevator;
-    private final double target;
     private final int currentEpoch;
     private double latestMeasurement;
 
     public ElevateCommand(ElevatorSubsystem elevator, double target) {
+      target = Math.max(Math.min(target, 1.0), 0.0);
+
       this.elevator = elevator;
-      this.target = target;
       elevator.epoch++;
       this.currentEpoch = elevator.epoch;
 
       elevator.target = target;
       // We don't actually use the elevator
-      // addRequirements(elevator);
+      addRequirements(elevator);
     }
 
     @Override // every 20ms
     public void execute() {
-      latestMeasurement = getMeasurement();
-      elevateAtVoltage(pid.calculate(target, latestMeasurement));
+      latestMeasurement = getFloatHeight();
+      double result = pid.calculate(target, latestMeasurement);
+      SmartDashboard.putNumber("pre result", result);
+
+      // Quick fix
+      result = Math.max(Math.min(result, 2.0), -2.0);
+
+      SmartDashboard.putNumber("result", result);
+
+      elevateAtVoltage(result);
+    }
+
+    @Override
+    public void end(boolean isInterrupted) {
+      elevateAtVoltage(0);
     }
 
     @Override
     public boolean isFinished() {
-      return (
-        Math.abs(latestMeasurement - target) < POSITION_DEADBAND
-      ) || (
-        elevator.epoch != currentEpoch
-      );
+      return false;
     }
   }
 
@@ -215,28 +223,24 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override // every 20ms
     public void execute() {
       double input = controller.getLeftY();
-      if(input >= MANUAL_ELEVATION_DEADBAND) {
-        if(!isManuallyElevating) {
-          isManuallyElevating = true;
-          elevator.epoch++;
-        }
-        elevateAtVoltage(input * MANUAL_UPWARDS_ELEVATION_MAX_VOLTAGE);
-      } else if(input <= -MANUAL_ELEVATION_DEADBAND) {
-        if(!isManuallyElevating) {
-          isManuallyElevating = true;
-          elevator.epoch++;
-        }
-        elevateAtVoltage(input * MANUAL_DOWNWARDS_ELEVATION_MAX_VOLTAGE);
-      } else {
-        if(isManuallyElevating) {
-          isManuallyElevating = false;
-          elevator.target = getFloatHeight();
-          elevator.epoch++;
-        }
-        latestMeasurement = getFloatHeight();
-        elevateAtVoltage(pid.calculate(target, latestMeasurement));
+      target = target + input * 0.01;
+      target = Math.max(Math.min(target, 1.0), 0.0);
+
+      if(isManuallyElevating) {
+        isManuallyElevating = false;
+        elevator.target = getFloatHeight();
+        elevator.epoch++;
       }
+
+      latestMeasurement = getFloatHeight();
+      elevateAtVoltage(pid.calculate(target, latestMeasurement));
     }
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("height", getFloatHeight());
+    SmartDashboard.putNumber("target", target);
   }
 
   public Command manualElevationCommand(CommandXboxController controller) {
