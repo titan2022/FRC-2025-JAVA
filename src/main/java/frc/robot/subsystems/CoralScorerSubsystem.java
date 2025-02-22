@@ -11,7 +11,7 @@ import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 
 public class CoralScorerSubsystem extends SubsystemBase {
   // TODO: Specify CAN IDs
-  private static final TalonFX scoringMotor = new TalonFX(0, "rio");
+  private static final TalonFX scoringMotor = new TalonFX(42, "rio");
   private static final Canandcolor canandcolor = new Canandcolor(0);
 
   // TODO: Measure this
