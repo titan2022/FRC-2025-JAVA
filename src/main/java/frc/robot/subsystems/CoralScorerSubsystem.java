@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.utility.Constants.Unit;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -14,14 +16,17 @@ public class CoralScorerSubsystem extends SubsystemBase {
   private static final TalonFX scoringMotor = new TalonFX(42, "rio");
   private static final Canandcolor canandcolor = new Canandcolor(0);
 
-  // TODO: Measure this
-  private static final double PROXIMITY_THRESHOLD = 0.5;
+  private static final double PROXIMITY_THRESHOLD = 0.018;
 
   // TODO: Determine speed
-  private static final double MOVE_CORAL_SPEED = 5; // in volts
-  private static final double SCORE_CORAL_SPEED = 10; // in volts
+  private static final double MOVE_CORAL_SPEED = 1.5; // in volts
+  private static final double SCORE_CORAL_SPEED = 5; // in volts
 
   private static final long SCORE_CORAL_TIMEOUT = 1 * 1000000; // microseconds
+  private static final long INDEX_CORAL_TIMEOUT = 0 * 1000000; // microseconds
+
+  private long coralVisibleStart;
+  private boolean sawCoralInLastFrame;
 
   public CoralScorerSubsystem() {
     // Brake the scoring motor while not in use
@@ -38,12 +43,37 @@ public class CoralScorerSubsystem extends SubsystemBase {
     );
   }
 
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Canandcolor proximity", canandcolor.getProximity());
+  }
+
   public boolean canContactCanandcolor() {
     return canandcolor.isConnected();
   }
 
   public boolean canSeeCoral() {
-    return canandcolor.getProximity() > PROXIMITY_THRESHOLD;
+    return canandcolor.getProximity() < PROXIMITY_THRESHOLD;
+  }
+
+  //RobotController.getFPGATime()
+  public boolean coralFinishedIndexing() {
+    if(canSeeCoral()) {
+      long currentTime = RobotController.getFPGATime();
+      if (!sawCoralInLastFrame) {
+        coralVisibleStart = currentTime;
+      }
+
+      if (currentTime - coralVisibleStart >= INDEX_CORAL_TIMEOUT) {
+        return true;
+      }
+
+      sawCoralInLastFrame = true;
+    } else {
+      sawCoralInLastFrame = false;
+    }
+
+    return false;
   }
 
   /** Start moving coral into the scorer

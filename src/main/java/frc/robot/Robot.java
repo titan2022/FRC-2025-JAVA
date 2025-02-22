@@ -49,10 +49,10 @@ public class Robot extends TimedRobot {
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
   // Subsystems
-  // private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
-  // private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
+  private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
+  private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
-  // private final DealgifierSubsystem dealgifierSubsystem = new DealgifierSubsystem();
+  private final DealgifierSubsystem dealgifierSubsystem = new DealgifierSubsystem();
 
   // private final Localizers localizers = new Localizers(
   //   new OdometryLocalizer(drivetrain), 
@@ -83,10 +83,10 @@ public class Robot extends TimedRobot {
   public void setBindings() {
     drivetrain.setDefaultCommand(drivingCommand);
 
-    // // Coral scorer controls
-    // robotController.rightBumper().onTrue(
-    //   coralScorer.timedScoreCoralCommand()
-    // );
+    // Coral scorer controls
+    robotController.rightBumper().onTrue(
+      coralScorer.timedScoreCoralCommand()
+    );
 
     // Elevator controls
     // Left dpad is elevate to coral intake level
@@ -97,17 +97,19 @@ public class Robot extends TimedRobot {
 
     elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
 
-    // // Coral intake controls
+    // Coral intake controls
 
-    // // Elevate down to the coral intake level,
-    // // then run the coral intake and scorer motors to move the coral in.
-    // robotController.leftBumper().onTrue(
-    //   elevator.elevateCommand(ElevationTarget.CoralIntake)
-    //   .andThen(new CoralIntakeCommand(coralIntake, coralScorer))
-    // );
+    // Elevate down to the coral intake level,
+    // then run the coral intake and scorer motors to move the coral in.
+    robotController.leftBumper().onTrue(
+      // elevator.elevateCommand(ElevationTarget.CoralIntake)
+      // .andThen(
+        new CoralIntakeCommand(coralIntake, coralScorer)
+      // )
+    );
 
-    // // Dealgifier controls
-    // robotController.a().whileTrue(dealgifierSubsystem.dealgifyCommand());
+    // Dealgifier controls
+    robotController.a().whileTrue(dealgifierSubsystem.dealgifyCommand());
   }
 
   public void setUpAutos() {
