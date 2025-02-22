@@ -16,14 +16,14 @@ public class CoralScorerSubsystem extends SubsystemBase {
   private static final TalonFX scoringMotor = new TalonFX(42, "rio");
   private static final Canandcolor canandcolor = new Canandcolor(0);
 
-  private static final double PROXIMITY_THRESHOLD = 0.018;
+  private static final double PROXIMITY_THRESHOLD = 0.020;
 
   // TODO: Determine speed
-  private static final double MOVE_CORAL_SPEED = 1.5; // in volts
-  private static final double SCORE_CORAL_SPEED = 5; // in volts
+  private static final double MOVE_CORAL_SPEED = 2.6; // in volts
+  private static final double SCORE_CORAL_SPEED = 8; // in volts
 
   private static final long SCORE_CORAL_TIMEOUT = 1 * 1000000; // microseconds
-  private static final long INDEX_CORAL_TIMEOUT = 0 * 1000000; // microseconds
+  private static final long INDEX_CORAL_TIMEOUT = 1 * 150000; // microseconds
 
   private long coralVisibleStart;
   private boolean sawCoralInLastFrame;
