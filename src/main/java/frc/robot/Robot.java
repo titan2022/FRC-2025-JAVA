@@ -90,10 +90,10 @@ public class Robot extends TimedRobot {
 
     // Elevator controls
     // Left dpad is elevate to coral intake level
-    robotController.pov(270).whileTrue(elevator.elevateCommand(ElevationTarget.CoralIntake));
-    robotController.pov(180).whileTrue(elevator.elevateCommand(ElevationTarget.L1));
-    robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
-    robotController.pov(0).whileTrue(elevator.elevateCommand(ElevationTarget.L3));
+    // robotController.pov(270).whileTrue(elevator.elevateCommand(ElevationTarget.CoralIntake));
+    // robotController.pov(180).whileTrue(elevator.elevateCommand(ElevationTarget.L1));
+    // robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
+    // robotController.pov(0).whileTrue(elevator.elevateCommand(ElevationTarget.L3));
 
     elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
 
@@ -155,6 +155,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
+    // Quick fix
+    elevator.resetTarget();
   }
 
   @Override

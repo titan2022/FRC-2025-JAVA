@@ -29,11 +29,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final boolean HAS_ENCODER = true;
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-    12, // kP
+    10, // kP
     0.0, // kI
     0.45, // kD
     new TrapezoidProfile.Constraints(
-      3, // max velocity in volts
+      4, // max velocity in volts
       2 // max velocity in volts/second
     )
   );
@@ -142,6 +142,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     currentVelocity = velocity;
     leftMotor.setVoltage(velocity);
     rightMotor.setVoltage(velocity);
+    SmartDashboard.putNumber("elev V", velocity);
   }
 
   public void stopElevating() {
@@ -222,7 +223,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override // every 20ms
     public void execute() {
-      double input = controller.getLeftY();
+      double input = -controller.getLeftY();
       target = target + input * 0.01;
       target = Math.max(Math.min(target, 1.0), 0.0);
 
@@ -233,7 +234,9 @@ public class ElevatorSubsystem extends SubsystemBase {
       }
 
       latestMeasurement = getFloatHeight();
-      elevateAtVoltage(pid.calculate(target, latestMeasurement));
+      double calculation = pid.calculate(target, latestMeasurement);
+      // calculation = Math.max(Math.min(calculation, 3.0), -3.0);
+      elevateAtVoltage(calculation);
     }
   }
 
@@ -245,5 +248,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public Command manualElevationCommand(CommandXboxController controller) {
     return new ManualElevationCommand(this, controller);
+  }
+
+  public void resetTarget() {
+    target = getFloatHeight();
   }
 }
