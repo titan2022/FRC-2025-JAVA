@@ -18,6 +18,9 @@ public class DrivingCommand extends Command {
   private CommandSwerveDrivetrain drivetrain;
   private CommandXboxController driveController;
 
+  private double translationSpeedMultiplier = 1.0;
+  private double rotationSpeedMultiplier = 1.0;
+
   private final SwerveRequest.RobotCentric robotCentricDriveRequest = new SwerveRequest.RobotCentric()
             .withDeadband(TunerConstants.MAX_SPEED * TunerConstants.DEADBAND).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * TunerConstants.DEADBAND) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
@@ -87,11 +90,20 @@ public class DrivingCommand extends Command {
 
     // reset the field-centric heading on left bumper press
     driveController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    
+    // Alignment slow-down
+    driveController.rightBumper().whileTrue(drivetrain.runOnce(() -> {translationSpeedMultiplier = 0.18; rotationSpeedMultiplier = 0.4;}));
+    driveController.rightBumper().whileFalse(drivetrain.runOnce(() -> {translationSpeedMultiplier = 1.0; rotationSpeedMultiplier = 1.0;}));
 
     // field-oriented
     driveController.back().onTrue(drivetrain.runOnce(() -> isFieldOriented = true));
     // robot-oriented
     driveController.start().onTrue(drivetrain.runOnce(() -> isFieldOriented = false));
+
+    // Quick back up motion for dealgifier
+    driveController.a().onTrue(drivetrain.applyRequest(() ->
+      robotCentricStrafe.withVelocityX(-5.0).withVelocityY(0)
+    ).withTimeout(0.1));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
   }
@@ -104,18 +116,18 @@ public class DrivingCommand extends Command {
       // and Y is defined as to the left according to WPILib convention.
       drivetrain.setControl(
               fieldCentricDriveRequest
-                  .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED) // Drive forward with negative Y (forward)
-                  .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED) // Drive left with negative X (left)
-                  .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
+                  .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED * translationSpeedMultiplier) // Drive forward with negative Y (forward)
+                  .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED * translationSpeedMultiplier) // Drive left with negative X (left)
+                  .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED * rotationSpeedMultiplier) // Drive counterclockwise with negative X (left)
       );
     } else {
       // Note that X is defined as forward according to WPILib convention,
       // and Y is defined as to the left according to WPILib convention.
       drivetrain.setControl(
               robotCentricDriveRequest
-                  .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED) // Drive forward with negative Y (forward)
-                  .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED) // Drive left with negative X (left)
-                  .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED) // Drive counterclockwise with negative X (left)
+                  .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED * translationSpeedMultiplier) // Drive forward with negative Y (forward)
+                  .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED * translationSpeedMultiplier) // Drive left with negative X (left)
+                  .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED * rotationSpeedMultiplier) // Drive counterclockwise with negative X (left)
       );
     }
   }

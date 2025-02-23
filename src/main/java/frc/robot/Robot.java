@@ -84,8 +84,13 @@ public class Robot extends TimedRobot {
     drivetrain.setDefaultCommand(drivingCommand);
 
     // Coral scorer controls
-    robotController.rightBumper().onTrue(
-      coralScorer.timedScoreCoralCommand()
+    robotController.rightBumper().whileTrue(
+      coralScorer.timedScoreCoralCommand(false)
+    );
+
+    // Backwards coral scoring
+    robotController.y().whileTrue(
+      coralScorer.timedScoreCoralCommand(true)
     );
 
     // Elevator controls
@@ -101,7 +106,7 @@ public class Robot extends TimedRobot {
 
     // Elevate down to the coral intake level,
     // then run the coral intake and scorer motors to move the coral in.
-    robotController.leftBumper().onTrue(
+    robotController.leftBumper().whileTrue(
       // elevator.elevateCommand(ElevationTarget.CoralIntake)
       // .andThen(
         new CoralIntakeCommand(coralIntake, coralScorer)
@@ -129,7 +134,7 @@ public class Robot extends TimedRobot {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return null;//autoChooser.getSelected();
   }
 
   @Override

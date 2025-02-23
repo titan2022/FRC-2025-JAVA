@@ -10,12 +10,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
+import java.lang.annotation.Target;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  private static final int MAX_HEIGH_ENCODER_VALUE = 7495;
+  private static final int MAX_HEIGHT_REV_ENCODER_VALUE = 7495;
+  private static final int MAX_HEIGHT_FALCON_ENCODER_VALUE = 0; // TODO: find this value
+  private static final boolean HAS_ENCODER = true;
+  private static final double MAX_VOLTAGE = 3.0;
+  private static final double JOYSTICK_DEADBAND = 0.12;
 
   // We have two Falcon 500s
   // TODO: Specify CAN IDs
@@ -26,15 +32,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   // Programming manual: https://docs.wpilib.org/en/stable/docs/software/hardware-apis/sensors/encoders-software.html#quadrature-encoders-the-encoder-class
   private static final Encoder encoder = new Encoder(0, 1);
 
-  private static final boolean HAS_ENCODER = true;
-
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-    10, // kP
+    5.0, // kP
     0.0, // kI
-    0.45, // kD
+    0.0, // kD
     new TrapezoidProfile.Constraints(
-      4, // max velocity in volts
-      2 // max velocity in volts/second
+      3.0, // max velocity in volts
+      2.0 // max velocity in volts/second
     )
   );
 
@@ -44,16 +48,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   private StatusSignal<Angle> leftPositionStatusSignal;
   private StatusSignal<Angle> rightPositionStatusSignal;
 
-  // TODO: Figure out good values for these constants
-  // The unit is rotations of the encoder/elevator axle
-  private static double POSITION_DEADBAND = 0.025;
-
   private static double ELEVATION_GEAR_RATIO = 6.4;
 
   private double currentVelocity = 0;
   private double target = 0;
-  private boolean isManuallyElevating = true;
-  private int epoch = 0; // Increments every time we switch between manual and PID
+  private boolean hasStarted = false;
 
   public ElevatorSubsystem() {
     // Brake the motors while not elevating
@@ -62,7 +61,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // TODO: Use a non-deprecated method
     // Invert the right motor
-    rightMotor.setInverted(true);
+    leftMotor.setInverted(true);
+    rightMotor.setInverted(false);
+
+    // Invert encoder
+    encoder.setReverseDirection(true);
 
     // Set default command to turn off the left and right motors, and then idle
     // During normal operation the ManualElevationCommand should be running
@@ -96,22 +99,25 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   private double getRevMeasurement() {
-    return -encoder.getDistance();
+    return encoder.getDistance();
   }
 
-  private double getFloatHeight() {
-    return getRevMeasurement() / MAX_HEIGH_ENCODER_VALUE;
+  private double getFalconMeasurement() {
+    double left = leftPositionStatusSignal.getValueAsDouble();
+    double right = rightPositionStatusSignal.getValueAsDouble();
+    double leftMeasurement = left - initialLeft;
+    double rightMeasurement = right - initialRight;
+    return ((leftMeasurement + rightMeasurement)/2)/ELEVATION_GEAR_RATIO;
   }
 
+  /*
+   * Gets encoder measurement, returns elevator height from 0.0 to 1.0
+   */
   public double getMeasurement() {
     if(HAS_ENCODER) {
-      return getRevMeasurement();
+      return getRevMeasurement() / MAX_HEIGHT_REV_ENCODER_VALUE;
     } else {
-      double left = leftPositionStatusSignal.getValueAsDouble();
-      double right = rightPositionStatusSignal.getValueAsDouble();
-      double leftMeasurement = left - initialLeft;
-      double rightMeasurement = right - initialRight;
-      return ((leftMeasurement + rightMeasurement)/2)/ELEVATION_GEAR_RATIO;
+      return getFalconMeasurement() / MAX_HEIGHT_FALCON_ENCODER_VALUE;
     }
   }
 
@@ -142,7 +148,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     currentVelocity = velocity;
     leftMotor.setVoltage(velocity);
     rightMotor.setVoltage(velocity);
-    SmartDashboard.putNumber("elev V", velocity);
+    SmartDashboard.putNumber("Elevator Voltage", velocity);
   }
 
   public void stopElevating() {
@@ -151,40 +157,33 @@ public class ElevatorSubsystem extends SubsystemBase {
     rightMotor.stopMotor();
   }
 
+  // Quick fix
+  public void resetTarget() {
+    target = getMeasurement();
+  }
+
   private class ElevateCommand extends Command {
     private final ElevatorSubsystem elevator;
-    private final int currentEpoch;
     private double latestMeasurement;
 
     public ElevateCommand(ElevatorSubsystem elevator, double target) {
       target = Math.max(Math.min(target, 1.0), 0.0);
-
       this.elevator = elevator;
-      elevator.epoch++;
-      this.currentEpoch = elevator.epoch;
-
       elevator.target = target;
-      // We don't actually use the elevator
       addRequirements(elevator);
     }
 
     @Override // every 20ms
     public void execute() {
-      latestMeasurement = getFloatHeight();
-      double result = pid.calculate(target, latestMeasurement);
-      SmartDashboard.putNumber("pre result", result);
-
-      // Quick fix
-      result = Math.max(Math.min(result, 2.0), -2.0);
-
-      SmartDashboard.putNumber("result", result);
-
-      elevateAtVoltage(result);
+      latestMeasurement = getMeasurement();
+      double calculation = pid.calculate(target, latestMeasurement);
+      calculation = Math.max(Math.min(calculation, MAX_VOLTAGE), -MAX_VOLTAGE);
+      elevator.elevateAtVoltage(calculation);
     }
 
     @Override
     public void end(boolean isInterrupted) {
-      elevateAtVoltage(0);
+      elevator.elevateAtVoltage(0);
     }
 
     @Override
@@ -210,47 +209,49 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   private class ManualElevationCommand extends Command {
-    private final ElevatorSubsystem elevator;
     private final CommandXboxController controller;
 
     private double latestMeasurement;
 
     public ManualElevationCommand(ElevatorSubsystem elevator, CommandXboxController controller) {
-      this.elevator = elevator;
       this.controller = controller;
       addRequirements(elevator);
+    }
+
+    @Override
+    public void initialize() {
+      // Should fix the set point command slamming?
+      hasStarted = false;
     }
 
     @Override // every 20ms
     public void execute() {
       double input = -controller.getLeftY();
-      target = target + input * 0.01;
+      if (Math.abs(input) > JOYSTICK_DEADBAND) {
+        target = target + input * 0.02;
+      }
       target = Math.max(Math.min(target, 1.0), 0.0);
-
-      if(isManuallyElevating) {
-        isManuallyElevating = false;
-        elevator.target = getFloatHeight();
-        elevator.epoch++;
+      
+      if(!hasStarted) {
+        hasStarted = true;
+        target = getMeasurement();
       }
 
-      latestMeasurement = getFloatHeight();
+      latestMeasurement = getMeasurement();
       double calculation = pid.calculate(target, latestMeasurement);
-      // calculation = Math.max(Math.min(calculation, 3.0), -3.0);
-      elevateAtVoltage(calculation);
+      calculation = Math.max(Math.min(calculation, MAX_VOLTAGE), -MAX_VOLTAGE);
+      elevateAtVoltage(-calculation);
     }
-  }
-
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("height", getFloatHeight());
-    SmartDashboard.putNumber("target", target);
   }
 
   public Command manualElevationCommand(CommandXboxController controller) {
     return new ManualElevationCommand(this, controller);
   }
 
-  public void resetTarget() {
-    target = getFloatHeight();
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Elevator Height", getMeasurement());
+    SmartDashboard.putNumber("Elevator Target Height", target);
+    SmartDashboard.putNumber("REV Encoder", getRevMeasurement());
   }
 }

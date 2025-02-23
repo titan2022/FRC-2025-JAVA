@@ -19,8 +19,8 @@ public class CoralScorerSubsystem extends SubsystemBase {
   private static final double PROXIMITY_THRESHOLD = 0.020;
 
   // TODO: Determine speed
-  private static final double MOVE_CORAL_SPEED = 2.6; // in volts
-  private static final double SCORE_CORAL_SPEED = 8; // in volts
+  private static final double MOVE_CORAL_SPEED = 1.8; // in volts
+  private static final double SCORE_CORAL_SPEED = 1.5; // in volts
 
   private static final long SCORE_CORAL_TIMEOUT = 1 * 1000000; // microseconds
   private static final long INDEX_CORAL_TIMEOUT = 1 * 150000; // microseconds
@@ -84,16 +84,18 @@ public class CoralScorerSubsystem extends SubsystemBase {
 
   /** Start scoring coral into the scorer
    */
-  public void scoreCoral() {
-    scoringMotor.setVoltage(SCORE_CORAL_SPEED);
+  public void scoreCoral(boolean isReversed) {
+    scoringMotor.setVoltage(SCORE_CORAL_SPEED * (isReversed ? -0.75 : 1));
   }
 
   private class TimedScoreCoralCommand extends Command {
     private long startTime; // relative to RobotController.getFPGATime()
     private CoralScorerSubsystem coralScorer;
+    private boolean isReversed = false;
 
-    public TimedScoreCoralCommand(CoralScorerSubsystem coralScorer) {
+    public TimedScoreCoralCommand(CoralScorerSubsystem coralScorer, boolean isReversed) {
       this.coralScorer = coralScorer;
+      this.isReversed = isReversed;
       addRequirements(coralScorer);
     }
 
@@ -101,19 +103,19 @@ public class CoralScorerSubsystem extends SubsystemBase {
     public void initialize() {
       startTime = RobotController.getFPGATime();
 
-      scoreCoral();
+      scoreCoral(isReversed);
     }
 
     @Override
     public boolean isFinished() {
-      return RobotController.getFPGATime() >= startTime + SCORE_CORAL_TIMEOUT;
+      return false;//RobotController.getFPGATime() >= startTime + SCORE_CORAL_TIMEOUT;
     }
   }
 
   /** Command that scores coral for a specific time.
    */
-  public Command timedScoreCoralCommand() {
-    return new TimedScoreCoralCommand(this);
+  public Command timedScoreCoralCommand(boolean isReversed) {
+    return new TimedScoreCoralCommand(this, isReversed);
   }
 
   /** Move coral back into the elevator

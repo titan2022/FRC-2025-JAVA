@@ -11,7 +11,7 @@ public class DealgifierSubsystem extends SubsystemBase {
   private static final TalonFX dealgifierMotor = new TalonFX(43, "rio");
 
   // TODO: Determine this
-  private static final double DEALGIFY_SPEED = 4; // in volts
+  private static final double DEALGIFY_SPEED = 6.0; // in volts
 
   public DealgifierSubsystem() {
     // Allow the dealgifier to coast while not in use
