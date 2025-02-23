@@ -9,85 +9,144 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.units.Units;
+
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class ElevatorSubsystem extends SubsystemBase {
-  private static final int MAX_HEIGHT_REV_ENCODER_VALUE = 7495;
-  private static final int MAX_HEIGHT_FALCON_ENCODER_VALUE = 0; // TODO: find this value
-  private static final boolean HAS_ENCODER = true;
   private static final double MAX_VOLTAGE = 3.0;
   private static final double JOYSTICK_DEADBAND = 0.12;
+  private static final double MAX_HEIGHT_INCHES = 40.298;
+  private static final double MIN_HEIGHT_INCHES = 0;
+  private static double ELEVATION_GEAR_RATIO = 6.4 / (1.757 * Math.PI * 2) ;
 
   // We have two Falcon 500s
   // TODO: Specify CAN IDss
-  private static final TalonFX leftMotor = new TalonFX(40, "rio");
-  private static final TalonFX rightMotor = new TalonFX(41, "rio");
+  private static final TalonFX leftMotorFollower = new TalonFX(40, "rio");
+  private static final TalonFX rightMotorLeader = new TalonFX(41, "rio");
 
-  // We have a REV through-bore encoder
-  // Programming manual: https://docs.wpilib.org/en/stable/docs/software/hardware-apis/sensors/encoders-software.html#quadrature-encoders-the-encoder-class
-  private static final Encoder encoder = new Encoder(0, 1);
+  MotionMagicVoltage motionRequest;
+  PositionVoltage positionRequest;
+  VoltageOut voltageRequest = new VoltageOut(0);
 
-  private static final ProfiledPIDController pid = new ProfiledPIDController(
-    3.3, // kP 1.3
-    0.0, // kI
-    0.7, // kD 0.7
-    new TrapezoidProfile.Constraints(
-      1.5, // max velocity in volts
-      0.5 // max velocity in volts/second
-    )
-  );
+  double currentLeftPosition = 0;
+  double currentRightPosition = 0;
 
-  private static final ElevatorFeedforward feedforward = new ElevatorFeedforward(
-    1.0, // kS
-    0.35, // kG
-    1.1 // kV
-  );
+  double targetPosition = 0;
 
-  private double initialLeft = 0.0;
-  private double initialRight = 0.0;
+  public static TalonFXConfiguration Elevator_Config = new TalonFXConfiguration();
+  static{
 
-  private StatusSignal<Angle> leftPositionStatusSignal;
-  private StatusSignal<Angle> rightPositionStatusSignal;
+    Elevator_Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    Elevator_Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = MAX_HEIGHT_INCHES; // Test Upper Limit
+    Elevator_Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    Elevator_Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = MIN_HEIGHT_INCHES;
+    
+    Elevator_Config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    Elevator_Config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    
+    Elevator_Config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+    Elevator_Config.Feedback.SensorToMechanismRatio = ELEVATION_GEAR_RATIO;
 
-  private static double ELEVATION_GEAR_RATIO = 6.4;
+    Elevator_Config.Slot0.kG = 0.2; //0.3
+    Elevator_Config.Slot0.kS = 0.05; //0.4
+    Elevator_Config.Slot0.kV = 0.02; //0.001
+    Elevator_Config.Slot0.kA = 0.001; //0.0
+    Elevator_Config.Slot0.kP = 1.0; //0.5
+    Elevator_Config.Slot0.kI = 0.0;
+    Elevator_Config.Slot0.kD = 0.0;
+    Elevator_Config.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
 
-  private double currentVelocity = 0;
-  private double target = 0;
-  private boolean hasStarted = false;
+    Elevator_Config.MotionMagic.MotionMagicCruiseVelocity = 600;
+    Elevator_Config.MotionMagic.MotionMagicAcceleration = 400;
+    Elevator_Config.MotionMagic.MotionMagicExpo_kV = 0.12;
+
+    Elevator_Config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    Elevator_Config.CurrentLimits.SupplyCurrentLowerLimit = 30;
+    Elevator_Config.CurrentLimits.SupplyCurrentLimit = 60;
+    Elevator_Config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+  }
 
   public ElevatorSubsystem() {
-    // Brake the motors while not elevating
-    leftMotor.setNeutralMode(NeutralModeValue.Brake);
-    rightMotor.setNeutralMode(NeutralModeValue.Brake);
-
+    rightMotorLeader.getConfigurator().apply(Elevator_Config);
+    leftMotorFollower.getConfigurator().apply(Elevator_Config);
     // TODO: Use a non-deprecated method
     // Invert the right motor
-    leftMotor.setInverted(true);
-    rightMotor.setInverted(false);
+    leftMotorFollower.setControl(new Follower(rightMotorLeader.getDeviceID(), true));
+    leftMotorFollower.setInverted(true);
+    voltageRequest = new VoltageOut(0);
+    motionRequest = new MotionMagicVoltage(0);
+    resetSensorPosition(MIN_HEIGHT_INCHES);
+  }
 
-    // Invert encoder
-    encoder.setReverseDirection(true);
+  public double getElevatorPosition(){
+    return rightMotorLeader.getPosition().getValueAsDouble();
+  }
 
-    // Set default command to turn off the left and right motors, and then idle
-    // During normal operation the ManualElevationCommand should be running
-    setDefaultCommand(
-      runOnce(
-        () -> {
-          stopElevating();
-        }
-      )
-      .andThen(run(() -> {}))
-      .withName("Idle")
-    );
+  public void setPosition(double height) {
+    rightMotorLeader.setControl(motionRequest.withPosition(height));
+    targetPosition = height;
+  }
 
-    if(!HAS_ENCODER) {
-      leftPositionStatusSignal = leftMotor.getRotorPosition();
-      rightPositionStatusSignal = rightMotor.getRotorPosition();
+  public void resetSensorPosition(double height) {
+    rightMotorLeader.setPosition(height);
+    leftMotorFollower.setPosition(height);
+  }
+
+  public Command elevateCommand(double target) {
+    return new ElevateCommand(this, target);
+  }
+
+  public Command elevateCommand(ElevationTarget target) {
+    return elevateCommand(target.getValue());
+  }
+  
+  private class ElevateCommand extends Command {
+    private double elevateTarget;
+
+    public ElevateCommand(ElevatorSubsystem elevator, double elevateTarget) {
+      elevateTarget = Math.max(Math.min(elevateTarget, MAX_HEIGHT_INCHES), MIN_HEIGHT_INCHES);
+      this.elevateTarget = elevateTarget;
+      addRequirements(elevator);
     }
 
+    @Override // every 20ms
+    public void execute() {
+      SmartDashboard.putNumber("Elevator Target", elevateTarget);
+      setPosition(elevateTarget);
+
+    }
+    @Override
+    public void end(boolean isInterrupted) {
+      setPosition(targetPosition); // 1v for testing motor directions
+    }
+
+    @Override
+    public boolean isFinished() {
+      return false;
+    }
+  }
+    // Invert encoder
+/* 
+    encoder.setReverseDirection(true);
+
+    if(!HAS_ENCODER) {
+      leftPositionStatusSignal = leftMotorFollower.getRotorPosition();
+      rightPositionStatusSignal = rightMotorLeader.getRotorPosition();
+    }
     resetMeasurement();
   }
 
@@ -114,9 +173,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     return ((leftMeasurement + rightMeasurement)/2)/ELEVATION_GEAR_RATIO;
   }
 
-  /*
-   * Gets encoder measurement, returns elevator height from 0.0 to 1.0
-   */
+  
+  // Gets encoder measurement, returns elevator height from 0.0 to 1.0
+   
   public double getMeasurement() {
     if(HAS_ENCODER) {
       return getRevMeasurement() / MAX_HEIGHT_REV_ENCODER_VALUE;
@@ -124,7 +183,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       return getFalconMeasurement() / MAX_HEIGHT_FALCON_ENCODER_VALUE;
     }
   }
-
+*/
   public enum ElevationTarget {
     // https://www.desmos.com/calculator/ocl2iqiu7n
     // Unit: rotations of the encoder/elevator axle
@@ -132,11 +191,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     // L1(1.2633321268),
     // L2(2.26316329414),
     // L3(3.67201630267),
-    L1(0.344905454365),
-    L2(0.617871854683),
-    L3(1.0),
-    AlgaeL2(0.518611346476),
-    AlgaeL3(0.915653382302)
+    L1(13.899), //0.344905454365
+    L2(24.899), //0.617871854683
+    L3(40.298), //1.0
+    AlgaeL2(20.899),//0.518611346476
+    AlgaeL3(36.899)//0.915653382302
     ;
 
     private double targetValue;
@@ -148,13 +207,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
-  public void elevateAtVoltage(double velocity) {
-    currentVelocity = velocity;
-    leftMotor.setVoltage(velocity);
-    rightMotor.setVoltage(velocity);
-    SmartDashboard.putNumber("Elevator Voltage", velocity);
+  public void elevateAtVoltage(double voltage) {
+    rightMotorLeader.setVoltage(voltage);
   }
-
+  
+/* 
   public void stopElevating() {
     currentVelocity = 0;
     leftMotor.stopMotor();
@@ -180,7 +237,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("elevateTarget", elevateTarget);
       target = elevateTarget;
       latestMeasurement = getMeasurement();
-      double pidCalculation = -pid.calculate(latestMeasurement);
+      double pidCalculation = pid.calculate(latestMeasurement);
       double feedforwardcalculation = feedforward.calculate(pid.getSetpoint().velocity); // Using WPILib Recommended setup for elevator feedforward
       double calculation = Math.max(Math.min(pidCalculation+feedforwardcalculation, MAX_VOLTAGE), -MAX_VOLTAGE);
       elevateAtVoltage(calculation);
@@ -198,13 +255,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
 
-  public Command elevateCommand(double target) {
-    return new ElevateCommand(this, target);
-  }
-
-  public Command elevateCommand(ElevationTarget target) {
-    return elevateCommand(target.getValue());
-  }
 
   public Command applyVelocityCommand(double velocity) {
     return runOnce(
@@ -254,11 +304,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     return new ManualElevationCommand(this, controller);
   }
 
+*/  
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elevator Height", getMeasurement());
-    SmartDashboard.putNumber("Elevator Target Height", target);
-    SmartDashboard.putNumber("REV Encoder", getRevMeasurement());
+    SmartDashboard.putNumber("Elevator Target", (0));
+    SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
 
   }
+
 }
