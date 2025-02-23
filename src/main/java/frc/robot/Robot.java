@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
     robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
     robotController.pov(0).whileTrue(elevator.elevateCommand(ElevationTarget.L3));
 
-    elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
+    //elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
 
     // Coral intake controls
 

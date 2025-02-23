@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
@@ -21,7 +22,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final double JOYSTICK_DEADBAND = 0.12;
 
   // We have two Falcon 500s
-  // TODO: Specify CAN IDs
+  // TODO: Specify CAN IDss
   private static final TalonFX leftMotor = new TalonFX(40, "rio");
   private static final TalonFX rightMotor = new TalonFX(41, "rio");
 
@@ -30,13 +31,19 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final Encoder encoder = new Encoder(0, 1);
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-    5.0, // kP
+    3.3, // kP 1.3
     0.0, // kI
-    0.0, // kD
+    0.7, // kD 0.7
     new TrapezoidProfile.Constraints(
       1.5, // max velocity in volts
       0.5 // max velocity in volts/second
     )
+  );
+
+  private static final ElevatorFeedforward feedforward = new ElevatorFeedforward(
+    1.0, // kS
+    0.35, // kG
+    1.1 // kV
   );
 
   private double initialLeft = 0.0;
@@ -173,9 +180,10 @@ public class ElevatorSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("elevateTarget", elevateTarget);
       target = elevateTarget;
       latestMeasurement = getMeasurement();
-      double calculation = pid.calculate(target, latestMeasurement);
-      calculation = Math.max(Math.min(calculation, MAX_VOLTAGE), -MAX_VOLTAGE);
-      elevateAtVoltage(-calculation);
+      double pidCalculation = -pid.calculate(latestMeasurement);
+      double feedforwardcalculation = feedforward.calculate(pid.getSetpoint().velocity); // Using WPILib Recommended setup for elevator feedforward
+      double calculation = Math.max(Math.min(pidCalculation+feedforwardcalculation, MAX_VOLTAGE), -MAX_VOLTAGE);
+      elevateAtVoltage(calculation);
     }
 
     @Override
@@ -251,5 +259,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Height", getMeasurement());
     SmartDashboard.putNumber("Elevator Target Height", target);
     SmartDashboard.putNumber("REV Encoder", getRevMeasurement());
+
   }
 }
