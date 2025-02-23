@@ -64,7 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     Elevator_Config.Slot0.kS = 0.05; //0.4
     Elevator_Config.Slot0.kV = 0.02; //0.001
     Elevator_Config.Slot0.kA = 0.001; //0.0
-    Elevator_Config.Slot0.kP = 1.0; //0.5
+    Elevator_Config.Slot0.kP = 0.5; //0.5
     Elevator_Config.Slot0.kI = 0.0;
     Elevator_Config.Slot0.kD = 0.0;
     Elevator_Config.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
@@ -139,51 +139,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       return false;
     }
   }
-    // Invert encoder
-/* 
-    encoder.setReverseDirection(true);
 
-    if(!HAS_ENCODER) {
-      leftPositionStatusSignal = leftMotorFollower.getRotorPosition();
-      rightPositionStatusSignal = rightMotorLeader.getRotorPosition();
-    }
-    resetMeasurement();
-  }
-
-  public void resetMeasurement() {
-    if(HAS_ENCODER) {
-      encoder.reset();
-    } else {
-      leftPositionStatusSignal.refresh();
-      initialLeft = leftPositionStatusSignal.getValueAsDouble();
-      rightPositionStatusSignal.refresh();
-      initialRight = rightPositionStatusSignal.getValueAsDouble();
-    }
-  }
-
-  private double getRevMeasurement() {
-    return encoder.getDistance();
-  }
-
-  private double getFalconMeasurement() {
-    double left = leftPositionStatusSignal.getValueAsDouble();
-    double right = rightPositionStatusSignal.getValueAsDouble();
-    double leftMeasurement = left - initialLeft;
-    double rightMeasurement = right - initialRight;
-    return ((leftMeasurement + rightMeasurement)/2)/ELEVATION_GEAR_RATIO;
-  }
-
-  
-  // Gets encoder measurement, returns elevator height from 0.0 to 1.0
-   
-  public double getMeasurement() {
-    if(HAS_ENCODER) {
-      return getRevMeasurement() / MAX_HEIGHT_REV_ENCODER_VALUE;
-    } else {
-      return getFalconMeasurement() / MAX_HEIGHT_FALCON_ENCODER_VALUE;
-    }
-  }
-*/
   public enum ElevationTarget {
     // https://www.desmos.com/calculator/ocl2iqiu7n
     // Unit: rotations of the encoder/elevator axle
@@ -211,63 +167,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     rightMotorLeader.setVoltage(voltage);
   }
   
-/* 
-  public void stopElevating() {
-    currentVelocity = 0;
-    leftMotor.stopMotor();
-    rightMotor.stopMotor();
-  }
-  
-  public void resetTarget() {
-    target = getMeasurement();
-  }
-
-  private class ElevateCommand extends Command {
-    private double latestMeasurement;
-    private double elevateTarget;
-
-    public ElevateCommand(ElevatorSubsystem elevator, double elevateTarget) {
-      elevateTarget = Math.max(Math.min(elevateTarget, 1.0), 0.0);
-      this.elevateTarget = elevateTarget;
-      addRequirements(elevator);
-    }
-
-    @Override // every 20ms
-    public void execute() {
-      SmartDashboard.putNumber("elevateTarget", elevateTarget);
-      target = elevateTarget;
-      latestMeasurement = getMeasurement();
-      double pidCalculation = pid.calculate(latestMeasurement);
-      double feedforwardcalculation = feedforward.calculate(pid.getSetpoint().velocity); // Using WPILib Recommended setup for elevator feedforward
-      double calculation = Math.max(Math.min(pidCalculation+feedforwardcalculation, MAX_VOLTAGE), -MAX_VOLTAGE);
-      elevateAtVoltage(calculation);
-    }
-
-    @Override
-    public void end(boolean isInterrupted) {
-      elevateAtVoltage(0);
-      target = getMeasurement();
-    }
-
-    @Override
-    public boolean isFinished() {
-      return false;
-    }
-  }
-
-
-  public Command applyVelocityCommand(double velocity) {
-    return runOnce(
-      () -> {
-        elevateAtVoltage(velocity);
-      }
-    ).withName("Elevate with velocity");
-  }
 
   private class ManualElevationCommand extends Command {
     private final CommandXboxController controller;
 
-    private double latestMeasurement;
 
     public ManualElevationCommand(ElevatorSubsystem elevator, CommandXboxController controller) {
       this.controller = controller;
@@ -276,35 +179,23 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void initialize() {
-      // Should fix the set point command slamming?
-      hasStarted = false;
     }
 
     @Override // every 20ms
     public void execute() {
       double input = -controller.getLeftY();
       if (Math.abs(input) > JOYSTICK_DEADBAND) {
-        target = target + input * 0.02;
+        targetPosition = targetPosition + input;
       }
-      target = Math.max(Math.min(target, 1.0), 0.0);
-      
-      if(!hasStarted) {
-        hasStarted = true;
-        target = getMeasurement();
-      }
-
-      latestMeasurement = getMeasurement();
-      double calculation = pid.calculate(target, latestMeasurement);
-      calculation = Math.max(Math.min(calculation, MAX_VOLTAGE), -MAX_VOLTAGE);
-      elevateAtVoltage(-calculation);
+      targetPosition = Math.max(Math.min(targetPosition, MAX_HEIGHT_INCHES), MIN_HEIGHT_INCHES);
+      setPosition(targetPosition);
     }
   }
 
   public Command manualElevationCommand(CommandXboxController controller) {
     return new ManualElevationCommand(this, controller);
   }
-
-*/  
+ 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Elevator Target", (0));

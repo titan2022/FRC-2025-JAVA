@@ -93,7 +93,8 @@ public class Robot extends TimedRobot {
     // X any Y is elevate to remove algae levels
     robotController.x().whileTrue(elevator.elevateCommand(ElevationTarget.AlgaeL2));
     robotController.y().whileTrue(elevator.elevateCommand(ElevationTarget.AlgaeL3));
-    //elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
+    
+    elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
 
     // Coral intake controls
 
