@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
@@ -9,8 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
-import java.lang.annotation.Target;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -37,8 +34,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     0.0, // kI
     0.0, // kD
     new TrapezoidProfile.Constraints(
-      3.0, // max velocity in volts
-      2.0 // max velocity in volts/second
+      1.5, // max velocity in volts
+      0.5 // max velocity in volts/second
     )
   );
 
@@ -156,34 +153,35 @@ public class ElevatorSubsystem extends SubsystemBase {
     leftMotor.stopMotor();
     rightMotor.stopMotor();
   }
-
-  // Quick fix
+  
   public void resetTarget() {
     target = getMeasurement();
   }
 
   private class ElevateCommand extends Command {
-    private final ElevatorSubsystem elevator;
     private double latestMeasurement;
+    private double elevateTarget;
 
-    public ElevateCommand(ElevatorSubsystem elevator, double target) {
-      target = Math.max(Math.min(target, 1.0), 0.0);
-      this.elevator = elevator;
-      elevator.target = target;
+    public ElevateCommand(ElevatorSubsystem elevator, double elevateTarget) {
+      elevateTarget = Math.max(Math.min(elevateTarget, 1.0), 0.0);
+      this.elevateTarget = elevateTarget;
       addRequirements(elevator);
     }
 
     @Override // every 20ms
     public void execute() {
+      SmartDashboard.putNumber("elevateTarget", elevateTarget);
+      target = elevateTarget;
       latestMeasurement = getMeasurement();
       double calculation = pid.calculate(target, latestMeasurement);
       calculation = Math.max(Math.min(calculation, MAX_VOLTAGE), -MAX_VOLTAGE);
-      elevator.elevateAtVoltage(calculation);
+      elevateAtVoltage(-calculation);
     }
 
     @Override
     public void end(boolean isInterrupted) {
-      elevator.elevateAtVoltage(0);
+      elevateAtVoltage(0);
+      target = getMeasurement();
     }
 
     @Override

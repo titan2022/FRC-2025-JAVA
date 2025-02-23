@@ -4,14 +4,10 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,12 +23,6 @@ import frc.robot.subsystems.DealgifierSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.utility.Localizers;
-import frc.robot.utility.OdometryLocalizer;
-import frc.robot.utility.TitanProcessingLocalizer;
-import frc.robot.utility.Constants.Unit;
-
-import frc.robot.subsystems.drive.TunerConstants;
 
 
 public class Robot extends TimedRobot {
@@ -95,10 +85,10 @@ public class Robot extends TimedRobot {
 
     // Elevator controls
     // Left dpad is elevate to coral intake level
-    // robotController.pov(270).whileTrue(elevator.elevateCommand(ElevationTarget.CoralIntake));
-    // robotController.pov(180).whileTrue(elevator.elevateCommand(ElevationTarget.L1));
-    // robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
-    // robotController.pov(0).whileTrue(elevator.elevateCommand(ElevationTarget.L3));
+    robotController.pov(270).whileTrue(elevator.elevateCommand(ElevationTarget.CoralIntake));
+    robotController.pov(180).whileTrue(elevator.elevateCommand(ElevationTarget.L1));
+    robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
+    robotController.pov(0).whileTrue(elevator.elevateCommand(ElevationTarget.L3));
 
     elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
 
