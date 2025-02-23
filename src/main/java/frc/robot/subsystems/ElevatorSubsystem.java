@@ -128,11 +128,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     // L1(1.2633321268),
     // L2(2.26316329414),
     // L3(3.67201630267),
-    L1(0.5),
-    L2(0.75),
+    L1(0.344905454365),
+    L2(0.617871854683),
     L3(1.0),
-    AlgaeL2(1.8995883242),
-    AlgaeL3(3.35388820397)
+    AlgaeL2(0.518611346476),
+    AlgaeL3(0.915653382302)
     ;
 
     private double targetValue;
