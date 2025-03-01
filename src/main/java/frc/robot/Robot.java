@@ -4,14 +4,10 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,14 +15,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
+import frc.robot.subsystems.CoralIntakeSubsystem;
+import frc.robot.subsystems.CoralScorerSubsystem;
+import frc.robot.subsystems.DealgifierSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.utility.Localizers;
-import frc.robot.utility.OdometryLocalizer;
-import frc.robot.utility.TitanProcessingLocalizer;
-import frc.robot.utility.Constants.Unit;
-
-import frc.robot.subsystems.drive.TunerConstants;
 
 
 public class Robot extends TimedRobot {
@@ -42,22 +38,27 @@ public class Robot extends TimedRobot {
   // Create auto chooser using all the autos in the project
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
-  private final Localizers localizers = new Localizers(
-    new OdometryLocalizer(drivetrain), 
-    new TitanProcessingLocalizer(5800)
-  );
+  // Subsystems
+  private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
+  private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
+  private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+  private final DealgifierSubsystem dealgifierSubsystem = new DealgifierSubsystem();
+
+  // private final Localizers localizers = new Localizers(
+  //   new OdometryLocalizer(drivetrain), 
+  //   new TitanProcessingLocalizer(5800)
+  // );
 
   @Override
   public void robotInit() {
-    drivetrain.setDefaultCommand(drivingCommand);
-
+    setBindings();
     setUpAutos();
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
-    localizers.step();
+    // localizers.step();
   }
 
   @Override
@@ -68,6 +69,43 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledExit() {}
+
+  public void setBindings() {
+    drivetrain.setDefaultCommand(drivingCommand);
+
+    // Coral scorer controls
+    robotController.rightBumper().whileTrue(
+      coralScorer.timedScoreCoralCommand(false)
+    );
+
+    // Backwards coral scoring
+    robotController.y().whileTrue(
+      coralScorer.timedScoreCoralCommand(true)
+    );
+
+    // Elevator controls
+    // Left dpad is elevate to coral intake level
+    robotController.pov(270).whileTrue(elevator.elevateCommand(ElevationTarget.CoralIntake));
+    robotController.pov(180).whileTrue(elevator.elevateCommand(ElevationTarget.L1));
+    robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
+    robotController.pov(0).whileTrue(elevator.elevateCommand(ElevationTarget.L3));
+
+    //elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
+
+    // Coral intake controls
+
+    // Elevate down to the coral intake level,
+    // then run the coral intake and scorer motors to move the coral in.
+    robotController.leftBumper().whileTrue(
+      // elevator.elevateCommand(ElevationTarget.CoralIntake)
+      // .andThen(
+        new CoralIntakeCommand(coralIntake, coralScorer)
+      // )
+    );
+
+    // Dealgifier controls
+    robotController.a().whileTrue(dealgifierSubsystem.dealgifyCommand());
+  }
 
   public void setUpAutos() {
     // Register named commands
@@ -86,7 +124,7 @@ public class Robot extends TimedRobot {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return null;//autoChooser.getSelected();
   }
 
   @Override
@@ -112,11 +150,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
     
-
-    // translationalDrivetrain.setDefaultCommand(translationalDrivetrain.translationalDrive(driveController));
-    // rotationalDrivebase.setDefaultCommand(rotationalDrivebase.rotationalDrive(driveController));
+    // Quick fix
+    elevator.resetTarget();
   }
 
   @Override

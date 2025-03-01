@@ -11,15 +11,19 @@ public class Localizers {
   private boolean isMixed = false;
   private boolean hasSubscribedToVision = false;
 
+  private final boolean HAS_TITAN_PROCESSING = false;
+
   public Localizers(OdometryLocalizer odometryLocalizer, TitanProcessingLocalizer visionLocalizer) {
     this.odometryLocalizer = odometryLocalizer;
     this.visionLocalizer = visionLocalizer;
 
-    visionSubscriber = (LocalizerMeasurement measurement) -> {
-      if(isMixed) {
-        odometryLocalizer.addVisionMeasurement(measurement);
-      }
-    };
+    if(HAS_TITAN_PROCESSING) {
+      visionSubscriber = (LocalizerMeasurement measurement) -> {
+        if(isMixed) {
+          odometryLocalizer.addVisionMeasurement(measurement);
+        }
+      };
+    }
   }
 
   public OdometryLocalizer getOdometry() {
@@ -57,9 +61,11 @@ public class Localizers {
    * Updates the state of the localization estimates
    */
   public void step() {
-    SmartDashboard.putNumber("vision - latency", visionLocalizer.getMeasurement().getLatency());
-    SmartDashboard.putNumber("vision - time since last message", visionLocalizer.getMeasurement().getTimeSince());
+    if(HAS_TITAN_PROCESSING) {
+      SmartDashboard.putNumber("vision - latency", visionLocalizer.getMeasurement().getLatency());
+      SmartDashboard.putNumber("vision - time since last message", visionLocalizer.getMeasurement().getTimeSince());
+      visionLocalizer.step();
+    }
     odometryLocalizer.step();
-    visionLocalizer.step();
   }
 }
