@@ -122,11 +122,13 @@ public class Robot extends TimedRobot {
 
     // TODO: Figure out how to finish elevating before ending the command
     NamedCommands.registerCommand("Intake coral", 
-      // elevator.elevateCommand(ElevationTarget.CoralIntake)
-      // .andThen(
+      elevator.elevateCommand(ElevationTarget.CoralIntake)
+      .andThen(
         new CoralIntakeCommand(coralIntake, coralScorer)
-      // ))
+      )
     );
+
+    NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
