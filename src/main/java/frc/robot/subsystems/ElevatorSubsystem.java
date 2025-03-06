@@ -117,10 +117,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   private class ElevateCommand extends Command {
     private double elevateTarget;
 
+    private static final double ELEVATE_COMMAND_DEADBAND = 0.25; //inches
+
     public ElevateCommand(ElevatorSubsystem elevator, double elevateTarget) {
       elevateTarget = Math.max(Math.min(elevateTarget, MAX_HEIGHT_INCHES), MIN_HEIGHT_INCHES);
       this.elevateTarget = elevateTarget;
-      addRequirements(elevator);
+      // addRequirements(elevator); // we don't want it to disable the manual elevation command
     }
 
     @Override // every 20ms
@@ -131,12 +133,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     @Override
     public void end(boolean isInterrupted) {
-      setPosition(targetPosition); // 1v for testing motor directions
+      setPosition(getElevatorPosition());
     }
 
     @Override
     public boolean isFinished() {
-      return false;
+      return Math.abs(getElevatorPosition() - elevateTarget) < ELEVATE_COMMAND_DEADBAND;
     }
   }
 
