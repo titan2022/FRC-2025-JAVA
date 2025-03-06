@@ -142,16 +142,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public enum ElevationTarget {
     // https://www.desmos.com/calculator/ocl2iqiu7n
-    // Unit: rotations of the encoder/elevator axle
+    // Unit: inches
     CoralIntake(0),
-    // L1(1.2633321268),
-    // L2(2.26316329414),
-    // L3(3.67201630267),
-    L1(13.899), //0.344905454365
-    L2(24.899), //0.617871854683
-    L3(40.298), //1.0
-    AlgaeL2(20.899),//0.518611346476
-    AlgaeL3(36.899)//0.915653382302
+    L1(13.899),
+    L2(24.899),
+    L3(40.298),
+    AlgaeL2(20.899),
+    AlgaeL3(36.899)
     ;
 
     private double targetValue;
