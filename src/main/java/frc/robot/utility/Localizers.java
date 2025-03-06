@@ -62,6 +62,9 @@ public class Localizers {
    */
   public void step() {
     if(HAS_TITAN_PROCESSING) {
+      if (visionLocalizer.getMeasurement() == null) {
+        return;
+      }
       SmartDashboard.putNumber("vision - latency", visionLocalizer.getMeasurement().getLatency());
       SmartDashboard.putNumber("vision - time since last message", visionLocalizer.getMeasurement().getTimeSince());
       visionLocalizer.step();

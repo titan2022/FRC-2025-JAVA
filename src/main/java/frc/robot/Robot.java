@@ -6,14 +6,12 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
@@ -23,6 +21,9 @@ import frc.robot.subsystems.DealgifierSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.utility.Localizers;
+import frc.robot.utility.OdometryLocalizer;
+import frc.robot.utility.TitanProcessingLocalizer;
 
 
 public class Robot extends TimedRobot {
@@ -44,10 +45,10 @@ public class Robot extends TimedRobot {
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final DealgifierSubsystem dealgifierSubsystem = new DealgifierSubsystem();
 
-  // private final Localizers localizers = new Localizers(
-  //   new OdometryLocalizer(drivetrain), 
-  //   new TitanProcessingLocalizer(5800)
-  // );
+  private final Localizers localizers = new Localizers(
+    new OdometryLocalizer(drivetrain), 
+    new TitanProcessingLocalizer(5800)
+  );
 
   @Override
   public void robotInit() {
