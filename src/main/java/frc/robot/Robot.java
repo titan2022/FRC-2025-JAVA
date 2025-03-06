@@ -79,18 +79,22 @@ public class Robot extends TimedRobot {
     );
 
     // Backwards coral scoring
-    robotController.y().whileTrue(
+    robotController.b().whileTrue(
       coralScorer.timedScoreCoralCommand(true)
     );
 
     // Elevator controls
     // Left dpad is elevate to coral intake level
-    robotController.pov(270).whileTrue(elevator.elevateCommand(ElevationTarget.CoralIntake));
+    robotController.pov(270).whileTrue (elevator.elevateCommand(ElevationTarget.CoralIntake));
     robotController.pov(180).whileTrue(elevator.elevateCommand(ElevationTarget.L1));
     robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
     robotController.pov(0).whileTrue(elevator.elevateCommand(ElevationTarget.L3));
 
-    //elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
+    // X any Y is elevate to remove algae levels
+    robotController.x().whileTrue(elevator.elevateCommand(ElevationTarget.AlgaeL2));
+    robotController.y().whileTrue(elevator.elevateCommand(ElevationTarget.AlgaeL3));
+    
+    elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
 
     // Coral intake controls
 
@@ -163,7 +167,7 @@ public class Robot extends TimedRobot {
     }
     
     // Quick fix
-    elevator.resetTarget();
+    //elevator.resetTarget();
   }
 
   @Override
