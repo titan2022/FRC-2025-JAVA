@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start to Coral Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station to Reef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reef left align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Elevate L3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
