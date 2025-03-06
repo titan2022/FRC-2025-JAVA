@@ -109,12 +109,23 @@ public class Robot extends TimedRobot {
 
   public void setUpAutos() {
     // Register named commands
-    NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-    NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
-    NamedCommands.registerCommand("print hello", Commands.print("hello"));
+    NamedCommands.registerCommand("Elevate to intake level", elevator.elevateCommand(ElevationTarget.CoralIntake));
+    NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
+    NamedCommands.registerCommand("Elevate L2", elevator.elevateCommand(ElevationTarget.L2));
+    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3));
+    NamedCommands.registerCommand("Elevate Algae L2", elevator.elevateCommand(ElevationTarget.AlgaeL2));
+    NamedCommands.registerCommand("Elevate Algae L3", elevator.elevateCommand(ElevationTarget.AlgaeL3));
+
+    // TODO: Figure out how to finish elevating before ending the command
+    NamedCommands.registerCommand("Intake coral", 
+      // elevator.elevateCommand(ElevationTarget.CoralIntake)
+      // .andThen(
+        new CoralIntakeCommand(coralIntake, coralScorer)
+      // ))
+    );
 
     // Use event markers as triggers
-    new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
+    // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
 
     // Add the auto chooser to the SmartDashboard so we can select the auto from the dropdown
     SmartDashboard.putData(autoChooser);
