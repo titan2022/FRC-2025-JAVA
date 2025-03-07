@@ -122,7 +122,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public ElevateCommand(ElevatorSubsystem elevator, double elevateTarget) {
       elevateTarget = Math.max(Math.min(elevateTarget, MAX_HEIGHT_INCHES), MIN_HEIGHT_INCHES);
       this.elevateTarget = elevateTarget;
-      // addRequirements(elevator); // we don't want it to disable the manual elevation command
+      addRequirements(elevator);
+      // It's fine to ignore the manual elevation because it should not take very long
     }
 
     @Override // every 20ms
