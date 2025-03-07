@@ -7,13 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef to Coral Station to Intake"
+            "pathName": "Preloaded Robot to Reef to Score"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake coral"
+            "name": "Reef right align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Elevate L3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef to Coral Station to Intake"
           }
         },
         {
