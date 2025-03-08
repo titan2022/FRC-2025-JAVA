@@ -122,7 +122,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public ElevateCommand(ElevatorSubsystem elevator, double elevateTarget) {
       elevateTarget = Math.max(Math.min(elevateTarget, MAX_HEIGHT_INCHES), MIN_HEIGHT_INCHES);
       this.elevateTarget = elevateTarget;
-      // addRequirements(elevator); // we don't want it to disable the manual elevation command
+      //addRequirements(elevator); // we don't want it to disable the manual elevation command
     }
 
     @Override // every 20ms
@@ -133,7 +133,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     @Override
     public void end(boolean isInterrupted) {
-      setPosition(getElevatorPosition());
+      //setPosition(getElevatorPosition());
     }
 
     @Override
@@ -199,7 +199,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Elevator Target", (0));
     SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
-
+    SmartDashboard.putNumber("Motion Magic is Running", rightMotorLeader.getMotionMagicIsRunning().getValue().value );
   }
 
 }
