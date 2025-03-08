@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
@@ -11,19 +14,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
-import frc.robot.utility.Constants.Unit;
+
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.path.RotationTarget;
 
+
 public class AlgaeIntakeSubsystem extends SubsystemBase {
-  private static final double MIN_ANGLE = 0; // 
-  private static final double MAX_ANGLE = 65; //
-  private static final double REV_OFFSET = 236.7578759189469-65; // Offset for REV absolute encoder
+  private static final double MIN_ANGLE = 17.5;    
+  private static final double MAX_ANGLE = 80; 
+  private static final double REV_OFFSET = -122.9410721235268; // Offset for REV absolute encoder 
   private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if `false`
-  private static final double MAX_VOLTAGE = 1.0;
+  private static final double MAX_VOLTAGE = 4.0;
   private static final double JOYSTICK_DEADBAND = 0.12;
 
+  public static final double ALGAE_INTAKE_SPEED = 9;
+  public static final double ALGAE_OUTTAKE_SPEED = -9;
+  public static final double HOLD_ALGAE_INTAKE_VOLTAGE = 0.20;
+  public static final AngularVelocity ALGAE_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(14500 / 60);
+  public static final Current ALGAE_INTAKE_HAS_GP_CURRENT = Amps.of(6.5);
+  
   private static final TalonFX pivotMotor = new TalonFX(32, "rio");
   private static final TalonFX intakeRollersMotor = new TalonFX(21, "rio");
 
@@ -32,28 +44,28 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET + MIN_ANGLE);
 
     private static final ProfiledPIDController pid = new ProfiledPIDController(
-    0.0, // kP
+    0.2, // kP
     0.0, // kI
     0.0, // kD
     new TrapezoidProfile.Constraints(
-      3.0, // max velocity in volts
-      2.0 // max velocity in volts/second
+      1000.0,
+      10000.0
     )
   );
   private static final ArmFeedforward feedforward = new ArmFeedforward(
-    0.0,
-    0.0, 
-    0.0, 
+    0.16 ,
+    0.022, 
+    0.00070, 
     0.0
   );
 
   private double lastSpeed = 0;
   private double lastTime = 0;
 
-  private double target = MAX_ANGLE;
+  private double target = MIN_ANGLE;
   public AlgaeIntakeSubsystem() {
-    SmartDashboard.putNumber("Pivot Target", target);
-      SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
+    encoder.setInverted(true);
+
   }
 
   public double getRevMeasurement() {
@@ -75,19 +87,23 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     target = MAX_ANGLE;
   }
   public void goToRotation(double goalRotation) {
-    double pidVal = pid.calculate(getRevMeasurement(), goalRotation);
-    double acceleration = (pid.getSetpoint().velocity - lastSpeed) / (Timer.getFPGATimestamp() - lastTime);
-    double voltage =  Math.max(Math.min(pidVal + feedforward.calculate(pid.getSetpoint().velocity, acceleration), 1), -1);
+    pid.setGoal(goalRotation);
+    double pidVal = pid.calculate(getRevMeasurement());
+    double velocity = pid.getSetpoint().velocity;
+    double feedforwardval = feedforward.calculate(lastSpeed, velocity, Timer.getFPGATimestamp() - lastTime);
+    double voltage =  Math.max(Math.min(pidVal + feedforwardval, MAX_VOLTAGE), -MAX_VOLTAGE);
     pivotMotor.setVoltage(voltage);
-    lastSpeed = pid.getSetpoint().velocity;
+    lastSpeed = velocity;
     lastTime = Timer.getFPGATimestamp();
+    SmartDashboard.putNumber("Voltage", voltage);
   }
 
   public enum AngleTarget {
     // Unit: Degrees
-    Intake(MIN_ANGLE),
-    Score(70), 
-    Stow(MAX_ANGLE), 
+    Intake(MAX_ANGLE),
+    Score(40), 
+    Hold(40), 
+    Stow(MIN_ANGLE)
     ;
 
     private double targetValue;
@@ -111,26 +127,24 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private class RotateCommand extends Command {
     private final AlgaeIntakeSubsystem algaeIntakeSubsystem;
     private double latestMeasurement;
+    private double target;
 
     public RotateCommand(AlgaeIntakeSubsystem algaeIntakeSubsystem, double AngleTarget) {
       target = Math.max(Math.min(target, 1.0), 0.0);
       this.algaeIntakeSubsystem = algaeIntakeSubsystem;
-      algaeIntakeSubsystem.target = AngleTarget;
+      this.target = AngleTarget;
       addRequirements(algaeIntakeSubsystem);
     }
 
     @Override // every 20ms
     public void execute() {
       latestMeasurement = getRevMeasurement();
-      algaeIntakeSubsystem.goToRotation(target);
-      SmartDashboard.putNumber("Pivot Target", target);
-      SmartDashboard.putNumber("Encoder Measurement", latestMeasurement);
-
+      algaeIntakeSubsystem.target=target;
     }
 
     @Override
     public void end(boolean isInterrupted) {
-      algaeIntakeSubsystem.rotateAtVoltage(0);
+      algaeIntakeSubsystem.rotateAtVoltage(0.5);
     }
 
     @Override
@@ -138,6 +152,127 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
       return false;
     }
   }
- 
+  
+  public void setAlgaeIntakeMotor(double speed) {
+    intakeRollersMotor.set(speed);
+  }
 
+  public boolean hasAlgae() {
+    Current intakeCurrent = intakeRollersMotor.getStatorCurrent().getValue();
+
+    AngularVelocity intakeVelocity = intakeRollersMotor.getVelocity().getValue();
+    double intakeAcceleration = intakeRollersMotor.getAcceleration().getValueAsDouble();
+
+    Current intakeHasGamePieceCurrent = ALGAE_INTAKE_HAS_GP_CURRENT;
+    AngularVelocity intakeHasGamePieceVelocity = ALGAE_INTAKE_HAS_GP_VELOCITY;
+
+    if ((intakeCurrent.gte(intakeHasGamePieceCurrent))
+        && (intakeVelocity.lte(intakeHasGamePieceVelocity))
+       ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public void startIntaking() {
+    intakeRollersMotor.setVoltage(ALGAE_INTAKE_SPEED);
+    target = AngleTarget.Intake.getValue();
+  }
+
+  public void startScoring() {
+    intakeRollersMotor.setVoltage(ALGAE_OUTTAKE_SPEED);
+    target = AngleTarget.Score.getValue();
+  }
+
+  public void stopScoring() {
+    intakeRollersMotor.setVoltage(0);
+    target = AngleTarget.Stow.getValue();
+  }
+
+
+  public void stopIntaking() {
+    intakeRollersMotor.setVoltage(HOLD_ALGAE_INTAKE_VOLTAGE);
+    target = AngleTarget.Hold.getValue();
+  }
+
+  public Command intakeCommand() {
+    return new AlgaeIntakeCommand(this);
+  }
+
+  public class AlgaeIntakeCommand extends Command {
+    private final AlgaeIntakeSubsystem intake;
+  
+    public AlgaeIntakeCommand(AlgaeIntakeSubsystem intake) {
+      this.intake = intake;
+      addRequirements(intake);
+    }
+  
+    @Override
+    public void initialize() {
+      
+    }
+
+    @Override
+    public void execute(){
+      if(!hasAlgae())
+        intake.startIntaking();
+      else{
+        intake.stopIntaking();
+      }
+
+    }
+  
+    @Override
+    public boolean isFinished() {
+      return hasAlgae();
+    }
+    @Override
+    public void end(boolean isInterrupted){
+      intake.stopIntaking();
+    }
+  }
+
+  public Command scoreCommand() {
+    return new AlgaeScoreCommand(this);
+  }
+
+  public class AlgaeScoreCommand extends Command {
+    private final AlgaeIntakeSubsystem intake;
+  
+    public AlgaeScoreCommand(AlgaeIntakeSubsystem intake) {
+      this.intake = intake;
+      addRequirements(intake);
+    }
+  
+    @Override
+    public void initialize() {
+      
+    }
+
+    @Override
+    public void execute(){
+      intake.startScoring();
+
+    }
+  
+    @Override
+    public boolean isFinished() {
+      return !hasAlgae();
+    }
+    @Override
+    public void end(boolean isInterrupted){
+      intake.stopScoring();
+    }
+  }
+  @Override
+  public void periodic() {
+    goToRotation(target);
+    SmartDashboard.putNumber("Pivot Target", target);
+    SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
+    SmartDashboard.putBoolean("has Algae", hasAlgae());
+    SmartDashboard.putString("intake Velocity", intakeRollersMotor.getVelocity().getValue().toString());
+    SmartDashboard.putString("intake Current", intakeRollersMotor.getStatorCurrent().getValue().toString());
+
+  }
 }

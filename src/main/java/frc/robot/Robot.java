@@ -116,10 +116,10 @@ public class Robot extends TimedRobot {
 
     //Algae Intake Controls
     robotController.rightTrigger().whileTrue(
-      algaeIntakeSubsystem.rotateCommand(AngleTarget.Intake)
+      algaeIntakeSubsystem.intakeCommand()
     );
     robotController.leftTrigger().whileTrue(
-      algaeIntakeSubsystem.rotateCommand(AngleTarget.Stow)
+      algaeIntakeSubsystem.scoreCommand()
     );
   }
 
