@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
@@ -83,6 +84,9 @@ public class Robot extends TimedRobot {
     robotController.b().whileTrue(
       coralScorer.timedScoreCoralCommand(true)
     );
+
+    // Shifting coral forward when elevator passes bumper
+    coralScorer.setDefaultCommand(coralScorer.coralShiftingCommand(elevator));
 
     // Elevator controls
     // Left dpad is elevate to coral intake level
