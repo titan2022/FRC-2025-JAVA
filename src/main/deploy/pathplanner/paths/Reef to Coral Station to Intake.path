@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5154713114754099,
-        "y": 1.5974897540983601
+        "x": 3.865178571428572,
+        "y": 2.4617665816326517
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.515471311475408,
-        "y": 1.5974897540983601
+        "x": 1.3887362852784921,
+        "y": 1.065553927765431
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "south start"
     },
     {
       "anchor": {
-        "x": 3.596311475409836,
-        "y": 6.392571721311475
+        "x": 1.164030612244898,
+        "y": 0.9768813775510193
       },
       "prevControl": {
-        "x": 2.596311475409836,
-        "y": 6.392571721311475
+        "x": 2.325413299111803,
+        "y": 1.628877140839191
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "coral station"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 55.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

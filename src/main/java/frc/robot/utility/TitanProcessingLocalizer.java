@@ -3,10 +3,8 @@ package frc.robot.utility;
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utility.networking.NetworkingCall;
 import frc.robot.utility.networking.NetworkingServer;
@@ -14,7 +12,7 @@ import frc.robot.utility.networking.types.NetworkingPose;
 
 public class TitanProcessingLocalizer extends Localizer {
   private final NetworkingServer server;
-  private LocalizerMeasurement measurement;
+  private LocalizerMeasurement measurement = null;
 
   public TitanProcessingLocalizer(int port) {
     server = new NetworkingServer(port);

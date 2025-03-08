@@ -6,14 +6,12 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
@@ -23,6 +21,9 @@ import frc.robot.subsystems.DealgifierSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.utility.Localizers;
+import frc.robot.utility.OdometryLocalizer;
+import frc.robot.utility.TitanProcessingLocalizer;
 
 
 public class Robot extends TimedRobot {
@@ -44,10 +45,10 @@ public class Robot extends TimedRobot {
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final DealgifierSubsystem dealgifierSubsystem = new DealgifierSubsystem();
 
-  // private final Localizers localizers = new Localizers(
-  //   new OdometryLocalizer(drivetrain), 
-  //   new TitanProcessingLocalizer(5800)
-  // );
+  private final Localizers localizers = new Localizers(
+    new OdometryLocalizer(drivetrain), 
+    new TitanProcessingLocalizer(5800)
+  );
 
   @Override
   public void robotInit() {
@@ -113,12 +114,28 @@ public class Robot extends TimedRobot {
 
   public void setUpAutos() {
     // Register named commands
-    NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-    NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
-    NamedCommands.registerCommand("print hello", Commands.print("hello"));
+    NamedCommands.registerCommand("Elevate to intake level", elevator.elevateCommand(ElevationTarget.CoralIntake));
+    NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
+    NamedCommands.registerCommand("Elevate L2", elevator.elevateCommand(ElevationTarget.L2));
+    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3));
+    NamedCommands.registerCommand("Elevate Algae L2", elevator.elevateCommand(ElevationTarget.AlgaeL2));
+    NamedCommands.registerCommand("Elevate Algae L3", elevator.elevateCommand(ElevationTarget.AlgaeL3));
+
+    // TODO: Figure out how to finish elevating before ending the command
+    NamedCommands.registerCommand("Intake coral", 
+      elevator.elevateCommand(ElevationTarget.CoralIntake)
+      .andThen(
+        new CoralIntakeCommand(coralIntake, coralScorer)
+      )
+    );
+
+    NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
+
+    NamedCommands.registerCommand("Reef left align", Commands.print("Warning: reef align is not implemented!"));
+    NamedCommands.registerCommand("Reef right align", Commands.print("Warning: reef align is not implemented!"));
 
     // Use event markers as triggers
-    new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
+    // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
 
     // Add the auto chooser to the SmartDashboard so we can select the auto from the dropdown
     SmartDashboard.putData(autoChooser);
