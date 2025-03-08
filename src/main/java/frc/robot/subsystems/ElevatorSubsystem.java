@@ -84,7 +84,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     rightMotorLeader.getConfigurator().apply(Elevator_Config);
     leftMotorFollower.getConfigurator().apply(Elevator_Config);
     // TODO: Use a non-deprecated method
-    // Invert the right motor
+    // Invert the left motor
     leftMotorFollower.setControl(new Follower(rightMotorLeader.getDeviceID(), true));
     leftMotorFollower.setInverted(true);
     voltageRequest = new VoltageOut(0);
@@ -123,7 +123,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       elevateTarget = Math.max(Math.min(elevateTarget, MAX_HEIGHT_INCHES), MIN_HEIGHT_INCHES);
       this.elevateTarget = elevateTarget;
       addRequirements(elevator);
-      // It's fine to ignore the manual elevation because it should not take very long
+      // It's fine to ignore the joystick because the profile should not take very long
     }
 
     @Override // every 20ms
