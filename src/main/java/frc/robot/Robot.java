@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
   private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
   private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
-  private final DealgifierSubsystem dealgifierSubsystem = new DealgifierSubsystem();
+  private final DealgifierSubsystem dealgifier = new DealgifierSubsystem();
 
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
@@ -92,8 +92,14 @@ public class Robot extends TimedRobot {
     robotController.pov(0).whileTrue(elevator.elevateCommand(ElevationTarget.L3));
 
     // X any Y is elevate to remove algae levels
-    robotController.x().whileTrue(elevator.elevateCommand(ElevationTarget.AlgaeL2));
-    robotController.y().whileTrue(elevator.elevateCommand(ElevationTarget.AlgaeL3));
+    robotController.x().whileTrue(
+      elevator.elevateCommand(ElevationTarget.AlgaeL2)
+      .alongWith(dealgifier.dealgifyCommand())
+    );
+    robotController.y().whileTrue(
+      elevator.elevateCommand(ElevationTarget.AlgaeL2)
+      .alongWith(dealgifier.dealgifyCommand())
+    );
     
     elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
 
@@ -109,7 +115,7 @@ public class Robot extends TimedRobot {
     );
 
     // Dealgifier controls
-    robotController.a().whileTrue(dealgifierSubsystem.dealgifyCommand());
+    robotController.a().whileTrue(dealgifier.dealgifyCommand());
   }
 
   public void setUpAutos() {
@@ -118,8 +124,14 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
     NamedCommands.registerCommand("Elevate L2", elevator.elevateCommand(ElevationTarget.L2));
     NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3));
-    NamedCommands.registerCommand("Elevate Algae L2", elevator.elevateCommand(ElevationTarget.AlgaeL2));
-    NamedCommands.registerCommand("Elevate Algae L3", elevator.elevateCommand(ElevationTarget.AlgaeL3));
+    NamedCommands.registerCommand("Dealgify L2", 
+      elevator.elevateCommand(ElevationTarget.AlgaeL2)
+      .alongWith(dealgifier.dealgifyCommand())
+    );
+    NamedCommands.registerCommand("Dealgify L3", 
+      elevator.elevateCommand(ElevationTarget.AlgaeL3)
+      .alongWith(dealgifier.dealgifyCommand())
+    );
 
     // TODO: Figure out how to finish elevating before ending the command
     NamedCommands.registerCommand("Intake coral", 
