@@ -23,7 +23,7 @@ import com.pathplanner.lib.path.RotationTarget;
 
 
 public class AlgaeIntakeSubsystem extends SubsystemBase {
-  private static final double MIN_ANGLE = 17.5;    
+  private static final double MIN_ANGLE = 20.5;    
   private static final double MAX_ANGLE = 80; 
   private static final double REV_OFFSET = -122.9410721235268; // Offset for REV absolute encoder 
   private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if `false`
@@ -33,8 +33,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   public static final double ALGAE_INTAKE_SPEED = 9;
   public static final double ALGAE_OUTTAKE_SPEED = -9;
   public static final double HOLD_ALGAE_INTAKE_VOLTAGE = 0.20;
-  public static final AngularVelocity ALGAE_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(14500 / 60);
-  public static final Current ALGAE_INTAKE_HAS_GP_CURRENT = Amps.of(6.5);
+  public static final AngularVelocity ALGAE_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(4500 / 60);
+  public static final Current ALGAE_INTAKE_HAS_GP_CURRENT = Amps.of(5);
   
   private static final TalonFX pivotMotor = new TalonFX(32, "rio");
   private static final TalonFX intakeRollersMotor = new TalonFX(21, "rio");
@@ -44,7 +44,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET + MIN_ANGLE);
 
     private static final ProfiledPIDController pid = new ProfiledPIDController(
-    0.2, // kP
+    0.1, // kP
     0.0, // kI
     0.0, // kD
     new TrapezoidProfile.Constraints(
@@ -53,7 +53,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     )
   );
   private static final ArmFeedforward feedforward = new ArmFeedforward(
-    0.16 ,
+    0.10 ,
     0.022, 
     0.00070, 
     0.0
@@ -101,8 +101,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   public enum AngleTarget {
     // Unit: Degrees
     Intake(MAX_ANGLE),
-    Score(40), 
-    Hold(40), 
+    Score(45), 
+    Hold(45), 
     Stow(MIN_ANGLE)
     ;
 
@@ -194,6 +194,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   public void stopIntaking() {
     intakeRollersMotor.setVoltage(HOLD_ALGAE_INTAKE_VOLTAGE);
     target = AngleTarget.Hold.getValue();
+
   }
 
   public Command intakeCommand() {
