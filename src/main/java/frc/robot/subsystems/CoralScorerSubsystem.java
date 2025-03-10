@@ -18,8 +18,12 @@ public class CoralScorerSubsystem extends SubsystemBase {
   private static final double SCORE_CORAL_SPEED = 1.5; // in volts
   private static final long SCORE_CORAL_TIMEOUT = 1 * 1000000; // microseconds
   private static final long INDEX_CORAL_TIMEOUT = 1 * 150000; // microseconds
+  private static final long SHIFT_FORWARD_CORAL_TIMEOUT = 1 * 20000;
+
+  private static final long SHIFT_BACKWARD_CORAL_TIMEOUT = 1 * 48000;
+
   // TODO: determine this
-  private static final double CORAL_SHIFT_ELEVATOR_HEIGHT_INCHES = 15.0;
+  private static final double CORAL_SHIFT_ELEVATOR_HEIGHT_INCHES = 4.0;
   
   private static final TalonFX scoringMotor = new TalonFX(42, "rio");
   private static final Canandcolor canandcolor = new Canandcolor(0);
@@ -51,6 +55,7 @@ public class CoralScorerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Canandcolor proximity", canandcolor.getProximity());
+    SmartDashboard.putBoolean("Coral shifted", coralShifted);
   }
 
   public void resetCoralShifting() {
@@ -110,10 +115,18 @@ public class CoralScorerSubsystem extends SubsystemBase {
     private long startTime; // relative to RobotController.getFPGATime()
     private CoralScorerSubsystem coralScorer;
     private boolean isReversed = false;
+    private long time = SCORE_CORAL_TIMEOUT;
 
     public TimedScoreCoralCommand(CoralScorerSubsystem coralScorer, boolean isReversed) {
       this.coralScorer = coralScorer;
       this.isReversed = isReversed;
+      addRequirements(coralScorer);
+    }
+
+    public TimedScoreCoralCommand(CoralScorerSubsystem coralScorer, boolean isReversed, long time) {
+      this.coralScorer = coralScorer;
+      this.isReversed = isReversed;
+      this.time = time;
       addRequirements(coralScorer);
     }
 
@@ -131,7 +144,7 @@ public class CoralScorerSubsystem extends SubsystemBase {
 
     @Override
     public boolean isFinished() {
-      return false;//RobotController.getFPGATime() >= startTime + SCORE_CORAL_TIMEOUT;
+      return RobotController.getFPGATime() >= startTime + time;
     }
   }
 
@@ -148,17 +161,17 @@ public class CoralScorerSubsystem extends SubsystemBase {
 
     @Override
     public void initialize() {
-      new Trigger(() -> !coralMoving && !coralMovedAfterShift && elevatorHeight >= CORAL_SHIFT_ELEVATOR_HEIGHT_INCHES && !coralShifted).onTrue(
+      new Trigger(() -> !coralMoving && elevatorHeight >= CORAL_SHIFT_ELEVATOR_HEIGHT_INCHES && !coralShifted).onTrue(
         new SequentialCommandGroup(
           Commands.runOnce(() -> {coralShifted = true;}),
-          timedScoreCoralCommand(false).withTimeout(0.0)
+          timedScoreCoralCommand(false,SHIFT_FORWARD_CORAL_TIMEOUT)
         )
       );
       
-      new Trigger(() -> !coralMoving && !coralMovedAfterShift && elevatorHeight < CORAL_SHIFT_ELEVATOR_HEIGHT_INCHES && coralShifted).onTrue(
+      new Trigger(() -> !coralMoving && elevatorHeight < CORAL_SHIFT_ELEVATOR_HEIGHT_INCHES && coralShifted).onTrue(
         new SequentialCommandGroup(
-          Commands.runOnce(() -> {coralShifted = false;}),
-          timedScoreCoralCommand(true).withTimeout(0.0)
+          timedScoreCoralCommand(true,(long)(SHIFT_BACKWARD_CORAL_TIMEOUT)),
+          Commands.runOnce(() -> {coralShifted = false;})
         )
       );
     }
@@ -167,7 +180,7 @@ public class CoralScorerSubsystem extends SubsystemBase {
     public void execute() {
       elevatorHeight = elevator.getElevatorPosition();
       if (elevatorHeight < CORAL_SHIFT_ELEVATOR_HEIGHT_INCHES) {
-        resetCoralShifting();
+        //resetCoralShifting();
       }
     }
 
@@ -186,6 +199,12 @@ public class CoralScorerSubsystem extends SubsystemBase {
    */
   public Command timedScoreCoralCommand(boolean isReversed) {
     return new TimedScoreCoralCommand(this, isReversed);
+  }
+
+  /** Command that scores coral for a specified time.
+   */
+  public Command timedScoreCoralCommand(boolean isReversed, long time) {
+    return new TimedScoreCoralCommand(this, isReversed, time);
   }
 
   /*
