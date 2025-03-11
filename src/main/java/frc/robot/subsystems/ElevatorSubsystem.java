@@ -147,7 +147,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // https://www.desmos.com/calculator/ocl2iqiu7n
     // Unit: inches
     CoralIntake(0),
-    L1(13.899),
+    L1(17),
     L2(24.899),
     L3(40.298),
     AlgaeL2(20.899),

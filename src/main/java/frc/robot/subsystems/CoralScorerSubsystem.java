@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class CoralScorerSubsystem extends SubsystemBase {
   private static final double PROXIMITY_THRESHOLD = 0.020;
-  private static final double MOVE_CORAL_SPEED = 1.8; // in volts
-  private static final double SCORE_CORAL_SPEED = 1.5; // in volts
+  private static final double MOVE_CORAL_SPEED = 3; // in volts
+  private static final double SCORE_CORAL_SPEED = 3; // in volts
   private static final long SCORE_CORAL_TIMEOUT = 1 * 1000000; // microseconds
-  private static final long INDEX_CORAL_TIMEOUT = 1 * 150000; // microseconds
+  private static final long INDEX_CORAL_TIMEOUT = 4 * 150000; // microseconds
   private static final long SHIFT_FORWARD_CORAL_TIMEOUT = 1 * 20000;
 
   private static final long SHIFT_BACKWARD_CORAL_TIMEOUT = 1 * 48000;
@@ -108,7 +108,7 @@ public class CoralScorerSubsystem extends SubsystemBase {
     if (coralShifted) {
       coralMovedAfterShift = true;
     }
-    scoringMotor.setVoltage(SCORE_CORAL_SPEED * (isReversed ? -0.75 : 1));
+    scoringMotor.setVoltage(SCORE_CORAL_SPEED * (isReversed ? -0.4 : 1));
   }
 
   private class TimedScoreCoralCommand extends Command {
