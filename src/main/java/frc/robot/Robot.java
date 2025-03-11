@@ -161,7 +161,7 @@ public class Robot extends TimedRobot {
   }
 
   public Command getAutonomousCommand() {
-    return null;//autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 
   @Override
