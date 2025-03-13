@@ -11,7 +11,7 @@ public class Localizers {
   private boolean isMixed = false;
   private boolean hasSubscribedToVision = false;
 
-  private final boolean HAS_TITAN_PROCESSING = false;
+  private final boolean HAS_TITAN_PROCESSING = true;
 
   public Localizers(OdometryLocalizer odometryLocalizer, TitanProcessingLocalizer visionLocalizer) {
     this.odometryLocalizer = odometryLocalizer;
