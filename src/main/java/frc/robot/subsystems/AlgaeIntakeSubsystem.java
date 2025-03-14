@@ -33,8 +33,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   public static final double ALGAE_INTAKE_SPEED = 9;
   public static final double ALGAE_OUTTAKE_SPEED = -12;
   public static final double HOLD_ALGAE_INTAKE_VOLTAGE = 0.20;
-  public static final AngularVelocity ALGAE_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(-5000 / 60);
-  public static final Current ALGAE_INTAKE_HAS_GP_CURRENT = Amps.of(4.0);
+  public static final AngularVelocity ALGAE_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(-4000 / 60);
+  public static final Current ALGAE_INTAKE_HAS_GP_CURRENT = Amps.of(4.5);
   
   private static final TalonFX pivotMotor = new TalonFX(32, "rio");
   private static final TalonFX intakeRollersMotor = new TalonFX(21, "rio");
@@ -101,7 +101,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     // Unit: Degrees
     Intake(MAX_ANGLE),
     Score(45), 
-    Hold(45), 
+    Hold(55), 
     Stow(MIN_ANGLE)
     ;
 
