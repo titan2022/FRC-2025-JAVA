@@ -1,5 +1,8 @@
 package frc.robot.utility;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -122,7 +125,22 @@ public final class Constants {
 	}
 
 	public static final class RobotSize {
-		public static final double WIDTH = 1;
-		public static final double LENGTH = 1;
+		public static final double FRAME_WIDTH = 1;
+		public static final double FRAME_LENGTH = 1;
+
+		public static final double BUMPER_THICKNESS = 1;
+
+		public static final double WIDTH = FRAME_WIDTH + 2*BUMPER_THICKNESS;
+		public static final double LENGTH = FRAME_LENGTH + 2*BUMPER_THICKNESS;
+
+		public static final double WIDE_RADIUS = WIDTH / 2;
+		public static final double LONG_RADIUS = LENGTH / 2;
 	}
+
+	public static final AprilTagFieldLayout tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+
+	public static final double FIELD_LENGTH_METERS = tagLayout.getFieldLength();
+  public static final double FIELD_WIDTH_METERS = tagLayout.getFieldWidth();
+  public static final Translation2d FIELD_CENTER =
+      new Translation2d(FIELD_LENGTH_METERS / 2, FIELD_WIDTH_METERS / 2);
 }

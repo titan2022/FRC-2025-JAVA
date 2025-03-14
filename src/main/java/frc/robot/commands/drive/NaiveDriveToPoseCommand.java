@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.TunerConstants;
 import frc.robot.utility.Localizer;
-
+import frc.robot.utility.ReefLocations;
 import frc.robot.utility.Constants.Unit;
 
 public class NaiveDriveToPoseCommand extends Command {
@@ -57,10 +57,22 @@ public class NaiveDriveToPoseCommand extends Command {
     )
   );
 
-  public NaiveDriveToPoseCommand(CommandSwerveDrivetrain drivetrain, Pose2d target, Localizer localizer) {
+  public NaiveDriveToPoseCommand(CommandSwerveDrivetrain drivetrain, Localizer localizer, Pose2d target) {
     this.target = target;
     this.drivetrain = drivetrain;
     this.localizer = localizer;
+  }
+
+  public static NaiveDriveToPoseCommand driveToNearestLeftScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
+    return new NaiveDriveToPoseCommand(drivetrain, localizer,
+      ReefLocations.nearestLeftScoringLocation(localizer.getMeasurement().pose)
+    );
+  }
+
+  public static NaiveDriveToPoseCommand driveToNearestRightScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
+    return new NaiveDriveToPoseCommand(drivetrain, localizer,
+      ReefLocations.nearestRightScoringLocation(localizer.getMeasurement().pose)
+    );
   }
 
   private Pose2d getMeasurement() {
@@ -90,5 +102,4 @@ public class NaiveDriveToPoseCommand extends Command {
   public void end(boolean interrupted) {
     drivetrain.setVelocities(new ChassisSpeeds(0, 0, 0));
   }
-
 }

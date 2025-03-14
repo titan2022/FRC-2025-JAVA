@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
+import frc.robot.commands.drive.NaiveDriveToPoseCommand;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.CoralScorerSubsystem;
 import frc.robot.subsystems.DealgifierSubsystem;
@@ -117,6 +118,10 @@ public class Robot extends TimedRobot {
 
     // Dealgifier controls
     robotController.a().whileTrue(dealgifier.dealgifyCommand());
+
+    // Auto align
+    driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getVision()));
+    driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
   }
 
   public void setUpAutos() {
