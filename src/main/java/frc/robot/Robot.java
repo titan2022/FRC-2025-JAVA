@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
 
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
-    new TitanProcessingLocalizer(5800)
+    new TitanProcessingLocalizer(5801)
   );
 
   @Override
@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
-    // localizers.step();
+    localizers.step();
   }
 
   @Override
