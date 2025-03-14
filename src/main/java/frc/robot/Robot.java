@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
 
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
-    new TitanProcessingLocalizer(5801)
+    new TitanProcessingLocalizer(5804)
   );
 
   @Override
