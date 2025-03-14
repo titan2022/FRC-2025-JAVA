@@ -69,7 +69,7 @@ public abstract class Localizer {
 
   // Non-abstract parts begin here.
 
-  private ArrayList<NetworkingCall<LocalizerMeasurement>> subscribers;
+  private ArrayList<NetworkingCall<LocalizerMeasurement>> subscribers = new ArrayList<>();
 
   /**
    * Subscribe to receive localizer measurements.

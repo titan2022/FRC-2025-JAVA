@@ -12,7 +12,7 @@ import frc.robot.utility.networking.types.NetworkingPose;
 
 public class TitanProcessingLocalizer extends Localizer {
   private final NetworkingServer server;
-  private LocalizerMeasurement measurement = null;
+  private LocalizerMeasurement measurement = new LocalizerMeasurement(new Pose2d(), Double.NEGATIVE_INFINITY);
 
   public TitanProcessingLocalizer(int port) {
     server = new NetworkingServer(port);

@@ -23,8 +23,10 @@ import frc.robot.subsystems.DealgifierSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.utility.Constants;
 import frc.robot.utility.Localizers;
 import frc.robot.utility.OdometryLocalizer;
+import frc.robot.utility.ReefLocations;
 import frc.robot.utility.TitanProcessingLocalizer;
 
 
@@ -62,6 +64,9 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
     localizers.step();
+
+    SmartDashboard.putNumber("x-distance to tag 17", localizers.getVision().getMeasurement().pose.getX() - Constants.tagLayout.getTagPose(17).get().getX());
+    SmartDashboard.putNumber("y-distance to tag 17", localizers.getVision().getMeasurement().pose.getY() - Constants.tagLayout.getTagPose(17).get().getY());
   }
 
   @Override
