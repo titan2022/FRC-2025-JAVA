@@ -33,7 +33,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   public static final double ALGAE_INTAKE_SPEED = 9;
   public static final double ALGAE_OUTTAKE_SPEED = -12;
   public static final double HOLD_ALGAE_INTAKE_VOLTAGE = 0.20;
-  public static final AngularVelocity ALGAE_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(-5000 / 60);
+  public static final AngularVelocity ALGAE_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(-4500 / 60);
   public static final Current ALGAE_INTAKE_HAS_GP_CURRENT = Amps.of(4.0);
   
   private static final TalonFX pivotMotor = new TalonFX(32, "rio");
@@ -44,9 +44,9 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET);
 
     private static final ProfiledPIDController pid = new ProfiledPIDController(
-    0.1, // kP
-    0.01, // kI
-    0.001, // kD
+    0.25, // kP
+    0.02, // kI
+    0.002, // kD
     new TrapezoidProfile.Constraints(
       5000.0,
       5000.0
@@ -55,7 +55,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final ArmFeedforward feedforward = new ArmFeedforward(
     0.08 ,
     0.16, 
-    0.100, 
+    0.400, 
     0.000
   );
 
