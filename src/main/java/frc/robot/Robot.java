@@ -118,7 +118,7 @@ public class Robot extends TimedRobot {
     // Elevate down to the coral intake level,
     // then run the coral intake and scorer motors to move the coral in.
     robotController.leftBumper().whileTrue(
-      // elevator.elevateCommand(ElevationTarget.CoralIntake)
+        //elevator.elevateCommand(ElevationTarget.CoralIntake)
       // .andThen(
         new CoralIntakeCommand(coralIntake, coralScorer)
       // )
@@ -128,8 +128,8 @@ public class Robot extends TimedRobot {
     robotController.a().whileTrue(dealgifier.dealgifyCommand());
 
     // Auto align
-    driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getVision()));
-    driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
+    //driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getVision()));
+    //driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
 
     //Algae Intake Controls
     robotController.rightTrigger().whileTrue(
@@ -165,8 +165,8 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
-    NamedCommands.registerCommand("Reef left align", Commands.print("Warning: reef align is not implemented!"));
-    NamedCommands.registerCommand("Reef right align", Commands.print("Warning: reef align is not implemented!"));
+    //NamedCommands.registerCommand("Reef left align", Commands.print("Warning: reef align is not implemented!"));
+    //NamedCommands.registerCommand("Reef right align", Commands.print("Warning: reef align is not implemented!"));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
@@ -179,7 +179,7 @@ public class Robot extends TimedRobot {
   }
 
   public Command getAutonomousCommand() {
-    return null;//autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 
   @Override
