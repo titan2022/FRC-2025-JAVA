@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Test Path #1"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Intake coral"
@@ -19,13 +25,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Elevate L3"
+            "name": "Reef left align"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "Elevate L3"
           }
         }
       ]

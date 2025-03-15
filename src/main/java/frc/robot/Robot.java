@@ -145,7 +145,7 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("Elevate to intake level", elevator.elevateCommand(ElevationTarget.CoralIntake));
     NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
     NamedCommands.registerCommand("Elevate L2", elevator.elevateCommand(ElevationTarget.L2));
-    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3));
+    //NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3));
     NamedCommands.registerCommand("Dealgify L2", 
       elevator.elevateCommand(ElevationTarget.AlgaeL2)
       .alongWith(dealgifier.dealgifyCommand())
