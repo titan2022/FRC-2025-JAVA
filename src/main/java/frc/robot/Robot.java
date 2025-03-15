@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.RotationTarget;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -17,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
 import frc.robot.commands.drive.NaiveDriveToPoseCommand;
+import frc.robot.subsystems.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.AlgaeIntakeSubsystem.AngleTarget;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.CoralScorerSubsystem;
 import frc.robot.subsystems.DealgifierSubsystem;
@@ -46,6 +49,7 @@ public class Robot extends TimedRobot {
   private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final DealgifierSubsystem dealgifier = new DealgifierSubsystem();
+  private final AlgaeIntakeSubsystem algaeIntakeSubsystem = new AlgaeIntakeSubsystem();
 
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
@@ -83,11 +87,13 @@ public class Robot extends TimedRobot {
 
     // Backwards coral scoring
     robotController.b().whileTrue(
+    robotController.b().whileTrue(
       coralScorer.timedScoreCoralCommand(true)
     );
 
     // Elevator controls
     // Left dpad is elevate to coral intake level
+    robotController.pov(270).whileTrue (elevator.elevateCommand(ElevationTarget.CoralIntake));
     robotController.pov(270).whileTrue (elevator.elevateCommand(ElevationTarget.CoralIntake));
     robotController.pov(180).whileTrue(elevator.elevateCommand(ElevationTarget.L1));
     robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
@@ -122,6 +128,14 @@ public class Robot extends TimedRobot {
     // Auto align
     driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getVision()));
     driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
+
+    //Algae Intake Controls
+    robotController.rightTrigger().whileTrue(
+      algaeIntakeSubsystem.intakeCommand()
+    );
+    robotController.leftTrigger().whileTrue(
+      algaeIntakeSubsystem.scoreCommand()
+    );
   }
 
   public void setUpAutos() {
@@ -191,6 +205,7 @@ public class Robot extends TimedRobot {
     }
     
     // Quick fix
+    //elevator.resetTarget();
     //elevator.resetTarget();
   }
 

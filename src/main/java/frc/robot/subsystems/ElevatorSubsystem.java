@@ -11,8 +11,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.units.Units;
 
+import edu.wpi.first.units.Units;
+
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -22,7 +29,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.ControlModeValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -31,9 +42,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   private static final double MAX_HEIGHT_INCHES = 40.298;
   private static final double MIN_HEIGHT_INCHES = 0;
   private static double ELEVATION_GEAR_RATIO = 6.4 / (1.757 * Math.PI * 2) ;
+  private static final double MAX_HEIGHT_INCHES = 40.298;
+  private static final double MIN_HEIGHT_INCHES = 0;
+  private static double ELEVATION_GEAR_RATIO = 6.4 / (1.757 * Math.PI * 2) ;
 
   // We have two Falcon 500s
   // TODO: Specify CAN IDss
+  private static final TalonFX leftMotorFollower = new TalonFX(40, "rio");
+  private static final TalonFX rightMotorLeader = new TalonFX(41, "rio");
   private static final TalonFX leftMotorFollower = new TalonFX(40, "rio");
   private static final TalonFX rightMotorLeader = new TalonFX(41, "rio");
 
@@ -79,8 +95,52 @@ public class ElevatorSubsystem extends SubsystemBase {
     Elevator_Config.CurrentLimits.SupplyCurrentLowerTime = 1;
 
   }
+  MotionMagicVoltage motionRequest;
+  PositionVoltage positionRequest;
+  VoltageOut voltageRequest = new VoltageOut(0);
+
+  double currentLeftPosition = 0;
+  double currentRightPosition = 0;
+
+  double targetPosition = 0;
+
+  public static TalonFXConfiguration Elevator_Config = new TalonFXConfiguration();
+  static{
+
+    Elevator_Config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    Elevator_Config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = MAX_HEIGHT_INCHES; // Test Upper Limit
+    Elevator_Config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    Elevator_Config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = MIN_HEIGHT_INCHES;
+    
+    Elevator_Config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    Elevator_Config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    
+    Elevator_Config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+    Elevator_Config.Feedback.SensorToMechanismRatio = ELEVATION_GEAR_RATIO;
+
+    Elevator_Config.Slot0.kG = 0.2; //0.3
+    Elevator_Config.Slot0.kS = 0.05; //0.4
+    Elevator_Config.Slot0.kV = 0.02; //0.001
+    Elevator_Config.Slot0.kA = 0.001; //0.0
+    Elevator_Config.Slot0.kP = 0.5; //0.5
+    Elevator_Config.Slot0.kI = 0.0;
+    Elevator_Config.Slot0.kD = 0.0;
+    Elevator_Config.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
+
+    Elevator_Config.MotionMagic.MotionMagicCruiseVelocity = 600;
+    Elevator_Config.MotionMagic.MotionMagicAcceleration = 400;
+    Elevator_Config.MotionMagic.MotionMagicExpo_kV = 0.12;
+
+    Elevator_Config.CurrentLimits.SupplyCurrentLimitEnable = true;
+    Elevator_Config.CurrentLimits.SupplyCurrentLowerLimit = 30;
+    Elevator_Config.CurrentLimits.SupplyCurrentLimit = 60;
+    Elevator_Config.CurrentLimits.SupplyCurrentLowerTime = 1;
+
+  }
 
   public ElevatorSubsystem() {
+    rightMotorLeader.getConfigurator().apply(Elevator_Config);
+    leftMotorFollower.getConfigurator().apply(Elevator_Config);
     rightMotorLeader.getConfigurator().apply(Elevator_Config);
     leftMotorFollower.getConfigurator().apply(Elevator_Config);
     // TODO: Use a non-deprecated method
@@ -167,6 +227,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     rightMotorLeader.setVoltage(voltage);
   }
   
+  public void elevateAtVoltage(double voltage) {
+    rightMotorLeader.setVoltage(voltage);
+  }
+  
 
   private class ManualElevationCommand extends Command {
     private final CommandXboxController controller;
@@ -186,7 +250,10 @@ public class ElevatorSubsystem extends SubsystemBase {
       double input = -controller.getLeftY();
       if (Math.abs(input) > JOYSTICK_DEADBAND) {
         targetPosition = targetPosition + input;
+        targetPosition = targetPosition + input;
       }
+      targetPosition = Math.max(Math.min(targetPosition, MAX_HEIGHT_INCHES), MIN_HEIGHT_INCHES);
+      setPosition(targetPosition);
       targetPosition = Math.max(Math.min(targetPosition, MAX_HEIGHT_INCHES), MIN_HEIGHT_INCHES);
       setPosition(targetPosition);
     }
@@ -195,6 +262,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command manualElevationCommand(CommandXboxController controller) {
     return new ManualElevationCommand(this, controller);
   }
+ 
  
   @Override
   public void periodic() {
