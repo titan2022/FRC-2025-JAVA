@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3887362852784921,
-        "y": 1.065553927765431
+        "x": 1.5215293339523566,
+        "y": 1.1969631991973335
       },
       "isLocked": false,
       "linkedName": "south start"
@@ -20,8 +20,8 @@
         "y": 0.9768813775510193
       },
       "prevControl": {
-        "x": 2.325413299111803,
-        "y": 1.628877140839191
+        "x": 2.5780159988063662,
+        "y": 1.7593725806822853
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake coral",
+      "waypointRelativePos": 0.38034188034188093,
+      "endWaypointRelativePos": 1.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

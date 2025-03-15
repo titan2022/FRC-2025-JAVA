@@ -13,18 +13,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Reef right align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Elevate L3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Score coral"
           }
         },
@@ -38,18 +26,6 @@
           "type": "path",
           "data": {
             "pathName": "Coral Station to Reef to Score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Reef left align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Elevate L3"
           }
         },
         {
