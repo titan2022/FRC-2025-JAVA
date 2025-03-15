@@ -87,7 +87,6 @@ public class Robot extends TimedRobot {
 
     // Backwards coral scoring
     robotController.b().whileTrue(
-    robotController.b().whileTrue(
       coralScorer.timedScoreCoralCommand(true)
     );
 
