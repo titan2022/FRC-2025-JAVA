@@ -90,6 +90,9 @@ public class Robot extends TimedRobot {
       coralScorer.timedScoreCoralCommand(true)
     );
 
+    // Shifting coral forward when elevator passes bumper
+    coralScorer.setDefaultCommand(coralScorer.coralShiftingCommand(elevator));
+
     // Elevator controls
     // Left dpad is elevate to coral intake level
     robotController.pov(270).whileTrue (elevator.elevateCommand(ElevationTarget.CoralIntake));
