@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.RotationTarget;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -17,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
 import frc.robot.commands.drive.NaiveDriveToPoseCommand;
+import frc.robot.subsystems.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.AlgaeIntakeSubsystem.AngleTarget;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.CoralScorerSubsystem;
 import frc.robot.subsystems.DealgifierSubsystem;
@@ -41,13 +44,14 @@ public class Robot extends TimedRobot {
   private DrivingCommand drivingCommand = new DrivingCommand(drivetrain, driveController);
 
   // Create auto chooser using all the autos in the project
-  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+  private SendableChooser<Command> autoChooser;
 
   // Subsystems
   private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
   private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final DealgifierSubsystem dealgifier = new DealgifierSubsystem();
+  private final AlgaeIntakeSubsystem algaeIntakeSubsystem = new AlgaeIntakeSubsystem();
 
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
@@ -91,8 +95,12 @@ public class Robot extends TimedRobot {
       coralScorer.timedScoreCoralCommand(true)
     );
 
+    // Shifting coral forward when elevator passes bumper
+    coralScorer.setDefaultCommand(coralScorer.coralShiftingCommand(elevator));
+
     // Elevator controls
     // Left dpad is elevate to coral intake level
+    robotController.pov(270).whileTrue (elevator.elevateCommand(ElevationTarget.CoralIntake));
     robotController.pov(270).whileTrue (elevator.elevateCommand(ElevationTarget.CoralIntake));
     robotController.pov(180).whileTrue(elevator.elevateCommand(ElevationTarget.L1));
     robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
@@ -115,7 +123,7 @@ public class Robot extends TimedRobot {
     // Elevate down to the coral intake level,
     // then run the coral intake and scorer motors to move the coral in.
     robotController.leftBumper().whileTrue(
-      // elevator.elevateCommand(ElevationTarget.CoralIntake)
+        //elevator.elevateCommand(ElevationTarget.CoralIntake)
       // .andThen(
         new CoralIntakeCommand(coralIntake, coralScorer)
       // )
@@ -125,8 +133,16 @@ public class Robot extends TimedRobot {
     robotController.a().whileTrue(dealgifier.dealgifyCommand());
 
     // Auto align
-    driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getVision()));
-    driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
+    //driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getVision()));
+    //driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
+
+    //Algae Intake Controls
+    robotController.rightTrigger().whileTrue(
+      algaeIntakeSubsystem.intakeCommand()
+    );
+    robotController.leftTrigger().whileTrue(
+      algaeIntakeSubsystem.scoreCommand()
+    );
   }
 
   public void setUpAutos() {
@@ -154,12 +170,12 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
-    NamedCommands.registerCommand("Reef left align", Commands.print("Warning: reef align is not implemented!"));
+    //NamedCommands.registerCommand("Reef left align", Commands.print("Warning: reef align is not implemented!"));
     NamedCommands.registerCommand("Reef right align", Commands.print("Warning: reef align is not implemented!"));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
-
+    autoChooser = AutoBuilder.buildAutoChooser();
     // Add the auto chooser to the SmartDashboard so we can select the auto from the dropdown
     SmartDashboard.putData(autoChooser);
 
@@ -168,7 +184,7 @@ public class Robot extends TimedRobot {
   }
 
   public Command getAutonomousCommand() {
-    return null;//autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 
   @Override
@@ -196,6 +212,7 @@ public class Robot extends TimedRobot {
     }
     
     // Quick fix
+    //elevator.resetTarget();
     //elevator.resetTarget();
   }
 
