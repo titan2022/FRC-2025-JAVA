@@ -9,12 +9,6 @@
           "data": {
             "pathName": "Preloaded Robot to Reef to Score"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score coral"
-          }
         }
       ]
     }

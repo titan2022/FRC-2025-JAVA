@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score coral"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Reef to Coral Station to Intake"
@@ -26,12 +20,6 @@
           "type": "path",
           "data": {
             "pathName": "Coral Station to Reef to Score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score coral"
           }
         }
       ]

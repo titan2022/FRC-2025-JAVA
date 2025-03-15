@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
   private DrivingCommand drivingCommand = new DrivingCommand(drivetrain, driveController);
 
   // Create auto chooser using all the autos in the project
-  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+  private SendableChooser<Command> autoChooser;
 
   // Subsystems
   private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
@@ -145,7 +145,7 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("Elevate to intake level", elevator.elevateCommand(ElevationTarget.CoralIntake));
     NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
     NamedCommands.registerCommand("Elevate L2", elevator.elevateCommand(ElevationTarget.L2));
-    //NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3));
+    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3));
     NamedCommands.registerCommand("Dealgify L2", 
       elevator.elevateCommand(ElevationTarget.AlgaeL2)
       .alongWith(dealgifier.dealgifyCommand())
@@ -166,11 +166,11 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
     //NamedCommands.registerCommand("Reef left align", Commands.print("Warning: reef align is not implemented!"));
-    //NamedCommands.registerCommand("Reef right align", Commands.print("Warning: reef align is not implemented!"));
+    NamedCommands.registerCommand("Reef right align", Commands.print("Warning: reef align is not implemented!"));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
-
+    autoChooser = AutoBuilder.buildAutoChooser();
     // Add the auto chooser to the SmartDashboard so we can select the auto from the dropdown
     SmartDashboard.putData(autoChooser);
 

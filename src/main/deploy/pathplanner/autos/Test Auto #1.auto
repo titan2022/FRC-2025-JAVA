@@ -5,9 +5,28 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Test Path #1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Test Path #1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevate L3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
           }
         }
       ]
