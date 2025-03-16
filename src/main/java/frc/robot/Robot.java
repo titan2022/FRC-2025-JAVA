@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
       .alongWith(dealgifier.dealgifyCommand())
     );
     robotController.y().whileTrue(
-      elevator.elevateCommand(ElevationTarget.AlgaeL2)
+      elevator.elevateCommand(ElevationTarget.AlgaeL3)
       .alongWith(dealgifier.dealgifyCommand())
     );
     
@@ -125,10 +125,10 @@ public class Robot extends TimedRobot {
     // Elevate down to the coral intake level,
     // then run the coral intake and scorer motors to move the coral in.
     robotController.leftBumper().whileTrue(
-        //elevator.elevateCommand(ElevationTarget.CoralIntake)
-      // .andThen(
+        elevator.elevateCommand(ElevationTarget.CoralIntake)
+        .andThen(
         new CoralIntakeCommand(coralIntake, coralScorer)
-      // )
+       )
     );
 
     // Dealgifier controls
