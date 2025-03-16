@@ -12,6 +12,8 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.TranslationalDrivebase;
 import frc.robot.subsystems.drive.TunerConstants;
 import frc.robot.utility.Utility;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 
 public class DrivingCommand extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
@@ -60,50 +62,50 @@ public class DrivingCommand extends Command {
     // ));
 
     // Dpad buttons
-    driveController.pov(0).whileTrue(drivetrain.applyRequest(() ->
-        (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
-          : robotCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
-    ));
-    driveController.pov(90).whileTrue(drivetrain.applyRequest(() ->
-        (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED)
-          : robotCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED))
-    ));
-    driveController.pov(180).whileTrue(drivetrain.applyRequest(() ->
-        (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
-          : robotCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
-    ));
-    driveController.pov(270).whileTrue(drivetrain.applyRequest(() ->
-        (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED)
-          : robotCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED))
-    ));
+    // driveController.pov(0).whileTrue(drivetrain.applyRequest(() ->
+    //     (isFieldOriented 
+    //       ? fieldCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
+    //       : robotCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
+    // ));
+    // driveController.pov(90).whileTrue(drivetrain.applyRequest(() ->
+    //     (isFieldOriented 
+    //       ? fieldCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED)
+    //       : robotCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED))
+    // ));
+    // driveController.pov(180).whileTrue(drivetrain.applyRequest(() ->
+    //     (isFieldOriented 
+    //       ? fieldCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
+    //       : robotCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
+    // ));
+    // driveController.pov(270).whileTrue(drivetrain.applyRequest(() ->
+    //     (isFieldOriented 
+    //       ? fieldCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED)
+    //       : robotCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED))
+    // ));
 
     // // Run SysId routines when holding back/start and X/Y.
     // // Note that each routine should be run exactly once in a single log.
-    // driveController.back().and(driveController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    // driveController.back().and(driveController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    // driveController.start().and(driveController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    // driveController.start().and(driveController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    // driveController.back().and(driveController.y()).whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // driveController.back().and(driveController.x()).whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // driveController.start().and(driveController.y()).whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // driveController.start().and(driveController.x()).whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
     // reset the field-centric heading on left bumper press
-    driveController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+     driveController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric())); 
     
-    // Alignment slow-down
-    driveController.rightBumper().whileTrue(drivetrain.runOnce(() -> {translationSpeedMultiplier = 0.18; rotationSpeedMultiplier = 0.4;}));
-    driveController.rightBumper().whileFalse(drivetrain.runOnce(() -> {translationSpeedMultiplier = 1.0; rotationSpeedMultiplier = 1.0;}));
+    // // Alignment slow-down
+    // driveController.rightBumper().whileTrue(drivetrain.runOnce(() -> {translationSpeedMultiplier = 0.18; rotationSpeedMultiplier = 0.4;}));
+    // driveController.rightBumper().whileFalse(drivetrain.runOnce(() -> {translationSpeedMultiplier = 1.0; rotationSpeedMultiplier = 1.0;}));
 
     // field-oriented
     driveController.back().onTrue(drivetrain.runOnce(() -> isFieldOriented = true));
     // robot-oriented
     driveController.start().onTrue(drivetrain.runOnce(() -> isFieldOriented = false));
 
-    // Quick back up motion for dealgifier
-    driveController.a().onTrue(drivetrain.applyRequest(() ->
-      robotCentricStrafe.withVelocityX(-5.0).withVelocityY(0)
-    ).withTimeout(0.1));
+    // // Quick back up motion for dealgifier
+    // driveController.a().onTrue(drivetrain.applyRequest(() ->
+    //   robotCentricStrafe.withVelocityX(-5.0).withVelocityY(0)
+    // ).withTimeout(0.1));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
   }

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.RotationTarget;
@@ -62,6 +63,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     setBindings();
     setUpAutos();
+    SignalLogger.setPath("/media/sda1/");
   }
 
   @Override
@@ -135,9 +137,8 @@ public class Robot extends TimedRobot {
     // Auto align
     //driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getVision()));
     //driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
-
     //Algae Intake Controls
-    robotController.rightTrigger().whileTrue(
+    robotController.rightTrigger  ().whileTrue(
       algaeIntakeSubsystem.intakeCommand()
     );
     robotController.leftTrigger().whileTrue(
@@ -211,6 +212,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     
+    SignalLogger.start();
     // Quick fix
     //elevator.resetTarget();
     //elevator.resetTarget();
@@ -231,7 +233,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+    SignalLogger.stop();
+  }
 
   @Override
   public void testInit() {
