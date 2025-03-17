@@ -152,18 +152,18 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
     NamedCommands.registerCommand("Elevate L2", 
     elevator.elevateCommand(ElevationTarget.L2)
-    .alongWith(coralScorer.coralShiftingCommand(elevator))
+    //.alongWith(coralScorer.coralShiftingCommand(elevator))
     );
     NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3)
-    .alongWith(coralScorer.coralShiftingCommand(elevator))
+    //.alongWith(coralScorer.coralShiftingCommand(elevator))
     );
     NamedCommands.registerCommand("Dealgify L2", 
       elevator.elevateCommand(ElevationTarget.AlgaeL2)
-      .alongWith(dealgifier.dealgifyCommand())
+      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.75)
     );
     NamedCommands.registerCommand("Dealgify L3", 
       elevator.elevateCommand(ElevationTarget.AlgaeL3)
-      .alongWith(dealgifier.dealgifyCommand())
+      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.75)
     );
 
     // TODO: Figure out how to finish elevating before ending the command

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.58858418367347,
-        "y": 0.6187181122448976
+        "x": 5.0,
+        "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.912115776460242,
-        "y": 0.4339072792106248
+        "x": 4.0,
+        "y": 6.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.010860655737704,
-        "y": 2.7962602459016397
+        "x": 2.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 5.706147540983607,
-        "y": 1.6574282786885248
+        "x": 3.0226137161704805,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Elevate to L3",
-      "waypointRelativePos": 0.5873694207027543,
-      "endWaypointRelativePos": 1.0,
+      "name": "Elevate to intake level",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Elevate L3"
+          "name": "Elevate to intake level"
         }
       }
     }
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Test Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
