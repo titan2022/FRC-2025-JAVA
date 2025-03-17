@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     setBindings();
     setUpAutos();
-    SignalLogger.setPath("/media/sda1/");
+    //SignalLogger.setPath("/media/sda1/");
   }
 
   @Override
@@ -150,8 +150,13 @@ public class Robot extends TimedRobot {
     // Register named commands
     NamedCommands.registerCommand("Elevate to intake level", elevator.elevateCommand(ElevationTarget.CoralIntake));
     NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
-    NamedCommands.registerCommand("Elevate L2", elevator.elevateCommand(ElevationTarget.L2));
-    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3));
+    NamedCommands.registerCommand("Elevate L2", 
+    elevator.elevateCommand(ElevationTarget.L2)
+    .alongWith(coralScorer.coralShiftingCommand(elevator))
+    );
+    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3)
+    .alongWith(coralScorer.coralShiftingCommand(elevator))
+    );
     NamedCommands.registerCommand("Dealgify L2", 
       elevator.elevateCommand(ElevationTarget.AlgaeL2)
       .alongWith(dealgifier.dealgifyCommand())
@@ -212,7 +217,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     
-    SignalLogger.start();
+    //SignalLogger.start();
     // Quick fix
     //elevator.resetTarget();
     //elevator.resetTarget();
@@ -234,7 +239,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopExit() {
-    SignalLogger.stop();
+    //SignalLogger.stop();
   }
 
   @Override

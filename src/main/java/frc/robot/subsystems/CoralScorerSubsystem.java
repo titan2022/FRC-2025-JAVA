@@ -17,7 +17,7 @@ public class CoralScorerSubsystem extends SubsystemBase {
   private static final double MOVE_CORAL_SPEED = 1.8; // in volts
   private static final double SCORE_CORAL_SPEED = 1.5; // in volts
   private static final long SCORE_CORAL_TIMEOUT = 1 * 1000000; // microseconds
-  private static final long INDEX_CORAL_TIMEOUT = 1 * 1500; // microseconds
+  private static final long INDEX_CORAL_TIMEOUT = 1 * 150000; // microseconds
   private static final long SHIFT_FORWARD_CORAL_TIMEOUT = 1 * 30000;
 
   private static final long SHIFT_BACKWARD_CORAL_TIMEOUT = 1 * 48000;
@@ -56,6 +56,8 @@ public class CoralScorerSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Canandcolor proximity", canandcolor.getProximity());
     SmartDashboard.putBoolean("Coral shifted", coralShifted);
+    SmartDashboard.putBoolean("coral Moving", coralMoving);
+
   }
 
   public void resetCoralShifting() {

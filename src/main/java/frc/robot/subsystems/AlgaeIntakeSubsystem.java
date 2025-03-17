@@ -24,7 +24,7 @@ import com.pathplanner.lib.path.RotationTarget;
 
 public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final double MIN_ANGLE = 70;    
-  private static final double MAX_ANGLE = 26; 
+  private static final double MAX_ANGLE = 18; 
   private static final double REV_OFFSET = -140; // Offset for REV absolute encoder 
   private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if `false`
   private static final double MAX_VOLTAGE = 4.0;
@@ -44,9 +44,9 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET);
 
     private static final ProfiledPIDController pid = new ProfiledPIDController(
-    0.25, // kP
-    0.02, // kI
-    0.002, // kD
+    0.3, // kP
+    0.000, // kI
+    0.005, // kD
     new TrapezoidProfile.Constraints(
       5000.0,
       5000.0
@@ -55,7 +55,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final ArmFeedforward feedforward = new ArmFeedforward(
     0.08 ,
     0.16, 
-    0.400, 
+    0.800, 
     0.000
   );
 
@@ -71,7 +71,11 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     if (!encoder.isConnected()) {
       return -1;
     }
-    return encoder.get();
+    double measurement = encoder.get();
+    //Prevent Looping around when encoder goes below 0
+    if(measurement > 180)
+      measurement -=360;
+    return measurement;
   }
 
   public void rotateAtVoltage(double velocity) {
@@ -90,8 +94,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     double pidVal = pid.calculate(getRevMeasurement());
     double velocity = pid.getSetpoint().velocity;
     double feedforwardval = feedforward.calculate(pid.getSetpoint().position, velocity);
-    double voltage =  Math.max(Math.min(-pidVal - feedforwardval, MAX_VOLTAGE), -MAX_VOLTAGE);
-    pivotMotor.setVoltage(voltage);
+    double voltage =  Math.max(Math.min(pidVal + feedforwardval, MAX_VOLTAGE), -MAX_VOLTAGE);
+    pivotMotor.setVoltage(-voltage);
     lastSpeed = velocity;
     lastTime = Timer.getFPGATimestamp();
     SmartDashboard.putNumber("Voltage", voltage);
@@ -101,7 +105,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     // Unit: Degrees
     Intake(MAX_ANGLE),
     Score(45), 
-    Hold(55), 
+    Hold(40), 
     Stow(MIN_ANGLE)
     ;
 
