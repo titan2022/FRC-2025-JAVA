@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.865178571428572,
-        "y": 2.4617665816326517
+        "x": 5.096,
+        "y": 2.94
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5215293339523566,
-        "y": 1.1969631991973337
+        "x": 5.65813524590164,
+        "y": 1.9251946721311468
       },
       "isLocked": false,
-      "linkedName": "south start"
+      "linkedName": "2' Algae"
     },
     {
       "anchor": {
-        "x": 1.164030612244898,
-        "y": 0.9768813775510193
+        "x": 1.534529175277392,
+        "y": 0.8669352316556149
       },
       "prevControl": {
-        "x": 2.5780159988063662,
-        "y": 1.7593725806822853
+        "x": 1.659529175277392,
+        "y": 1.0834415826017252
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,10 +31,22 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Elevate to intake level",
+      "waypointRelativePos": 0.04795821462488304,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Elevate to intake level"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 55.0
+    "rotation": 54.21102654081665
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 59.99999999999999
+    "rotation": 119.3100070709161
   },
   "useDefaultConstraints": true
 }

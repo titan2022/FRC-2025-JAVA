@@ -22,9 +22,9 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 public class TunerConstants {
     // Max speed
     /// The max speed, in meters per second
-    public static final double MAX_SPEED = 1; // m/s
+    public static final double MAX_SPEED = 6; // m/s
     /// The max angular speed, in radians per second
-    public static final double MAX_ANGULAR_SPEED = 200.0 * frc.robot.utility.Constants.Unit.DEG; // rad/s
+    public static final double MAX_ANGULAR_SPEED = 800.0 * frc.robot.utility.Constants.Unit.DEG; // rad/s
     /// The deadband, as a fraction of 1
     public static final double DEADBAND = 0.15;
     /// The speed of dpad strafing, in meters per second
@@ -39,7 +39,7 @@ public class TunerConstants {
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     private static final Slot0Configs steerGains = new Slot0Configs()
-        .withKP(40).withKI(0).withKD(0.0)
+        .withKP(90).withKI(0).withKD(0.8)
         .withKS(0).withKV(0.0).withKA(0.0)
         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     // When using closed-loop control, the drive motor uses the control
@@ -89,7 +89,7 @@ public class TunerConstants {
 
     // Theoretical free speed (m/s) at 12 V applied output;
     // This needs to be tuned to your individual robot
-    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.73);
+    public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5.029);
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
@@ -97,7 +97,7 @@ public class TunerConstants {
 
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(2);
+    private static final Distance kWheelRadius = Inches.of(1.87764);
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;

@@ -15,6 +15,42 @@
           "data": {
             "name": "Score coral"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3' to 2' Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgify L3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef to Coral Station to Intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.75
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station to Reef to Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
         }
       ]
     }
