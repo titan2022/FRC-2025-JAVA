@@ -125,10 +125,10 @@ public final class Constants {
 	}
 
 	public static final class RobotSize {
-		public static final double FRAME_WIDTH = 1;
-		public static final double FRAME_LENGTH = 1;
+		public static final double FRAME_WIDTH = 29 * Unit.IN;
+		public static final double FRAME_LENGTH = 29 * Unit.IN;
 
-		public static final double BUMPER_THICKNESS = 1;
+		public static final double BUMPER_THICKNESS = 4.5 * Unit.IN;
 
 		public static final double WIDTH = FRAME_WIDTH + 2*BUMPER_THICKNESS;
 		public static final double LENGTH = FRAME_LENGTH + 2*BUMPER_THICKNESS;

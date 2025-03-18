@@ -8,6 +8,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public final class ReefLocations {
@@ -20,6 +22,9 @@ public final class ReefLocations {
   public static final Translation2d RED_REEF;
 
   public static final double OFFSET_FROM_REEF_CENTER = .165;
+
+  static StructArrayPublisher<Pose2d> bluePosePub = NetworkTableInstance.getDefault().getStructArrayTopic("blue reef poses", Pose2d.struct).publish();
+  static StructArrayPublisher<Pose2d> redPosePub = NetworkTableInstance.getDefault().getStructArrayTopic("red reef poses", Pose2d.struct).publish();
 
   static {
     //noinspection OptionalGetWithoutIsPresent
@@ -53,6 +58,9 @@ public final class ReefLocations {
     for (int i = 0; i < 12; i++) {
       RED_POSES[i] = BLUE_POSES[i].rotateAround(Constants.FIELD_CENTER, Rotation2d.kPi);
     }
+
+    bluePosePub.set(BLUE_POSES);
+    redPosePub.set(RED_POSES);
   }
 
   public enum ReefBranch {
@@ -81,13 +89,13 @@ public final class ReefLocations {
   }
 
   public static Pose2d nearestLeftScoringLocation(Pose2d currentLocation) {
-    Pose2d[] poses = Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
+    Pose2d[] poses = BLUE_POSES;//Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
 
     double minDistance = Double.POSITIVE_INFINITY;
     Pose2d minPose = poses[0];
     for(int i = 0; i < 12; i+=2) {
       if(poses[i].minus(currentLocation).getTranslation().getNorm() < minDistance) {
-        minDistance = poses[i].getTranslation().getNorm();
+        minDistance = poses[i].minus(currentLocation).getTranslation().getNorm();
         minPose = poses[i];
       }
     }
@@ -96,13 +104,13 @@ public final class ReefLocations {
   }
 
   public static Pose2d nearestRightScoringLocation(Pose2d currentLocation) {
-    Pose2d[] poses = Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
+    Pose2d[] poses = BLUE_POSES;// Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
 
     double minDistance = Double.POSITIVE_INFINITY;
     Pose2d minPose = poses[0];
     for(int i = 1; i < 12; i+=2) {
       if(poses[i].minus(currentLocation).getTranslation().getNorm() < minDistance) {
-        minDistance = poses[i].getTranslation().getNorm();
+        minDistance = poses[i].minus(currentLocation).getTranslation().getNorm();
         minPose = poses[i];
       }
     }
