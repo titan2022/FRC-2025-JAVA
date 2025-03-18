@@ -44,7 +44,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET);
 
     private static final ProfiledPIDController pid = new ProfiledPIDController(
-    0.3, // kP
+    0.25, // kP
     0.000, // kI
     0.005, // kD
     new TrapezoidProfile.Constraints(
@@ -53,8 +53,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     )
   );
   private static final ArmFeedforward feedforward = new ArmFeedforward(
-    0.08 ,
-    0.16, 
+    0.04 ,
+    0.02, 
     0.800, 
     0.000
   );
@@ -271,7 +271,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    //goToRotation(target);
+    goToRotation(target);
     SmartDashboard.putNumber("Pivot Target", target);
     SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
     SmartDashboard.putBoolean("has Algae", hasAlgae());
