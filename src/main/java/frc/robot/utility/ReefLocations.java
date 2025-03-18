@@ -86,7 +86,7 @@ public final class ReefLocations {
     double minDistance = Double.POSITIVE_INFINITY;
     Pose2d minPose = poses[0];
     for(int i = 0; i < 12; i+=2) {
-      if(poses[i].getTranslation().getNorm() < minDistance) {
+      if(poses[i].minus(currentLocation).getTranslation().getNorm() < minDistance) {
         minDistance = poses[i].getTranslation().getNorm();
         minPose = poses[i];
       }
@@ -101,7 +101,7 @@ public final class ReefLocations {
     double minDistance = Double.POSITIVE_INFINITY;
     Pose2d minPose = poses[0];
     for(int i = 1; i < 12; i+=2) {
-      if(poses[i].getTranslation().getNorm() < minDistance) {
+      if(poses[i].minus(currentLocation).getTranslation().getNorm() < minDistance) {
         minDistance = poses[i].getTranslation().getNorm();
         minPose = poses[i];
       }

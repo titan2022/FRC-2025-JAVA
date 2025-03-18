@@ -5,6 +5,9 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.TunerConstants;
@@ -92,10 +95,13 @@ public class NaiveDriveToPoseCommand extends Command {
     ));
   }
 
+  StructPublisher<Pose2d> publisherTarget = NetworkTableInstance.getDefault().getStructTopic("targetAuto", Pose2d.struct).publish();
+
   @Override
   public boolean isFinished() {
     Pose2d measurement = getMeasurement();
-    return (measurement.getTranslation().getNorm() <= FINISH_DEADBAND) && (measurement.getRotation().getRadians() <= FINISH_ANGULAR_DEADBAND);
+    publisherTarget.set(target);
+    return (measurement.minus(target).getTranslation().getNorm() <= FINISH_DEADBAND) && (Math.abs(measurement.minus(target).getRotation().getRadians()) <= FINISH_ANGULAR_DEADBAND);
   }
 
   @Override

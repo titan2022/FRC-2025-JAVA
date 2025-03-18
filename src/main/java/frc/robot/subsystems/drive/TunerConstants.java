@@ -22,7 +22,7 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 public class TunerConstants {
     // Max speed
     /// The max speed, in meters per second
-    public static final double MAX_SPEED = 6; // m/s
+    public static final double MAX_SPEED = 0.75; // m/s
     /// The max angular speed, in radians per second
     public static final double MAX_ANGULAR_SPEED = 800.0 * frc.robot.utility.Constants.Unit.DEG; // rad/s
     /// The deadband, as a fraction of 1
