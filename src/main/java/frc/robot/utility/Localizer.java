@@ -35,15 +35,22 @@ public abstract class Localizer {
      * The time the message arrived at the server, with the same epoch as Utils.getCurrentTimeSeconds.
      */
     public final double serverTime;
+    
+    /**
+     * Distance to tag (should only be used from vision localizer)
+     */
+    public final double distance;
 
-    public LocalizerMeasurement(Pose2d pose, double measurementTime, double serverTime) {
+    public LocalizerMeasurement(Pose2d pose, double distance, double measurementTime, double serverTime) {
       this.pose = pose;
+      this.distance = distance;
       this.measurementTime = measurementTime;
       this.serverTime = serverTime;
     }
 
-    public LocalizerMeasurement(Pose2d pose, double measurementTime) {
+    public LocalizerMeasurement(Pose2d pose, double distance, double measurementTime) {
       this.pose = pose;
+      this.distance = distance;
       this.measurementTime = measurementTime;
       this.serverTime = Utils.getCurrentTimeSeconds();
     }

@@ -12,7 +12,7 @@ import frc.robot.utility.networking.types.NetworkingPose;
 
 public class TitanProcessingLocalizer extends Localizer {
   private final NetworkingServer server;
-  private LocalizerMeasurement measurement = new LocalizerMeasurement(new Pose2d(), Double.NEGATIVE_INFINITY);
+  private LocalizerMeasurement measurement = new LocalizerMeasurement(new Pose2d(), Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
 
   public TitanProcessingLocalizer(int port) {
     server = new NetworkingServer(port);
@@ -21,10 +21,11 @@ public class TitanProcessingLocalizer extends Localizer {
       server.subscribe("pose", (NetworkingCall<NetworkingPose>)(NetworkingPose pose) -> {
         SmartDashboard.putNumber("poseX", pose.position.getX());
         SmartDashboard.putNumber("poseZ", pose.position.getZ());
+        SmartDashboard.putNumber("distToTag", pose.distance);
         // FIXME: Have the coprocessor send the timestamp of the update in UDP
         double timestamp = Utils.getCurrentTimeSeconds();
         Pose2d pose2d = new Pose2d(new Translation2d(pose.position.getX(), pose.position.getY()), new Rotation2d(pose.rotation.getZ()));
-        measurement = new LocalizerMeasurement(pose2d, timestamp);
+        measurement = new LocalizerMeasurement(pose2d, pose.distance, timestamp);
 
         publishMeasurement(measurement);
       });

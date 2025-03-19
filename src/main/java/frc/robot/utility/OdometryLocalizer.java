@@ -36,7 +36,7 @@ public class OdometryLocalizer extends Localizer {
   }
 
   public LocalizerMeasurement getMeasurement() {
-    return new LocalizerMeasurement(drivetrain.getState().Pose, drivetrain.getState().Timestamp);
+    return new LocalizerMeasurement(drivetrain.getState().Pose, 0, drivetrain.getState().Timestamp);
   }
 
   /**
