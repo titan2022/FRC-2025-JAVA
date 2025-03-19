@@ -23,9 +23,9 @@ import com.pathplanner.lib.path.RotationTarget;
 
 
 public class AlgaeIntakeSubsystem extends SubsystemBase {
-  private static final double MIN_ANGLE = 70;    
-  private static final double MAX_ANGLE = 18; 
-  private static final double REV_OFFSET = -140; // Offset for REV absolute encoder 
+  private static final double MIN_ANGLE = 90;    
+  private static final double MAX_ANGLE = 38; 
+  private static final double REV_OFFSET = -160; // Offset for REV absolute encoder 
   private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if `false`
   private static final double MAX_VOLTAGE = 4.0;
   private static final double JOYSTICK_DEADBAND = 0.12;
@@ -44,7 +44,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET);
 
     private static final ProfiledPIDController pid = new ProfiledPIDController(
-    0.25, // kP
+    0.15, // kP
     0.000, // kI
     0.005, // kD
     new TrapezoidProfile.Constraints(
@@ -53,8 +53,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     )
   );
   private static final ArmFeedforward feedforward = new ArmFeedforward(
-    0.0 ,
-    0.00, 
+    0.05 ,
+    0.07, 
     0.800, 
     0.000
   );
@@ -104,8 +104,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   public enum AngleTarget {
     // Unit: Degrees
     Intake(MAX_ANGLE),
-    Score(45), 
-    Hold(40), 
+    Score(65), 
+    Hold(60), 
     Stow(MIN_ANGLE)
     ;
 
@@ -271,7 +271,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    //goToRotation(target);
+    goToRotation(target);
     SmartDashboard.putNumber("Pivot Target", target);
     SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
     SmartDashboard.putBoolean("has Algae", hasAlgae());

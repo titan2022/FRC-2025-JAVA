@@ -24,8 +24,8 @@ public class NaiveDriveToPoseCommand extends Command {
   private final Localizer localizer;
 
   /// The max speed, in meters per second
-  public static final double MAX_SPEED_AUTOALIGN = 2.0; // m/s
-  public static final double MAX_ACCELERATION_AUTOALIGN = 2.0; // m/s^2
+  public static final double MAX_SPEED_AUTOALIGN = 1.0; // m/s
+  public static final double MAX_ACCELERATION_AUTOALIGN = 1.0; // m/s^2
   /// The max angular speed, in radians per second
   public static final double MAX_ANGULAR_SPEED_AUTOALIGN = 200.0 * Unit.DEG; // rad/s
   public static final double MAX_ANGULAR_ACCELERATION_AUTOALIGN = 200.0 * Unit.DEG; // rad/s^2
