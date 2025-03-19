@@ -140,6 +140,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds));
     }
 
+    public void setFieldVelocities(ChassisSpeeds speeds) {
+        setControl(new SwerveRequest.ApplyFieldSpeeds().withSpeeds(speeds));
+    }
+
     public ChassisSpeeds getVelocities() {
         return getState().Speeds;
     }

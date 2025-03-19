@@ -63,6 +63,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     setBindings();
     setUpAutos();
+    //localizers.enableMixing();
     //SignalLogger.setPath("/media/sda1/");
   }
 
@@ -136,7 +137,7 @@ public class Robot extends TimedRobot {
 
     // Auto align
     driveController.leftTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getVision()));
-    driveController.rightTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
+    // driveController.rightTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
     //Algae Intake Controls
     robotController.rightTrigger  ().whileTrue(
       algaeIntakeSubsystem.intakeCommand()

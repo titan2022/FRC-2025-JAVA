@@ -53,8 +53,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     )
   );
   private static final ArmFeedforward feedforward = new ArmFeedforward(
-    0.04 ,
-    0.02, 
+    0.0 ,
+    0.00, 
     0.800, 
     0.000
   );
@@ -271,7 +271,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    goToRotation(target);
+    //goToRotation(target);
     SmartDashboard.putNumber("Pivot Target", target);
     SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
     SmartDashboard.putBoolean("has Algae", hasAlgae());
