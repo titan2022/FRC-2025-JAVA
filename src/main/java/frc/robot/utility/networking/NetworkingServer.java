@@ -150,8 +150,9 @@ public class NetworkingServer implements Runnable {
         double roll = bytesToDouble(Arrays.copyOfRange(data, 40, 48));
         double pitch = bytesToDouble(Arrays.copyOfRange(data, 48, 56));
         double yaw = bytesToDouble(Arrays.copyOfRange(data, 56, 64));
+        double distance = bytesToDouble(Arrays.copyOfRange(data, 64, 72));
 
-        return new NetworkingPose(name, new Translation3d(x, y, z), new Rotation3d(roll, pitch, yaw));
+        return new NetworkingPose(name, new Translation3d(x, y, z), new Rotation3d(roll, pitch, yaw), distance);
     }
 
     private NetworkingTag parseTag(byte[] data, int length) {
