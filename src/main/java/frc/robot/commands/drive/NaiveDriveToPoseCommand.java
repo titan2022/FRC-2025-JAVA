@@ -30,13 +30,13 @@ public class NaiveDriveToPoseCommand extends Command {
   public static final double MAX_ANGULAR_SPEED_AUTOALIGN = 200.0 * Unit.DEG; // rad/s
   public static final double MAX_ANGULAR_ACCELERATION_AUTOALIGN = 200.0 * Unit.DEG; // rad/s^2
 
-  public static final double FINISH_DEADBAND = 0.25; // m
-  public static final double FINISH_ANGULAR_DEADBAND = 25 * Unit.DEG; // rad
+  public static final double FINISH_DEADBAND = 0.05; // m
+  public static final double FINISH_ANGULAR_DEADBAND = 10 * Unit.DEG; // rad
 
   private final ProfiledPIDController pidX = new ProfiledPIDController(
     10.0, // kP
     0.0, // kI
-    0.0, // kD
+    1.0, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
@@ -46,7 +46,7 @@ public class NaiveDriveToPoseCommand extends Command {
   private final ProfiledPIDController pidY = new ProfiledPIDController(
     10.0, // kP
     0.0, // kI
-    0.0, // kD
+    1.0, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
@@ -54,7 +54,7 @@ public class NaiveDriveToPoseCommand extends Command {
   );
 
   private final ProfiledPIDController pidTheta = new ProfiledPIDController(
-    2, // kP
+    5, // kP
     0.0, // kI
     0.0, // kD
     new TrapezoidProfile.Constraints(
@@ -113,7 +113,7 @@ public class NaiveDriveToPoseCommand extends Command {
     ChassisSpeeds test = new ChassisSpeeds(
       pidX.calculate(measurement.getX(), target.getX()),
       pidY.calculate(measurement.getY(), target.getY()),
-      -pidTheta.calculate(measurement.getRotation().getRadians(), target.getRotation().getRadians())
+      pidTheta.calculate(measurement.getRotation().getRadians(), target.getRotation().getRadians())
     );
     // ChassisSpeeds test2 = new ChassisSpeeds(
     //   1.0 * (target.getY() - measurement.getY()),
