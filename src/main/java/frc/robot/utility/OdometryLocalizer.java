@@ -1,7 +1,11 @@
 package frc.robot.utility;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 
 public class OdometryLocalizer extends Localizer {
@@ -32,7 +36,11 @@ public class OdometryLocalizer extends Localizer {
   }
 
   public void addVisionMeasurement(LocalizerMeasurement measurement) {
-    drivetrain.addVisionMeasurement(measurement.pose, measurement.measurementTime);
+    Matrix<N3, N1> stdDevs = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
+    stdDevs.set(0, 0, 1.0 * measurement.distance);
+    stdDevs.set(1, 0, 1.0 * measurement.distance);
+    stdDevs.set(2, 0, 1.0 * measurement.distance);
+    drivetrain.addVisionMeasurement(measurement.pose, measurement.measurementTime, stdDevs);
   }
 
   public LocalizerMeasurement getMeasurement() {
