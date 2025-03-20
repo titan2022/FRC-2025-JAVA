@@ -5,6 +5,8 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utility.networking.NetworkingCall;
 import frc.robot.utility.networking.NetworkingServer;
@@ -19,14 +21,10 @@ public class TitanProcessingLocalizer extends Localizer {
 
     if (server != null) {
       server.subscribe("pose", (NetworkingCall<NetworkingPose>)(NetworkingPose pose) -> {
-        SmartDashboard.putNumber("poseX", pose.position.getX());
-        SmartDashboard.putNumber("poseZ", pose.position.getZ());
-        SmartDashboard.putNumber("distToTag", pose.distance);
         // FIXME: Have the coprocessor send the timestamp of the update in UDP
         double timestamp = Utils.getCurrentTimeSeconds();
         Pose2d pose2d = new Pose2d(new Translation2d(pose.position.getX(), pose.position.getY()), new Rotation2d(pose.rotation.getZ()));
         measurement = new LocalizerMeasurement(pose2d, pose.distance, timestamp);
-
         publishMeasurement(measurement);
       });
     }

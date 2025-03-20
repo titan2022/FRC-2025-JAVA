@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,18 +26,18 @@ public class NaiveDriveToPoseCommand extends Command {
 
   /// The max speed, in meters per second
   public static final double MAX_SPEED_AUTOALIGN = 1.0; // m/s
-  public static final double MAX_ACCELERATION_AUTOALIGN = 1.0; // m/s^2
+  public static final double MAX_ACCELERATION_AUTOALIGN = 4.0; // m/s^2
   /// The max angular speed, in radians per second
   public static final double MAX_ANGULAR_SPEED_AUTOALIGN = 200.0 * Unit.DEG; // rad/s
   public static final double MAX_ANGULAR_ACCELERATION_AUTOALIGN = 200.0 * Unit.DEG; // rad/s^2
 
-  public static final double FINISH_DEADBAND = 0.05; // m
-  public static final double FINISH_ANGULAR_DEADBAND = 10 * Unit.DEG; // rad
+  public static final double FINISH_DEADBAND = 0.025; // m
+  public static final double FINISH_ANGULAR_DEADBAND = 2 * Unit.DEG; // rad
 
   private final ProfiledPIDController pidX = new ProfiledPIDController(
-    10.0, // kP
+    2.5, // kP
     0.0, // kI
-    1.0, // kD
+    0.0, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
@@ -44,9 +45,9 @@ public class NaiveDriveToPoseCommand extends Command {
   );
 
   private final ProfiledPIDController pidY = new ProfiledPIDController(
-    10.0, // kP
+    2.5, // kP
     0.0, // kI
-    1.0, // kD
+    0.0, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
@@ -54,8 +55,8 @@ public class NaiveDriveToPoseCommand extends Command {
   );
 
   private final ProfiledPIDController pidTheta = new ProfiledPIDController(
-    5, // kP
-    0.0, // kI
+    18, // kP
+    10.0, // kI
     0.0, // kD
     new TrapezoidProfile.Constraints(
       MAX_ANGULAR_SPEED_AUTOALIGN,
@@ -101,10 +102,15 @@ public class NaiveDriveToPoseCommand extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Pose2d measurement = getMeasurement();
+    pidX.reset(measurement.getX());
+    pidY.reset(measurement.getY());
+    pidTheta.reset(measurement.getRotation().getRadians());
+
+  }
   
   StructPublisher<ChassisSpeeds> chassisPub = NetworkTableInstance.getDefault().getStructTopic("autoAlignVel", ChassisSpeeds.struct).publish();
-  StructPublisher<ChassisSpeeds> chassisPub2 = NetworkTableInstance.getDefault().getStructTopic("nonPIDautoAlignVel", ChassisSpeeds.struct).publish();
 
   @Override
   public void execute() {
@@ -113,14 +119,16 @@ public class NaiveDriveToPoseCommand extends Command {
     ChassisSpeeds test = new ChassisSpeeds(
       pidX.calculate(measurement.getX(), target.getX()),
       pidY.calculate(measurement.getY(), target.getY()),
-      pidTheta.calculate(measurement.getRotation().getRadians(), target.getRotation().getRadians())
+      0//pidTheta.calculate(measurement.getRotation().getRadians(), target.getRotation().getRadians())
     );
+
+    SmartDashboard.putNumberArray("X PID", new Double[] {measurement.getX(), target.getX(), pidX.calculate(measurement.getX(), target.getX())});
     // ChassisSpeeds test2 = new ChassisSpeeds(
     //   1.0 * (target.getY() - measurement.getY()),
     //   1.0 * (target.getX() - measurement.getX()),
     //   pidTheta.calculate(measurement.getRotation().getRadians(), target.getRotation().getRadians())
     // );
-    // chassisPub.set(test);
+    chassisPub.set(test);
     // chassisPub2.set(test2);
     drivetrain.setFieldVelocities(test);
 

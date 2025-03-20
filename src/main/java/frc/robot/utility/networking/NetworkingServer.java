@@ -10,8 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ctre.phoenix6.Utils;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utility.networking.types.NetworkingPose;
 import frc.robot.utility.networking.types.NetworkingTag;
 import frc.robot.utility.networking.types.NetworkingVector;
@@ -94,6 +97,11 @@ public class NetworkingServer implements Runnable {
 
             char packetType = getPacketType(buffer);
 
+            
+            double timestamp = Utils.getCurrentTimeSeconds();
+            SmartDashboard.putNumber("NSTS", timestamp);
+            SmartDashboard.putString("NSpacketType", "" + packetType);
+
             switch (packetType) {
                 case 'v': // 3D Vector
                     NetworkingVector vec = parseVector(buffer, packet.getLength());
@@ -116,8 +124,10 @@ public class NetworkingServer implements Runnable {
     }
 
     private <T> void updateValue(String name, T value) {
+        SmartDashboard.putString("observer obj name", name);
         for (NetworkingObserver observer : observers) {
             if (observer.objectName.equals(name)) {
+                SmartDashboard.putNumber("updateValueTS", Utils.getCurrentTimeSeconds());
                 observer.update(value);
                 return;
             }
@@ -151,6 +161,8 @@ public class NetworkingServer implements Runnable {
         double pitch = bytesToDouble(Arrays.copyOfRange(data, 48, 56));
         double yaw = bytesToDouble(Arrays.copyOfRange(data, 56, 64));
         double distance = bytesToDouble(Arrays.copyOfRange(data, 64, 72));
+
+        SmartDashboard.putNumber("parsePoseDist", distance);
 
         return new NetworkingPose(name, new Translation3d(x, y, z), new Rotation3d(roll, pitch, yaw), distance);
     }

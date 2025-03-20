@@ -22,9 +22,9 @@ import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 public class TunerConstants {
     // Max speed
     /// The max speed, in meters per second
-    public static final double MAX_SPEED = 2.0; // m/s
+    public static final double MAX_SPEED = 6.0; // m/s
     /// The max angular speed, in radians per second
-    public static final double MAX_ANGULAR_SPEED = 100.0 * frc.robot.utility.Constants.Unit.DEG; // rad/s
+    public static final double MAX_ANGULAR_SPEED = 400.0 * frc.robot.utility.Constants.Unit.DEG; // rad/s
     /// The deadband, as a fraction of 1
     public static final double DEADBAND = 0.15;
     /// The speed of dpad strafing, in meters per second
@@ -97,7 +97,7 @@ public class TunerConstants {
 
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(1.87764);
+    private static final Distance kWheelRadius = Inches.of(2);
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;

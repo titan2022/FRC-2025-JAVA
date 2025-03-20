@@ -28,7 +28,7 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 public class ElevatorSubsystem extends SubsystemBase {
   private static final double MAX_VOLTAGE = 3.0;
   private static final double JOYSTICK_DEADBAND = 0.12;
-  private static final double MAX_HEIGHT_INCHES = 40.298;
+  private static final double MAX_HEIGHT_INCHES = 40.798;
   private static final double MIN_HEIGHT_INCHES = 0;
   private static double ELEVATION_GEAR_RATIO = 6.4 / (1.757 * Math.PI * 2) ;
 
@@ -148,8 +148,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     // Unit: inches
     CoralIntake(0),
     L1(17.171630859375),
-    L2(24.899),
-    L3(40.298),
+    L2(24.106689453125),
+    L3(40.598),
     AlgaeL2(20.899),
     AlgaeL3(36.899)
     ;
