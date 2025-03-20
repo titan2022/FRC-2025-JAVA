@@ -89,7 +89,7 @@ public final class ReefLocations {
   }
 
   public static Pose2d nearestScoringLocation(Pose2d currentLocation) {
-    Pose2d[] poses = BLUE_POSES;//Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
+    Pose2d[] poses = Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
 
     double minDistance = Double.POSITIVE_INFINITY;
     Pose2d minPose = poses[0];
@@ -104,7 +104,7 @@ public final class ReefLocations {
   }
 
   public static Pose2d nearestRightScoringLocation(Pose2d currentLocation) {
-    Pose2d[] poses = BLUE_POSES;// Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
+    Pose2d[] poses = Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
 
     double minDistance = Double.POSITIVE_INFINITY;
     Pose2d minPose = poses[0];

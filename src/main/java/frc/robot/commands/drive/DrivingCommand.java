@@ -37,7 +37,7 @@ public class DrivingCommand extends Command {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
 			.withSteerRequestType(SteerRequestType.Position);
 
-  private boolean isFieldOriented = false;
+  private boolean isFieldOriented = true;
 
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();

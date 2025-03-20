@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.535,
-        "y": 7.133
+        "x": 1.605,
+        "y": 7.3
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3066605117007577,
-        "y": 6.569746210298492
+        "x": 2.3766605117007575,
+        "y": 6.736746210298492
       },
       "isLocked": false,
       "linkedName": "Left Coral Station"
@@ -56,8 +56,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
