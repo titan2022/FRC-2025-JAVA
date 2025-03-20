@@ -39,6 +39,7 @@ import frc.robot.commands.drive.RotationalDriveCommand;
 import frc.robot.commands.drive.TranslationalDriveCommand;
 import frc.robot.subsystems.drive.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.utility.Constants.Unit;
+import frc.robot.utility.Constants;
 import frc.robot.utility.Localizer;
 import frc.robot.utility.ReefLocations;
 
@@ -69,6 +70,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /** Advantage Scope swerve states */
     StructArrayPublisher<SwerveModuleState> moduelStatesPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("ModuleStates", SwerveModuleState.struct).publish();
     StructArrayPublisher<SwerveModuleState> targetStatesPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("TargetStates", SwerveModuleState.struct).publish();
+
+    /** Resets the field orientation to the center of the reef */
+    public void resetFieldOrientation() {
+        int apriltagId;
+        if(Constants.getColor() == Alliance.Red) {
+            apriltagId = 7;
+        } else {
+            apriltagId = 18;
+        }
+        resetPose(new Pose2d(
+            new Translation2d(
+                Constants.tagLayout.getTagPose(apriltagId).get().getX(), 
+                Constants.tagLayout.getTagPose(apriltagId).get().getY()
+            ), kBlueAlliancePerspectiveRotation));
+    }
 
     private static final double XBOX_DEADBAND = TunerConstants.DEADBAND;
     private double deadband(double input) {

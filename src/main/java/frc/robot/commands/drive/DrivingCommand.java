@@ -55,6 +55,7 @@ public class DrivingCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    sideMultiplier = Constants.getColor() == Alliance.Blue ? 1.0 : -1.0;
     // See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/RobotContainer.java#L53
 
     // If you modify these controls please update the diagram at https://docs.google.com/drawings/d/1UsU1iyQz4MPWa87oXD0FYGqLXIfGtkn2a595sXWU3uo/edit.
@@ -107,7 +108,7 @@ public class DrivingCommand extends Command {
     // driveController.start().and(driveController.x()).whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
     // reset the field-centric heading on left bumper press
-     driveController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric())); 
+    driveController.y().onTrue(drivetrain.runOnce(() -> drivetrain.resetFieldOrientation())); 
     
     // Alignment slow-down
     driveController.rightBumper().whileTrue(drivetrain.runOnce(() -> {translationSpeedMultiplier = 0.18; rotationSpeedMultiplier = 0.4;}));
