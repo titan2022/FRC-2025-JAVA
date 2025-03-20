@@ -24,7 +24,8 @@ public class DrivingCommand extends Command {
 
   private double translationSpeedMultiplier = 1.0;
   private double rotationSpeedMultiplier = 1.0;
-  private double sideMultiplier = Constants.getColor() == Alliance.Blue ? 1.0 : -1.0;
+  // private double sideMultiplier = Constants.getColor() == Alliance.Blue ? 1.0 : -1.0;
+  private double sideMultiplier = 1.0;
 
   private final SwerveRequest.RobotCentric robotCentricDriveRequest = new SwerveRequest.RobotCentric()
             .withDeadband(TunerConstants.MAX_SPEED * TunerConstants.DEADBAND).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * TunerConstants.DEADBAND) // Add a 10% deadband
@@ -55,7 +56,7 @@ public class DrivingCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    sideMultiplier = Constants.getColor() == Alliance.Blue ? 1.0 : -1.0;
+    // sideMultiplier = Constants.getColor() == Alliance.Blue ? 1.0 : -1.0;
     // See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/SwerveWithPathPlanner/src/main/java/frc/robot/RobotContainer.java#L53
 
     // If you modify these controls please update the diagram at https://docs.google.com/drawings/d/1UsU1iyQz4MPWa87oXD0FYGqLXIfGtkn2a595sXWU3uo/edit.

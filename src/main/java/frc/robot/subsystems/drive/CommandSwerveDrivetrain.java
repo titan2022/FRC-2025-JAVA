@@ -72,18 +72,22 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     StructArrayPublisher<SwerveModuleState> targetStatesPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("TargetStates", SwerveModuleState.struct).publish();
 
     /** Resets the field orientation to the center of the reef */
+    // public void resetFieldOrientation() {
+    //     int apriltagId;
+    //     if(Constants.getColor() == Alliance.Red) {
+    //         apriltagId = 7;
+    //     } else {
+    //         apriltagId = 18;
+    //     }
+    //     resetPose(new Pose2d(
+    //         new Translation2d(
+    //             Constants.tagLayout.getTagPose(apriltagId).get().getX(), 
+    //             Constants.tagLayout.getTagPose(apriltagId).get().getY()
+    //         ), kBlueAlliancePerspectiveRotation));
+    // }
+
     public void resetFieldOrientation() {
-        int apriltagId;
-        if(Constants.getColor() == Alliance.Red) {
-            apriltagId = 7;
-        } else {
-            apriltagId = 18;
-        }
-        resetPose(new Pose2d(
-            new Translation2d(
-                Constants.tagLayout.getTagPose(apriltagId).get().getX(), 
-                Constants.tagLayout.getTagPose(apriltagId).get().getY()
-            ), kBlueAlliancePerspectiveRotation));
+        seedFieldCentric();
     }
 
     private static final double XBOX_DEADBAND = TunerConstants.DEADBAND;
