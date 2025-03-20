@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.RotationTarget;
@@ -63,7 +62,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     setBindings();
     setUpAutos();
-    localizers.enableMixing();
     //SignalLogger.setPath("/media/sda1/");
   }
 
@@ -223,6 +221,8 @@ public class Robot extends TimedRobot {
     // Quick fix
     //elevator.resetTarget();
     //elevator.resetTarget();
+    
+    localizers.enableMixing();
   }
 
   @Override
