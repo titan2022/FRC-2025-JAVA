@@ -14,8 +14,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -36,6 +38,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.drive.RotationalDriveCommand;
 import frc.robot.commands.drive.TranslationalDriveCommand;
 import frc.robot.subsystems.drive.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.utility.Constants.Unit;
+import frc.robot.utility.Localizer;
+import frc.robot.utility.ReefLocations;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -185,6 +190,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
+    }
+
+    public static Command driveToNearestScoringLocation(Localizer localizer){
+        Pose2d target = ReefLocations.nearestScoringLocation(localizer.getMeasurement().pose);
+        PathConstraints constraints = new PathConstraints(
+            1.0, 
+            1.0, 
+            200.0 * Unit.DEG,
+            200.0 * Unit.DEG
+            );
+        return AutoBuilder.pathfindToPose(target, constraints);
     }
 
     ///////////////////////////////////////

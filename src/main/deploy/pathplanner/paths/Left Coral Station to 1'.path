@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.585,
-        "y": 3.9177499999999994
+        "x": 1.535,
+        "y": 7.133
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.5082795172202434,
-        "y": 3.9069644847086793
+        "x": 2.5349999999999997,
+        "y": 7.133000000000001
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Left Coral Station"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 3.85
       },
       "prevControl": {
-        "x": 7.02566503262832,
-        "y": 3.9109781050511954
+        "x": 8.791500000000001,
+        "y": 3.8499999999999996
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,13 +33,24 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Elevate to L2",
-      "waypointRelativePos": 0.49748201438848494,
+      "name": "Intake coral",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.5996402877697848,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake coral"
+        }
+      }
+    },
+    {
+      "name": "Elevate to L3",
+      "waypointRelativePos": 0.6960431654676297,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Elevate L2"
+          "name": "Elevate L3"
         }
       }
     }
@@ -60,7 +71,7 @@
   "folder": "Middle Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -55.0
   },
   "useDefaultConstraints": true
 }

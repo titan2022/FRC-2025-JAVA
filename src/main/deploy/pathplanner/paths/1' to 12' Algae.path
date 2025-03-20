@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.801,
-        "y": 3.87
+        "x": 5.791500000000001,
+        "y": 3.85
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.8010000000000055,
-        "y": 3.87
+        "x": 6.291500000000001,
+        "y": 3.85
       },
       "isLocked": false,
       "linkedName": "1'"
@@ -20,12 +20,12 @@
         "y": 4.05
       },
       "prevControl": {
-        "x": 4.801,
+        "x": 6.301,
         "y": 4.05
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "12' Algae"
     }
   ],
   "rotationTargets": [],
@@ -45,10 +45,10 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Middle Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.19662625727076
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

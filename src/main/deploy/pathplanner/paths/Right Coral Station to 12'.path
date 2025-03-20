@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.096,
-        "y": 2.94
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 5.65813524590164,
-        "y": 1.9251946721311468
-      },
-      "isLocked": false,
-      "linkedName": "2' Algae"
-    },
-    {
-      "anchor": {
         "x": 1.534529175277392,
         "y": 0.8669352316556149
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.5345291752773917,
+        "y": 0.8669352316556154
+      },
+      "isLocked": false,
+      "linkedName": "Right Coral Station"
+    },
+    {
+      "anchor": {
+        "x": 5.791500000000001,
+        "y": 4.19
+      },
       "prevControl": {
-        "x": 1.659529175277392,
-        "y": 1.0834415826017252
+        "x": 8.791500000000001,
+        "y": 4.1899999999999995
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "coral station"
+      "linkedName": "12'"
     }
   ],
   "rotationTargets": [],
@@ -33,13 +33,24 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Elevate to intake level",
-      "waypointRelativePos": 0.04795821462488304,
+      "name": "Intake coral",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.5996402877697848,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake coral"
+        }
+      }
+    },
+    {
+      "name": "Elevate to L3",
+      "waypointRelativePos": 0.6960431654676297,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Elevate to intake level"
+          "name": "Elevate L3"
         }
       }
     }
@@ -53,14 +64,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 54.21102654081665
+    "velocity": 0,
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Middle Paths",
   "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": 119.3100070709161
+    "velocity": 0,
+    "rotation": 54.21102654081665
   },
   "useDefaultConstraints": true
 }

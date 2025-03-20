@@ -69,7 +69,7 @@ public class NaiveDriveToPoseCommand extends Command {
     this.localizer = localizer;
   }
 
-  public static NaiveDriveToPoseCommand driveToNearestLeftScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
+  public static NaiveDriveToPoseCommand driveToNearestScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
     // isLeftSide = true;
     return new NaiveDriveToPoseCommand(drivetrain, localizer);
     // return new NaiveDriveToPoseCommand(drivetrain, localizer,

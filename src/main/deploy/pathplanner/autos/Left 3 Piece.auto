@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path #1"
+            "pathName": "Left Start to 9'"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Score coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "9' to 8' Algae"
           }
         },
         {
@@ -25,19 +31,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path #2"
+            "pathName": "8' Algae to Coral Station"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.75
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path #3"
+            "pathName": "Coral Station to 9'"
           }
         },
         {
@@ -49,19 +55,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path #2"
+            "pathName": "9' to Coral Station"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.75
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path #3"
+            "pathName": "Coral Station to 8'"
           }
         },
         {

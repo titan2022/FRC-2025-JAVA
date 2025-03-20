@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle Preload to Reef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1' to 12' Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgify L3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "12' Algae to Left Coral Station"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.75
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Coral Station to 1'"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1' to Left Coral Station"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.75
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Coral Station to 12'"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
