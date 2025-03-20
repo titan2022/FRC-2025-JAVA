@@ -229,7 +229,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   
     @Override
     public boolean isFinished() {
-      return hasAlgae();
+      //return hasAlgae();
+      return false;
     }
     @Override
     public void end(boolean isInterrupted){

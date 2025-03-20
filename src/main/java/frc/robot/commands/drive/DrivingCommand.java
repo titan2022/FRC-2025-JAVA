@@ -6,11 +6,13 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drive.TranslationalDrivebase;
 import frc.robot.subsystems.drive.TunerConstants;
+import frc.robot.utility.Constants;
 import frc.robot.utility.Utility;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -22,6 +24,7 @@ public class DrivingCommand extends Command {
 
   private double translationSpeedMultiplier = 1.0;
   private double rotationSpeedMultiplier = 1.0;
+  private double sideMultiplier = Constants.getColor() == Alliance.Blue ? 1.0 : -1.0;
 
   private final SwerveRequest.RobotCentric robotCentricDriveRequest = new SwerveRequest.RobotCentric()
             .withDeadband(TunerConstants.MAX_SPEED * TunerConstants.DEADBAND).withRotationalDeadband(TunerConstants.MAX_ANGULAR_SPEED * TunerConstants.DEADBAND) // Add a 10% deadband
@@ -62,25 +65,38 @@ public class DrivingCommand extends Command {
     // ));
 
     // Dpad buttons
+    // driveController.pov(0).whileTrue(drivetrain.applyRequest(() ->
+    //     (isFieldOriented 
+    //       ? fieldCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED * sideMultiplier).withVelocityY(0)
+    //       : robotCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
+    // ));
+    // driveController.pov(90).whileTrue(drivetrain.applyRequest(() ->
+    //     (isFieldOriented 
+    //       ? fieldCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED * sideMultiplier)
+    //       : robotCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED))
+    // ));
+    // driveController.pov(180).whileTrue(drivetrain.applyRequest(() ->
+    //     (isFieldOriented 
+    //       ? fieldCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED * sideMultiplier).withVelocityY(0)
+    //       : robotCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
+    // ));
+    // driveController.pov(270).whileTrue(drivetrain.applyRequest(() ->
+    //     (isFieldOriented 
+    //       ? fieldCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED * sideMultiplier)
+    //       : robotCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED))
+    // ));
+
     driveController.pov(0).whileTrue(drivetrain.applyRequest(() ->
-        (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
-          : robotCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
+      robotCentricStrafe.withVelocityX(TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
     ));
     driveController.pov(90).whileTrue(drivetrain.applyRequest(() ->
-        (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED)
-          : robotCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED))
+        robotCentricStrafe.withVelocityX(0).withVelocityY(-TunerConstants.DPAD_STRAFE_SPEED)
     ));
     driveController.pov(180).whileTrue(drivetrain.applyRequest(() ->
-        (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
-          : robotCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0))
+        robotCentricStrafe.withVelocityX(-TunerConstants.DPAD_STRAFE_SPEED).withVelocityY(0)
     ));
     driveController.pov(270).whileTrue(drivetrain.applyRequest(() ->
-        (isFieldOriented 
-          ? fieldCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED)
-          : robotCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED))
+        robotCentricStrafe.withVelocityX(0).withVelocityY(TunerConstants.DPAD_STRAFE_SPEED)
     ));
 
     // // Run SysId routines when holding back/start and X/Y.
@@ -118,8 +134,8 @@ public class DrivingCommand extends Command {
       // and Y is defined as to the left according to WPILib convention.
       drivetrain.setControl(
               fieldCentricDriveRequest
-                  .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED * translationSpeedMultiplier) // Drive forward with negative Y (forward)
-                  .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED * translationSpeedMultiplier) // Drive left with negative X (left)
+                  .withVelocityX(-driveController.getLeftY() * TunerConstants.MAX_SPEED * translationSpeedMultiplier * sideMultiplier) // Drive forward with negative Y (forward)
+                  .withVelocityY(-driveController.getLeftX() * TunerConstants.MAX_SPEED * translationSpeedMultiplier * sideMultiplier) // Drive left with negative X (left)
                   .withRotationalRate(-driveController.getRightX() * TunerConstants.MAX_ANGULAR_SPEED * rotationSpeedMultiplier) // Drive counterclockwise with negative X (left)
       );
     } else {
