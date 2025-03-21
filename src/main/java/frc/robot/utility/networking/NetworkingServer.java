@@ -102,19 +102,23 @@ public class NetworkingServer implements Runnable {
             SmartDashboard.putNumber("NSTS", timestamp);
             SmartDashboard.putString("NSpacketType", "" + packetType);
 
-            switch (packetType) {
-                case 'v': // 3D Vector
-                    NetworkingVector vec = parseVector(buffer, packet.getLength());
-                    updateValue(vec.objectName, vec.vector);
-                    break;
-                case 'p': // Pose (Two 3D vectors)
-                    NetworkingPose pose = parsePose(buffer, packet.getLength());
-                    updateValue(pose.objectName, pose);
-                    break;
-                case 't': // Apriltag (Pose + ID)
-                    NetworkingTag tag = parseTag(buffer, packet.getLength());
-                    updateValue(tag.objectName, tag);
-                    break;
+            try {
+                switch (packetType) {
+                    case 'v': // 3D Vector
+                        NetworkingVector vec = parseVector(buffer, packet.getLength());
+                        if(vec != null) updateValue(vec.objectName, vec.vector);
+                        break;
+                    case 'p': // Pose (Two 3D vectors)
+                        NetworkingPose pose = parsePose(buffer, packet.getLength());
+                        if(pose != null) updateValue(pose.objectName, pose);
+                        break;
+                    case 't': // Apriltag (Pose + ID)
+                        NetworkingTag tag = parseTag(buffer, packet.getLength());
+                        if(tag != null) updateValue(tag.objectName, tag);
+                        break;
+                }
+            } catch(Exception e) {
+                // noop
             }
         }
     }
@@ -134,8 +138,8 @@ public class NetworkingServer implements Runnable {
         }
     }
 
-    private NetworkingVector parseVector(byte[] data, int length) {
-        if (data == null) {
+    private NetworkingVector parseVector(byte[] data, int length) throws Exception {
+        if (data == null || data.length < 40) {
             return null;
         }
 
@@ -147,8 +151,8 @@ public class NetworkingServer implements Runnable {
         return new NetworkingVector(name, new Translation3d(x, y, z));
     }
 
-    private NetworkingPose parsePose(byte[] data, int length) {
-        if (data == null) {
+    private NetworkingPose parsePose(byte[] data, int length) throws Exception {
+        if (data == null || data.length < 72) {
             return null;
         }
 
@@ -167,8 +171,8 @@ public class NetworkingServer implements Runnable {
         return new NetworkingPose(name, new Translation3d(x, y, z), new Rotation3d(roll, pitch, yaw), distance);
     }
 
-    private NetworkingTag parseTag(byte[] data, int length) {
-        if (data == null) {
+    private NetworkingTag parseTag(byte[] data, int length) throws Exception {
+        if (data == null || data.length < 68) {
             return null;
         }
 
