@@ -233,4 +233,32 @@ public class CoralScorerSubsystem extends SubsystemBase {
     scoringMotor.setVoltage(0);
     //scoringMotor.stopMotor();
   }
+
+  private class ScoreCoralCommand extends Command {
+    private CoralScorerSubsystem coralScorer;
+
+    public ScoreCoralCommand(CoralScorerSubsystem coralScorer) {
+      this.coralScorer = coralScorer;
+      addRequirements(coralScorer);
+    }
+
+    @Override // Called at beginning of command
+    public void initialize() {
+      scoreCoral(false);
+    }
+
+    @Override
+    public void end(boolean isInterrupted) {
+      stopMovingCoral();
+    }
+
+    @Override
+    public boolean isFinished() {
+      return false;
+    }
+  }
+
+  public Command scoreCoralCommand() {
+    return new ScoreCoralCommand(this);
+  }
 }

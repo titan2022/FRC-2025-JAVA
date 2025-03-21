@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
 
     // Coral scorer controls
     robotController.rightBumper().whileTrue(
-      coralScorer.timedScoreCoralCommand(false)
+      coralScorer.scoreCoralCommand()
     );
 
     // Backwards coral scoring
