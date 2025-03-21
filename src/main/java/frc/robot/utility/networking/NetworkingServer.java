@@ -31,8 +31,6 @@ public class NetworkingServer implements Runnable {
     private DatagramSocket socket;
     private List<NetworkingObserver> observers = new ArrayList<NetworkingObserver>();
 
-    private static final boolean DEBUG = true;
-
     /**
      * Networking server constructor
      * 
@@ -104,23 +102,19 @@ public class NetworkingServer implements Runnable {
             SmartDashboard.putNumber("NSTS", timestamp);
             SmartDashboard.putString("NSpacketType", "" + packetType);
 
-            try {
-                switch (packetType) {
-                    case 'v': // 3D Vector
-                        NetworkingVector vec = parseVector(buffer, packet.getLength());
-                        if(vec != null) updateValue(vec.objectName, vec.vector);
-                        break;
-                    case 'p': // Pose (Two 3D vectors)
-                        NetworkingPose pose = parsePose(buffer, packet.getLength());
-                        if(pose != null) updateValue(pose.objectName, pose);
-                        break;
-                    case 't': // Apriltag (Pose + ID)
-                        NetworkingTag tag = parseTag(buffer, packet.getLength());
-                        if(tag != null) updateValue(tag.objectName, tag);
-                        break;
-                }
-            } catch(Exception e) {
-                if(DEBUG) System.out.print("[NetworkingServer] WARNING: Exception " + e);
+            switch (packetType) {
+                case 'v': // 3D Vector
+                    NetworkingVector vec = parseVector(buffer, packet.getLength());
+                    updateValue(vec.objectName, vec.vector);
+                    break;
+                case 'p': // Pose (Two 3D vectors)
+                    NetworkingPose pose = parsePose(buffer, packet.getLength());
+                    updateValue(pose.objectName, pose);
+                    break;
+                case 't': // Apriltag (Pose + ID)
+                    NetworkingTag tag = parseTag(buffer, packet.getLength());
+                    updateValue(tag.objectName, tag);
+                    break;
             }
         }
     }
@@ -140,9 +134,8 @@ public class NetworkingServer implements Runnable {
         }
     }
 
-    private NetworkingVector parseVector(byte[] data, int length) throws Exception {
-        if (data == null || data.length < 40) {
-            if(DEBUG && data != null) System.out.print("[NetworkingServer] WARNING: vector length is " + data.length + "which is less than 40");
+    private NetworkingVector parseVector(byte[] data, int length) {
+        if (data == null) {
             return null;
         }
 
@@ -154,9 +147,8 @@ public class NetworkingServer implements Runnable {
         return new NetworkingVector(name, new Translation3d(x, y, z));
     }
 
-    private NetworkingPose parsePose(byte[] data, int length) throws Exception {
-        if (data == null || data.length < 72) {
-            if(DEBUG && data != null) System.out.print("[NetworkingServer] WARNING: pose length is " + data.length + "which is less than 72");
+    private NetworkingPose parsePose(byte[] data, int length) {
+        if (data == null) {
             return null;
         }
 
@@ -175,9 +167,8 @@ public class NetworkingServer implements Runnable {
         return new NetworkingPose(name, new Translation3d(x, y, z), new Rotation3d(roll, pitch, yaw), distance);
     }
 
-    private NetworkingTag parseTag(byte[] data, int length) throws Exception {
-        if (data == null || data.length < 68) {
-            if(DEBUG && data != null) System.out.print("[NetworkingServer] WARNING: tag length is " + data.length + "which is less than 68");
+    private NetworkingTag parseTag(byte[] data, int length) {
+        if (data == null) {
             return null;
         }
 
