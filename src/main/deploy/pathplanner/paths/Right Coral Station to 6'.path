@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.605,
-        "y": 0.6870000000000005
+        "x": 2.178576436351046,
+        "y": 1.5061520442889917
       },
       "isLocked": false,
       "linkedName": "Right Coral Station"
     },
     {
       "anchor": {
-        "x": 5.791500000000001,
+        "x": 3.18,
         "y": 3.85
       },
       "prevControl": {
-        "x": 8.791500000000001,
-        "y": 3.8499999999999996
+        "x": 1.6800000000000002,
+        "y": 3.85
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "1'"
+      "linkedName": "6'"
     }
   ],
   "rotationTargets": [],
@@ -44,13 +44,13 @@
       }
     },
     {
-      "name": "Elevate to L3",
+      "name": "Elevate to L2",
       "waypointRelativePos": 0.6960431654676297,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Elevate L3"
+          "name": "Elevate L2"
         }
       }
     }
@@ -65,7 +65,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Middle Paths",

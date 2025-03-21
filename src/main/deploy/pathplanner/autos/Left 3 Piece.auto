@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Start to 9'"
+            "pathName": "Left Start to 10'"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "9' to 8' Algae"
+            "pathName": "10' to 10' Algae"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "8' Algae to Coral Station"
+            "pathName": "10' Algae to Coral Station"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Station to 9'"
+            "pathName": "Coral Station to 10'"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "9' to Coral Station"
+            "pathName": "10' to Coral Station"
           }
         },
         {
@@ -67,7 +67,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Station to 8'"
+            "pathName": "Coral Station to 11'"
           }
         },
         {

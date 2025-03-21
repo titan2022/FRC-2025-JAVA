@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Preload to Reef"
+            "pathName": "Middle Preload to 12' Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgify L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "12' Algae to 1'"
           }
         },
         {
@@ -19,19 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1' to 12' Algae"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Dealgify L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "12' Algae to Left Coral Station"
+            "pathName": "1' to Right Coral Station"
           }
         },
         {
@@ -43,31 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Coral Station to 1'"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1' to Left Coral Station"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.75
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left Coral Station to 12'"
+            "pathName": "Right Coral Station to 6'"
           }
         },
         {

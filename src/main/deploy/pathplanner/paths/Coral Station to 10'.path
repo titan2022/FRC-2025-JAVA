@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.819,
-        "y": 5.183
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 3.035528011566571,
-        "y": 5.820074397392217
-      },
-      "isLocked": false,
-      "linkedName": "8' Algae"
-    },
-    {
-      "anchor": {
         "x": 1.605,
         "y": 7.3
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.3766605117007575,
+        "y": 6.736746210298492
+      },
+      "isLocked": false,
+      "linkedName": "Left Coral Station"
+    },
+    {
+      "anchor": {
+        "x": 5.0,
+        "y": 5.252
+      },
       "prevControl": {
-        "x": 2.2977696217170793,
-        "y": 6.7155541789432
+        "x": 5.439223456065091,
+        "y": 6.012757341780733
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Coral Station"
+      "linkedName": "10'"
     }
   ],
   "rotationTargets": [],
@@ -33,13 +33,24 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Elevate to intake level",
-      "waypointRelativePos": 0.0466744457409575,
+      "name": "Intake coral",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.5,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake coral"
+        }
+      }
+    },
+    {
+      "name": "Elevate to L3",
+      "waypointRelativePos": 0.55,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Elevate to intake level"
+          "name": "Elevate L3"
         }
       }
     }
@@ -54,13 +65,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -55.0
+    "rotation": -119.99999999999999
   },
   "reversed": false,
   "folder": "Left Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": -55.0
   },
   "useDefaultConstraints": true
 }
