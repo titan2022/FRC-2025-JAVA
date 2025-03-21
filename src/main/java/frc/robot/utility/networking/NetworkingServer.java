@@ -31,6 +31,8 @@ public class NetworkingServer implements Runnable {
     private DatagramSocket socket;
     private List<NetworkingObserver> observers = new ArrayList<NetworkingObserver>();
 
+    private static final boolean DEBUG = true;
+
     /**
      * Networking server constructor
      * 
@@ -118,7 +120,7 @@ public class NetworkingServer implements Runnable {
                         break;
                 }
             } catch(Exception e) {
-                // noop
+                if(DEBUG) System.out.print("[NetworkingServer] WARNING: Exception " + e);
             }
         }
     }
@@ -140,6 +142,7 @@ public class NetworkingServer implements Runnable {
 
     private NetworkingVector parseVector(byte[] data, int length) throws Exception {
         if (data == null || data.length < 40) {
+            if(DEBUG && data != null) System.out.print("[NetworkingServer] WARNING: vector length is " + data.length + "which is less than 40");
             return null;
         }
 
@@ -153,6 +156,7 @@ public class NetworkingServer implements Runnable {
 
     private NetworkingPose parsePose(byte[] data, int length) throws Exception {
         if (data == null || data.length < 72) {
+            if(DEBUG && data != null) System.out.print("[NetworkingServer] WARNING: pose length is " + data.length + "which is less than 72");
             return null;
         }
 
@@ -173,6 +177,7 @@ public class NetworkingServer implements Runnable {
 
     private NetworkingTag parseTag(byte[] data, int length) throws Exception {
         if (data == null || data.length < 68) {
+            if(DEBUG && data != null) System.out.print("[NetworkingServer] WARNING: tag length is " + data.length + "which is less than 68");
             return null;
         }
 
