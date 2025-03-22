@@ -51,7 +51,7 @@
     {
       "name": "Intake coral",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.6521186440677936,
+      "endWaypointRelativePos": 1.0403180011357234,
       "command": {
         "type": "named",
         "data": {
@@ -61,7 +61,7 @@
     },
     {
       "name": "Elevate to L3",
-      "waypointRelativePos": 0.7521186440677933,
+      "waypointRelativePos": 1.2538330494037464,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
