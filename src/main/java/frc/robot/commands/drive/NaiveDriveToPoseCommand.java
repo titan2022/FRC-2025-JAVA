@@ -145,7 +145,9 @@ public class NaiveDriveToPoseCommand extends Command {
       .withVelocityY(-pidY.calculate(robotPose.getY()))
       .withDeadband(InchesPerSecond.of(10))
     );
-    SmartDashboard.putNumber("setpoint", pidX.getSetpoint().velocity);
+    SmartDashboard.putNumber("NaiveDriveToPoseCommand target x-velocity", pidX.getSetpoint().velocity);
+    SmartDashboard.putNumber("NaiveDriveToPoseCommand target y-velocity", pidY.getSetpoint().velocity);
+    SmartDashboard.putNumber("NaiveDriveToPoseCommand target theta-velocity", pidTheta.getSetpoint().velocity);
   }
 
   StructPublisher<Pose2d> publisherTarget = NetworkTableInstance.getDefault().getStructTopic("targetAuto", Pose2d.struct).publish();
