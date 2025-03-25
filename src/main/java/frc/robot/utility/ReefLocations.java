@@ -88,12 +88,12 @@ public final class ReefLocations {
     return (Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES)[reefBranch.id];
   }
 
-  public static Pose2d nearestScoringLocation(Pose2d currentLocation) {
+  public static Pose2d nearestLeftScoringLocation(Pose2d currentLocation) {
     Pose2d[] poses = Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
 
     double minDistance = Double.POSITIVE_INFINITY;
     Pose2d minPose = poses[0];
-    for(int i = 0; i < 12; i+=1) {
+    for(int i = 0; i < 12; i+=2) {
       if(poses[i].minus(currentLocation).getTranslation().getNorm() < minDistance) {
         minDistance = poses[i].minus(currentLocation).getTranslation().getNorm();
         minPose = poses[i];

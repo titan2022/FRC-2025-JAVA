@@ -204,18 +204,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
     }
-
-    public static Command driveToNearestScoringLocation(Localizer localizer){
-        Pose2d target = ReefLocations.nearestScoringLocation(localizer.getMeasurement().pose);
-        PathConstraints constraints = new PathConstraints(
-            1.0, 
-            1.0, 
-            200.0 * Unit.DEG,
-            200.0 * Unit.DEG
-            );
-        return AutoBuilder.pathfindToPose(target, constraints);
-    }
-
     ///////////////////////////////////////
     ///// Generated stuff begins here /////
     ///////////////////////////////////////

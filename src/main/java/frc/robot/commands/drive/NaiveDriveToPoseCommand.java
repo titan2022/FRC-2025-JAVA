@@ -75,25 +75,18 @@ public class NaiveDriveToPoseCommand extends Command {
     )
   );
 
-  public NaiveDriveToPoseCommand(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
+  public NaiveDriveToPoseCommand(CommandSwerveDrivetrain drivetrain, Localizer localizer, boolean isLeftSide) {
     this.drivetrain = drivetrain;
     this.localizer = localizer;
+    this.isLeftSide = isLeftSide;
   }
 
-  public static NaiveDriveToPoseCommand driveToNearestScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
-    // isLeftSide = true;
-    return new NaiveDriveToPoseCommand(drivetrain, localizer);
-    // return new NaiveDriveToPoseCommand(drivetrain, localizer,
-    //   new Pose2d(
-    //     new Translation2d(1, 0.5),
-    //     new Rotation2d(0)
-    //   )
-    // );
+  public static NaiveDriveToPoseCommand driveToNearestLeftScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
+    return new NaiveDriveToPoseCommand(drivetrain, localizer, true);
   }
 
-  public NaiveDriveToPoseCommand driveToNearestRightScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
-    isLeftSide = false;
-    return new NaiveDriveToPoseCommand(drivetrain, localizer);
+  public static NaiveDriveToPoseCommand driveToNearestRightScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
+    return new NaiveDriveToPoseCommand(drivetrain, localizer, false);
   }
 
   private Pose2d getMeasurement() {
@@ -105,11 +98,10 @@ public class NaiveDriveToPoseCommand extends Command {
   }
 
   private Pose2d getTarget() {
-    // if (isLeftSide) {
-    //   return ReefLocations.nearestScoringLocation(localizer.getMeasurement().pose);
-    // }
-    // return ReefLocations.nearestRightScoringLocation(localizer.getMeasurement().pose);
-    return ReefLocations.nearestScoringLocation(localizer.getMeasurement().pose);
+    if (isLeftSide) {
+      return ReefLocations.nearestLeftScoringLocation(localizer.getMeasurement().pose);
+    }
+    return ReefLocations.nearestRightScoringLocation(localizer.getMeasurement().pose);
   }
 
   @Override
