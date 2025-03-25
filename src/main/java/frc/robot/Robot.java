@@ -136,7 +136,7 @@ public class Robot extends TimedRobot {
     // Auto align
     driveController.leftTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestScoringLocation(drivetrain, localizers.getOdometry()));
     // driveController.rightTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getVision()));
-    driveController.rightTrigger().whileTrue(CommandSwerveDrivetrain.driveToNearestScoringLocation(localizers.getOdometry()));
+    //driveController.rightTrigger().whileTrue(CommandSwerveDrivetrain.driveToNearestScoringLocation(localizers.getOdometry()));
     //Algae Intake Controls
     robotController.rightTrigger  ().whileTrue(
       algaeIntakeSubsystem.intakeCommand()

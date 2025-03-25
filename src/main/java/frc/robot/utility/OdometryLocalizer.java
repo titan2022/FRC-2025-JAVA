@@ -44,9 +44,9 @@ public class OdometryLocalizer extends Localizer {
       return;
     }
     Matrix<N3, N1> stdDevs = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
-    stdDevs.set(0, 0, 1.0 * measurement.distance);
-    stdDevs.set(1, 0, 1.0 * measurement.distance);
-    stdDevs.set(2, 0, 1.0 * Double.POSITIVE_INFINITY);
+    stdDevs.set(0, 0, 0.1 * measurement.distance);
+    stdDevs.set(1, 0, 0.1 * measurement.distance);
+    stdDevs.set(2, 0, 0.1 * measurement.distance );
     drivetrain.addVisionMeasurement(measurement.pose, measurement.measurementTime, stdDevs);
   }
 

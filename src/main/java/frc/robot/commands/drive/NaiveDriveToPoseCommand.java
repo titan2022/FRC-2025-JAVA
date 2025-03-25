@@ -1,6 +1,7 @@
 package frc.robot.commands.drive;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -22,6 +23,8 @@ import frc.robot.subsystems.drive.TunerConstants;
 import frc.robot.utility.Localizer;
 import frc.robot.utility.ReefLocations;
 import frc.robot.utility.Constants.Unit;
+
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.InchesPerSecond;
 
 
@@ -31,7 +34,7 @@ public class NaiveDriveToPoseCommand extends Command {
   private final Localizer localizer;
 
   /// The max speed, in meters per second
-  public static final double MAX_SPEED_AUTOALIGN = 1.0; // m/s
+  public static final double MAX_SPEED_AUTOALIGN = 4.0; // m/s
   public static final double MAX_ACCELERATION_AUTOALIGN = 4.0; // m/s^2
   /// The max angular speed, in radians per second
   public static final double MAX_ANGULAR_SPEED_AUTOALIGN = 200.0 * Unit.DEG; // rad/s
@@ -43,9 +46,9 @@ public class NaiveDriveToPoseCommand extends Command {
   public Pose2d target;
 
   private final ProfiledPIDController pidX = new ProfiledPIDController(
-    10, // kP
+    2.5, // kP
     0.0, // kI
-    0.3, // kD
+    0.0, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
@@ -53,9 +56,9 @@ public class NaiveDriveToPoseCommand extends Command {
   );
 
   private final ProfiledPIDController pidY = new ProfiledPIDController(
-    10, // kP
+    2.5, // kP
     0.0, // kI
-    0.3, // kD
+    0.0, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
@@ -63,8 +66,8 @@ public class NaiveDriveToPoseCommand extends Command {
   );
 
   private final ProfiledPIDController pidTheta = new ProfiledPIDController(
-    18, // kP
-    10.0, // kI
+    2, // kP
+    0.0, // kI
     0.0, // kD
     new TrapezoidProfile.Constraints(
       MAX_ANGULAR_SPEED_AUTOALIGN,
@@ -111,6 +114,7 @@ public class NaiveDriveToPoseCommand extends Command {
 
   @Override
   public void initialize() {
+    pidTheta.enableContinuousInput(0, 2 * Math.PI);
     Pose2d measurement = getMeasurement();
     ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(drivetrain.getState().Speeds, measurement.getRotation());
     target = getTarget();
@@ -126,25 +130,28 @@ public class NaiveDriveToPoseCommand extends Command {
 
   @Override
   public void execute() {
-    // Pose2d measurement = getMeasurement();
-    // ChassisSpeeds test = new ChassisSpeeds(
-    //   pidX.calculate(measurement.getX(), target.getX()),
-    //   pidY.calculate(measurement.getY(), target.getY()),
-    //   0//pidTheta.calculate(measurement.getRotation().getRadians(), target.getRotation().getRadians())
-    // );
-
-    // SmartDashboard.putNumberArray("X PID", new Double[] {measurement.getX(), target.getX(), pidX.calculate(measurement.getX(), target.getX())});
-    // chassisPub.set(test);
-    // drivetrain.setFieldVelocities(test);
-
-    Pose2d robotPose = drivetrain.getState().Pose;
-
-    drivetrain.setControl(new SwerveRequest.FieldCentric()
-      .withDriveRequestType(DriveRequestType.Velocity)
-      .withVelocityX(-pidX.calculate(robotPose.getX()))
-      .withVelocityY(-pidY.calculate(robotPose.getY()))
-      .withDeadband(InchesPerSecond.of(10))
+    Pose2d measurement = getMeasurement();
+    ChassisSpeeds test = new ChassisSpeeds(
+      pidX.calculate(measurement.getX(), target.getX()),
+      pidY.calculate(measurement.getY(), target.getY()),
+      pidTheta.calculate(measurement.getRotation().getRadians(), target.getRotation().getRadians())
     );
+
+    SmartDashboard.putNumberArray("X PID", new Double[] {measurement.getX(), target.getX(), pidX.calculate(measurement.getX(), target.getX())});
+    chassisPub.set(test);
+    drivetrain.setFieldVelocities(test);
+
+    // Pose2d robotPose = drivetrain.getState().Pose;
+
+    // drivetrain.setControl(new SwerveRequest.FieldCentric()
+    //   .withDriveRequestType(DriveRequestType.Velocity)
+    //   .withVelocityX(-pidX.calculate(robotPose.getX()))
+    //   .withVelocityY(-pidY.calculate(robotPose.getY()))
+    //   .withDeadband(InchesPerSecond.of(5))
+    //   //.withRotationalRate(pidTheta.calculate(robotPose.getRotation().getRadians()))
+    //   //.withRotationalDeadband(DegreesPerSecond.of(15))
+    //   //.withForwardPerspective(ForwardPerspectiveValue.BlueAlliance)
+    // );
     SmartDashboard.putNumber("NaiveDriveToPoseCommand target x-velocity", pidX.getSetpoint().velocity);
     SmartDashboard.putNumber("NaiveDriveToPoseCommand target y-velocity", pidY.getSetpoint().velocity);
     SmartDashboard.putNumber("NaiveDriveToPoseCommand target theta-velocity", pidTheta.getSetpoint().velocity);
@@ -157,7 +164,7 @@ public class NaiveDriveToPoseCommand extends Command {
   public boolean isFinished() {
     // Pose2d measurement = getMeasurement();
     // Pose2d target = getTarget();
-    // publisherTarget.set(target);
+    publisherTarget.set(target);
     // publisherDiff.set(target.minus(measurement));
     // return (measurement.minus(target).getTranslation().getNorm() <= FINISH_DEADBAND) && (Math.abs(measurement.minus(target).getRotation().getRadians()) <= FINISH_ANGULAR_DEADBAND);
     return false;

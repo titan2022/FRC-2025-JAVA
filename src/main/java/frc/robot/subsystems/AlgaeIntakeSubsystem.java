@@ -24,7 +24,7 @@ import com.pathplanner.lib.path.RotationTarget;
 
 public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final double MIN_ANGLE = 90;    
-  private static final double MAX_ANGLE = 38; 
+  private static final double MAX_ANGLE = 30; 
   private static final double REV_OFFSET = -160; // Offset for REV absolute encoder 
   private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if `false`
   private static final double MAX_VOLTAGE = 4.0;
