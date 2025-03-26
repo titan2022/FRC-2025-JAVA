@@ -34,8 +34,8 @@ public class NaiveDriveToPoseCommand extends Command {
   private final Localizer localizer;
 
   /// The max speed, in meters per second
-  public static final double MAX_SPEED_AUTOALIGN = 4.0; // m/s
-  public static final double MAX_ACCELERATION_AUTOALIGN = 4.0; // m/s^2
+  public static final double MAX_SPEED_AUTOALIGN = 1; // m/s
+  public static final double MAX_ACCELERATION_AUTOALIGN = 1.5; // m/s^2
   /// The max angular speed, in radians per second
   public static final double MAX_ANGULAR_SPEED_AUTOALIGN = 200.0 * Unit.DEG; // rad/s
   public static final double MAX_ANGULAR_ACCELERATION_AUTOALIGN = 200.0 * Unit.DEG; // rad/s^2
@@ -45,9 +45,9 @@ public class NaiveDriveToPoseCommand extends Command {
   public Pose2d target;
 
   private final ProfiledPIDController pidX = new ProfiledPIDController(
-    2.5, // kP
-    0.0, // kI
-    0.0, // kD
+    6, // kP
+    0, // kI
+    1.5, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
@@ -55,9 +55,9 @@ public class NaiveDriveToPoseCommand extends Command {
   );
 
   private final ProfiledPIDController pidY = new ProfiledPIDController(
-    2.5, // kP
-    0.0, // kI
-    0.0, // kD
+    6, // kP
+    0, // kI
+    1.5, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
@@ -67,7 +67,7 @@ public class NaiveDriveToPoseCommand extends Command {
   private final ProfiledPIDController pidTheta = new ProfiledPIDController(
     2, // kP
     0.0, // kI
-    0.0, // kD
+    0.25, // kD
     new TrapezoidProfile.Constraints(
       MAX_ANGULAR_SPEED_AUTOALIGN,
       MAX_ANGULAR_ACCELERATION_AUTOALIGN
@@ -115,6 +115,7 @@ public class NaiveDriveToPoseCommand extends Command {
     pidX.reset(new State(measurement.getX(), fieldSpeeds.vxMetersPerSecond));
     pidY.reset(new State(measurement.getY(), fieldSpeeds.vyMetersPerSecond));
     pidTheta.reset(new State(measurement.getRotation().getRadians(), fieldSpeeds.omegaRadiansPerSecond));
+    //publisherTarget.set(target);
   }
   
   StructPublisher<ChassisSpeeds> chassisPub = NetworkTableInstance.getDefault().getStructTopic("autoAlignVel", ChassisSpeeds.struct).publish();
@@ -155,7 +156,7 @@ public class NaiveDriveToPoseCommand extends Command {
   public boolean isFinished() {
     // Pose2d measurement = getMeasurement();
     // Pose2d target = getTarget();
-    publisherTarget.set(target);
+    //publisherTarget.set(target);
     // publisherDiff.set(target.minus(measurement));
     // return (measurement.minus(target).getTranslation().getNorm() <= FINISH_DEADBAND) && (Math.abs(measurement.minus(target).getRotation().getRadians()) <= FINISH_ANGULAR_DEADBAND);
     return false;
