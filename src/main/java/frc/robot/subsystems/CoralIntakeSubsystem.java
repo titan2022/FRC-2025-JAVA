@@ -12,6 +12,8 @@ public class CoralIntakeSubsystem extends SubsystemBase {
   // TODO: Figure out this speed
   private static final double INTAKE_SPEED = -3; // in volts
 
+  public boolean isIntaking = false;
+
   public CoralIntakeSubsystem() {
     intakeMotor.setNeutralMode(NeutralModeValue.Brake);
 
@@ -28,9 +30,15 @@ public class CoralIntakeSubsystem extends SubsystemBase {
 
   public void startIntaking() {
     intakeMotor.setVoltage(INTAKE_SPEED);
+    isIntaking = true;
   }
 
   public void stopIntaking() {
     intakeMotor.stopMotor();
+    isIntaking = false;
+  }
+
+  public boolean isIntaking() {
+    return isIntaking;
   }
 }

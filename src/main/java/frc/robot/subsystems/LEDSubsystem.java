@@ -2,12 +2,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utility.networking.NetworkingCall;
-import frc.robot.utility.networking.NetworkingServer;
-import frc.robot.utility.networking.types.NetworkingTag;
+import frc.robot.utility.TitanProcessingLocalizer;
 
 public class LEDSubsystem extends SubsystemBase {
+    private final static double LOCALIZER_LATENCY_THRESHOLD = 0.1;
+
     private AddressableLED led = new AddressableLED(0);
     private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(17);
     private static final int DEFAULT_BLUE_R = 0;
@@ -23,60 +24,82 @@ public class LEDSubsystem extends SubsystemBase {
     private static final int GREEN_G = 255;
     private static final int GREEN_B = 0;
     
-    private final CoralScorerSubsystem coralScorer;
+    private CoralScorerSubsystem coralScorer;
+    private CoralIntakeSubsystem coralIntake;
+    private TitanProcessingLocalizer visionLocalizer;
+
     private boolean aprilTagVisible = false;
     private boolean aprilTagAligned = false;
 
-    public LEDSubsystem(CoralScorerSubsystem coralScorer) {
+    public LEDSubsystem(CoralScorerSubsystem coralScorer, CoralIntakeSubsystem coralIntake, TitanProcessingLocalizer visionLocalizer) {
         this.coralScorer = coralScorer;
+        this.coralIntake = coralIntake;
+        this.visionLocalizer = visionLocalizer;
+
         led.setLength(ledBuffer.getLength());
         led.setData(ledBuffer);
         led.start();
-        fill(DEFAULT_BLUE_R, DEFAULT_BLUE_G, DEFAULT_BLUE_B);
-        
-        NetworkingServer server = new NetworkingServer();
-        server.subscribe("tag", (NetworkingCall<NetworkingTag>) this::handleTagDetection);
-    }
-
-    private void handleTagDetection(NetworkingTag tag) {
-        if (tag != null) {
-            aprilTagVisible = true;
-            double centerThreshold = 0.1;
-            aprilTagAligned = Math.abs(tag.position.getX()) < centerThreshold;
-        } else {
-            aprilTagVisible = false;
-            aprilTagAligned = false;
-        }
     }
 
     @Override
     public void periodic() {
-        if (aprilTagAligned) {
-            fill(GREEN_R, GREEN_G, GREEN_B);
-        } else if (aprilTagVisible) {
-            fill(ORANGE_R, ORANGE_G, ORANGE_B);
-        } else if (coralScorer.getSawCoralInLastFrame()) {
-            fill(WHITE_R, WHITE_G, WHITE_B);
+        if (visionLocalizer.getMeasurement().getLatency() < LOCALIZER_LATENCY_THRESHOLD) {
+            aprilTagVisible = true;
         } else {
-            boolean needsReset = false;
-            for (var i = 0; i < ledBuffer.getLength(); i++) {
-                if (ledBuffer.getLED(i).red == 0 && 
-                    ledBuffer.getLED(i).green == 0 && 
-                    ledBuffer.getLED(i).blue == 0) {
-                    needsReset = true;
-                    break;
-                }
-            }
-            if (needsReset) {
-                fill(DEFAULT_BLUE_R, DEFAULT_BLUE_G, DEFAULT_BLUE_B);
-            }
+            aprilTagVisible = false;
         }
+
+        for(int i = )
+
+        if (coralScorer.getSawCoralInLastFrame()) {
+            if (aprilTagAligned) {
+                fill(GREEN_R, GREEN_G, GREEN_B);
+            } else if (aprilTagVisible) {
+                fill(ORANGE_R, ORANGE_G, ORANGE_B);
+            } else {
+                fill(WHITE_R, WHITE_G, WHITE_B);
+            }
+        } else if (coralIntake.isIntaking()) {
+            pulse(0, 0, 0, 0);
+        } else {
+            fill(DEFAULT_BLUE_R, DEFAULT_BLUE_G, DEFAULT_BLUE_B);
+        }
+
+        update();
     }
 
+    /**
+     * Fill LED strip with solid color.
+     * @param r
+     * @param g
+     * @param b
+     */
     public void fill(int r, int g, int b) {
         for (var i = 0; i < ledBuffer.getLength(); i++) {
             ledBuffer.setRGB(i, r, g, b);
         }
+    }
+
+    /**
+     * Blinking animation using a simple sine wave.
+     * @param r
+     * @param g
+     * @param b
+     * @param period in seconds
+     */
+    public void pulse(int r, int g, int b, double period) {
+        double time = Timer.getFPGATimestamp();
+        double brightness = (Math.sin(((2 * Math.PI) / period) * time) + 1) / 2;
+
+        for (var i = 0; i < ledBuffer.getLength(); i++) {
+            ledBuffer.setRGB(i, (int)(r * brightness), (int)(g * brightness), (int)(b * brightness));
+        }
+    }
+
+    /**
+     * Update LED strip based on buffer.
+     */
+    private void update() {
         led.setData(ledBuffer);
     }
 }
