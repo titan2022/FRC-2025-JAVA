@@ -40,8 +40,7 @@ public class NaiveDriveToPoseCommand extends Command {
   public static final double MAX_ANGULAR_SPEED_AUTOALIGN = 200.0 * Unit.DEG; // rad/s
   public static final double MAX_ANGULAR_ACCELERATION_AUTOALIGN = 200.0 * Unit.DEG; // rad/s^2
 
-  public static final double FINISH_DEADBAND = 0.025; // m
-  public static final double FINISH_ANGULAR_DEADBAND = 2 * Unit.DEG; // rad
+  
   
   public Pose2d target;
 

@@ -55,6 +55,10 @@ public abstract class Localizer {
       this.serverTime = Utils.getCurrentTimeSeconds();
     }
 
+    /**
+     * WARNING: This is not implemented properly for TitanProcessingLocalizer! (FIXME)
+     */
+    @Deprecated
     public double getLatency() {
       return serverTime - measurementTime;
     }
