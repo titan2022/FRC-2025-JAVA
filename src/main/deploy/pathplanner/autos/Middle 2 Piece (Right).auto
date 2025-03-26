@@ -7,31 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef to Coral Station to Intake"
+            "pathName": "Middle Preload to 12' Algae"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake coral"
+            "name": "Dealgify L2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Station to Reef to Score"
+            "pathName": "12' Algae to 1'"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Reef left align"
+            "name": "Score coral"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Elevate L3"
+            "pathName": "1' to Right Coral Station"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.75
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Coral Station to 6'"
           }
         },
         {

@@ -3,38 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.58858418367347,
-        "y": 0.6187181122448976
+        "x": 7.589,
+        "y": 7.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.837682457607624,
-        "y": 0.5975037321449376
+        "x": 6.589,
+        "y": 7.5
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Left Start"
     },
     {
       "anchor": {
-        "x": 3.8204081632653066,
-        "y": 2.491613520408163
+        "x": 5.0,
+        "y": 5.252
       },
       "prevControl": {
-        "x": 4.105569865702863,
-        "y": 2.317710179487898
+        "x": 5.58723702713321,
+        "y": 6.269124367080423
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "10'"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Elevate to L2",
+      "waypointRelativePos": 0.49941656942824175,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Elevate L2"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

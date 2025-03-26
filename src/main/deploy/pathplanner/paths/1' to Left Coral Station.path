@@ -1,0 +1,82 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.791500000000001,
+        "y": 3.85
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.5933206850797985,
+        "y": 2.9819895053522862
+      },
+      "isLocked": false,
+      "linkedName": "1'"
+    },
+    {
+      "anchor": {
+        "x": 5.343,
+        "y": 6.853999999999999
+      },
+      "prevControl": {
+        "x": 6.02550407496156,
+        "y": 6.103253704530708
+      },
+      "nextControl": {
+        "x": 4.624242191966317,
+        "y": 7.644624966966396
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.605,
+        "y": 7.3
+      },
+      "prevControl": {
+        "x": 3.92725,
+        "y": 7.35649364905389
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Left Coral Station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Elevate to intake level",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Elevate to intake level"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -55.0
+  },
+  "reversed": false,
+  "folder": "Middle Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

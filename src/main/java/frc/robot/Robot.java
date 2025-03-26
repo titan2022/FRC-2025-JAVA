@@ -6,23 +6,30 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.RotationTarget;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
+import frc.robot.commands.drive.NaiveDriveToPoseCommand;
+import frc.robot.subsystems.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.AlgaeIntakeSubsystem.AngleTarget;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.CoralScorerSubsystem;
 import frc.robot.subsystems.DealgifierSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
+import frc.robot.utility.Constants;
 import frc.robot.utility.Localizers;
 import frc.robot.utility.OdometryLocalizer;
+import frc.robot.utility.ReefLocations;
 import frc.robot.utility.TitanProcessingLocalizer;
 
 
@@ -37,29 +44,34 @@ public class Robot extends TimedRobot {
   private DrivingCommand drivingCommand = new DrivingCommand(drivetrain, driveController);
 
   // Create auto chooser using all the autos in the project
-  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+  private SendableChooser<Command> autoChooser;
 
   // Subsystems
   private final CoralScorerSubsystem coralScorer = new CoralScorerSubsystem();
   private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
-  private final DealgifierSubsystem dealgifierSubsystem = new DealgifierSubsystem();
+  private final DealgifierSubsystem dealgifier = new DealgifierSubsystem();
+  private final AlgaeIntakeSubsystem algaeIntakeSubsystem = new AlgaeIntakeSubsystem();
 
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
-    new TitanProcessingLocalizer(5800)
+    new TitanProcessingLocalizer(5804)
   );
 
   @Override
   public void robotInit() {
     setBindings();
     setUpAutos();
+    //SignalLogger.setPath("/media/sda1/");
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
-    // localizers.step();
+    localizers.step();
+
+    SmartDashboard.putNumber("x-distance to tag 17", localizers.getVision().getMeasurement().pose.getX() - Constants.tagLayout.getTagPose(17).get().getX());
+    SmartDashboard.putNumber("y-distance to tag 17", localizers.getVision().getMeasurement().pose.getY() - Constants.tagLayout.getTagPose(17).get().getY());
   }
 
   @Override
@@ -76,7 +88,7 @@ public class Robot extends TimedRobot {
 
     // Coral scorer controls
     robotController.rightBumper().whileTrue(
-      coralScorer.timedScoreCoralCommand(false)
+      coralScorer.scoreCoralCommand()
     );
 
     // Backwards coral scoring
@@ -84,16 +96,26 @@ public class Robot extends TimedRobot {
       coralScorer.timedScoreCoralCommand(true)
     );
 
+    // Shifting coral forward when elevator passes bumper
+    //coralScorer.setDefaultCommand(coralScorer.coralShiftingCommand(elevator));
+
     // Elevator controls
     // Left dpad is elevate to coral intake level
+    robotController.pov(270).whileTrue (elevator.elevateCommand(ElevationTarget.CoralIntake));
     robotController.pov(270).whileTrue (elevator.elevateCommand(ElevationTarget.CoralIntake));
     robotController.pov(180).whileTrue(elevator.elevateCommand(ElevationTarget.L1));
     robotController.pov(90).whileTrue(elevator.elevateCommand(ElevationTarget.L2));
     robotController.pov(0).whileTrue(elevator.elevateCommand(ElevationTarget.L3));
 
     // X any Y is elevate to remove algae levels
-    robotController.x().whileTrue(elevator.elevateCommand(ElevationTarget.AlgaeL2));
-    robotController.y().whileTrue(elevator.elevateCommand(ElevationTarget.AlgaeL3));
+    robotController.x().whileTrue(
+      elevator.elevateCommand(ElevationTarget.AlgaeL2)
+      .alongWith(dealgifier.dealgifyCommand())
+    );
+    robotController.y().whileTrue(
+      elevator.elevateCommand(ElevationTarget.AlgaeL3)
+      .alongWith(dealgifier.dealgifyCommand())
+    );
     
     elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
 
@@ -102,24 +124,46 @@ public class Robot extends TimedRobot {
     // Elevate down to the coral intake level,
     // then run the coral intake and scorer motors to move the coral in.
     robotController.leftBumper().whileTrue(
-      // elevator.elevateCommand(ElevationTarget.CoralIntake)
-      // .andThen(
+        elevator.elevateCommand(ElevationTarget.CoralIntake)
+        .andThen(
         new CoralIntakeCommand(coralIntake, coralScorer)
-      // )
+       )
     );
 
     // Dealgifier controls
-    robotController.a().whileTrue(dealgifierSubsystem.dealgifyCommand());
+    robotController.a().whileTrue(dealgifier.dealgifyCommand());
+
+    // Auto align
+    driveController.leftTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()));
+    driveController.rightTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()));
+    //Algae Intake Controls
+    robotController.rightTrigger  ().whileTrue(
+      algaeIntakeSubsystem.intakeCommand()
+    );
+    robotController.leftTrigger().whileTrue(
+      algaeIntakeSubsystem.scoreCommand()
+    );
   }
 
   public void setUpAutos() {
     // Register named commands
     NamedCommands.registerCommand("Elevate to intake level", elevator.elevateCommand(ElevationTarget.CoralIntake));
     NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
-    NamedCommands.registerCommand("Elevate L2", elevator.elevateCommand(ElevationTarget.L2));
-    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3));
-    NamedCommands.registerCommand("Elevate Algae L2", elevator.elevateCommand(ElevationTarget.AlgaeL2));
-    NamedCommands.registerCommand("Elevate Algae L3", elevator.elevateCommand(ElevationTarget.AlgaeL3));
+    NamedCommands.registerCommand("Elevate L2", 
+    elevator.elevateCommand(ElevationTarget.L2)
+    //.alongWith(coralScorer.coralShiftingCommand(elevator))
+    );
+    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3)
+    //.alongWith(coralScorer.coralShiftingCommand(elevator))
+    );
+    NamedCommands.registerCommand("Dealgify L2", 
+      elevator.elevateCommand(ElevationTarget.AlgaeL2)
+      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.75)
+    );
+    NamedCommands.registerCommand("Dealgify L3", 
+      elevator.elevateCommand(ElevationTarget.AlgaeL3)
+      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.75)
+    );
 
     // TODO: Figure out how to finish elevating before ending the command
     NamedCommands.registerCommand("Intake coral", 
@@ -131,12 +175,12 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
-    NamedCommands.registerCommand("Reef left align", Commands.print("Warning: reef align is not implemented!"));
+    //NamedCommands.registerCommand("Reef left align", Commands.print("Warning: reef align is not implemented!"));
     NamedCommands.registerCommand("Reef right align", Commands.print("Warning: reef align is not implemented!"));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
-
+    autoChooser = AutoBuilder.buildAutoChooser();
     // Add the auto chooser to the SmartDashboard so we can select the auto from the dropdown
     SmartDashboard.putData(autoChooser);
 
@@ -145,7 +189,7 @@ public class Robot extends TimedRobot {
   }
 
   public Command getAutonomousCommand() {
-    return null;//autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 
   @Override
@@ -172,8 +216,12 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     
+    //SignalLogger.start();
     // Quick fix
     //elevator.resetTarget();
+    //elevator.resetTarget();
+    
+    localizers.enableMixing();
   }
 
   @Override
@@ -191,7 +239,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+    //SignalLogger.stop();
+  }
 
   @Override
   public void testInit() {

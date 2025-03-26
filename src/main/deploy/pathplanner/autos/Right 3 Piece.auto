@@ -7,19 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Preloaded Robot to Reef to Score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Reef right align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Elevate L3"
+            "pathName": "Right Preloaded to Reef to Score"
           }
         },
         {
@@ -31,25 +19,49 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef to Coral Station to Intake"
+            "pathName": "3' to 2' Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgify L3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Station to Reef to Score"
+            "pathName": "2' Algae to Coral Station"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.75
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station to 3'"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Reef left align"
+            "name": "Score coral"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Elevate L3"
+            "pathName": "3' to Coral Station to Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station to 2'"
           }
         },
         {

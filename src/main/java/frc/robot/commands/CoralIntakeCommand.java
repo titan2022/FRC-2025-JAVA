@@ -26,6 +26,12 @@ public class CoralIntakeCommand extends Command {
   }
 
   @Override
+  public void end(boolean isInterrupted) {
+    scorer.stopMovingCoral();
+    scorer.resetCoralShifting();
+  }
+
+  @Override
   public boolean isFinished() {
     return scorer.coralFinishedIndexing();
   }

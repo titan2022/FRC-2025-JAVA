@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.865178571428572,
-        "y": 2.4617665816326517
+        "x": 5.0,
+        "y": 5.252
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3887362852784921,
-        "y": 1.065553927765431
+        "x": 5.25,
+        "y": 5.685012701892219
       },
       "isLocked": false,
-      "linkedName": "south start"
+      "linkedName": "10'"
     },
     {
       "anchor": {
-        "x": 1.164030612244898,
-        "y": 0.9768813775510193
+        "x": 5.096,
+        "y": 5.112
       },
       "prevControl": {
-        "x": 2.325413299111803,
-        "y": 1.628877140839191
+        "x": 5.346,
+        "y": 5.54501270189222
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "coral station"
+      "linkedName": "10' Algae"
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 55.0
+    "velocity": 0,
+    "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left Paths",
   "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": 59.99999999999999
+    "velocity": 0,
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

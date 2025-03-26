@@ -28,7 +28,7 @@ import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 public class ElevatorSubsystem extends SubsystemBase {
   private static final double MAX_VOLTAGE = 3.0;
   private static final double JOYSTICK_DEADBAND = 0.12;
-  private static final double MAX_HEIGHT_INCHES = 40.298;
+  private static final double MAX_HEIGHT_INCHES = 40.798;
   private static final double MIN_HEIGHT_INCHES = 0;
   private static double ELEVATION_GEAR_RATIO = 6.4 / (1.757 * Math.PI * 2) ;
 
@@ -84,7 +84,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     rightMotorLeader.getConfigurator().apply(Elevator_Config);
     leftMotorFollower.getConfigurator().apply(Elevator_Config);
     // TODO: Use a non-deprecated method
-    // Invert the right motor
+    // Invert the left motor
     leftMotorFollower.setControl(new Follower(rightMotorLeader.getDeviceID(), true));
     leftMotorFollower.setInverted(true);
     voltageRequest = new VoltageOut(0);
@@ -122,7 +122,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public ElevateCommand(ElevatorSubsystem elevator, double elevateTarget) {
       elevateTarget = Math.max(Math.min(elevateTarget, MAX_HEIGHT_INCHES), MIN_HEIGHT_INCHES);
       this.elevateTarget = elevateTarget;
-      // addRequirements(elevator); // we don't want it to disable the manual elevation command
+      addRequirements(elevator);
+      // It's fine to ignore the joystick because the profile should not take very long
     }
 
     @Override // every 20ms
@@ -133,7 +134,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     @Override
     public void end(boolean isInterrupted) {
-      setPosition(getElevatorPosition());
+      //setPosition(getElevatorPosition());
     }
 
     @Override
@@ -146,9 +147,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     // https://www.desmos.com/calculator/ocl2iqiu7n
     // Unit: inches
     CoralIntake(0),
-    L1(13.899),
-    L2(24.899),
-    L3(40.298),
+    L1(17.171630859375),
+    L2(24.106689453125),
+    L3(40.598),
     AlgaeL2(20.899),
     AlgaeL3(36.899)
     ;
@@ -199,7 +200,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Elevator Target", (0));
     SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
-
+    SmartDashboard.putNumber("Motion Magic is Running", rightMotorLeader.getMotionMagicIsRunning().getValue().value );
   }
 
 }

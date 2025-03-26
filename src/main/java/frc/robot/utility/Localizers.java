@@ -11,7 +11,7 @@ public class Localizers {
   private boolean isMixed = false;
   private boolean hasSubscribedToVision = false;
 
-  private final boolean HAS_TITAN_PROCESSING = false;
+  private final boolean HAS_TITAN_PROCESSING = true;
 
   public Localizers(OdometryLocalizer odometryLocalizer, TitanProcessingLocalizer visionLocalizer) {
     this.odometryLocalizer = odometryLocalizer;
@@ -63,8 +63,10 @@ public class Localizers {
   public void step() {
     if(HAS_TITAN_PROCESSING) {
       if (visionLocalizer.getMeasurement() == null) {
+        SmartDashboard.putBoolean("vision - can get measurement", false);
         return;
       }
+      SmartDashboard.putBoolean("vision - can get measurement", true);
       SmartDashboard.putNumber("vision - latency", visionLocalizer.getMeasurement().getLatency());
       SmartDashboard.putNumber("vision - time since last message", visionLocalizer.getMeasurement().getTimeSince());
       visionLocalizer.step();

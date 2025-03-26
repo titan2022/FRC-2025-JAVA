@@ -3,38 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.164030612244898,
-        "y": 0.9768813775510193
+        "x": 7.585,
+        "y": 4.026
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6492012560886273,
-        "y": 2.0366685827380087
+        "x": 6.5082795172202434,
+        "y": 4.01521448470868
       },
       "isLocked": false,
-      "linkedName": "coral station"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.529400510204082,
-        "y": 2.6781568877551014
+        "x": 5.801,
+        "y": 4.026
       },
       "prevControl": {
-        "x": 2.5305363834994377,
-        "y": 1.9974162561711375
+        "x": 7.035165032628319,
+        "y": 4.0869781050511955
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "12' Algae"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Elevate to L1",
+      "waypointRelativePos": 0.49748201438848494,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Elevate L1"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.33107335028505
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Middle Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
