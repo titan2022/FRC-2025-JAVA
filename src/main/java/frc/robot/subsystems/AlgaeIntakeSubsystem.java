@@ -32,6 +32,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   
   private static final TalonFX pivotMotor = new TalonFX(32, "rio");
   private static final TalonFX intakeRollersMotor = new TalonFX(21, "rio");
+  private boolean hasAlgae = false;
 
   // We have a REV through-bore encoder
   // Programming manual: https://docs.wpilib.org/en/stable/docs/software/hardware-apis/sensors/encoders-software.html#quadrature-encoders-the-encoder-class
@@ -175,6 +176,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   public void startIntaking() {
     intakeRollersMotor.setVoltage(-ALGAE_INTAKE_SPEED);
     target = AngleTarget.Intake.getValue();
+    hasAlgae = true;
   }
 
   public void startScoring() {
@@ -185,6 +187,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   public void stopScoring() {
     intakeRollersMotor.setVoltage(0);
     target = AngleTarget.Stow.getValue();
+    hasAlgae = false;
   }
 
 
@@ -192,6 +195,10 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     intakeRollersMotor.setVoltage(-HOLD_ALGAE_INTAKE_VOLTAGE);
     target = AngleTarget.Hold.getValue();
 
+  }
+
+  public boolean getHasAlgae(){
+    return hasAlgae;
   }
 
   public Command intakeCommand() {
