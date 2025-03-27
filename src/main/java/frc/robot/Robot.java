@@ -183,8 +183,8 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
-    //NamedCommands.registerCommand("Reef left align", Commands.print("Warning: reef align is not implemented!"));
-    NamedCommands.registerCommand("Reef right align", Commands.print("Warning: reef align is not implemented!"));
+    NamedCommands.registerCommand("Reef left align", NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(1) );
+    NamedCommands.registerCommand("Reef right align", NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(1));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
