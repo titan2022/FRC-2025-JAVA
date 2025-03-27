@@ -41,7 +41,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     public static final double FINISH_DEADBAND = 0.025; // m
     public static final double FINISH_ANGULAR_DEADBAND = 2 * Unit.DEG; // rad
-
+ 
     LEDPattern blue = LEDPattern.solid(new Color(0*BRIGHTNESS,0*BRIGHTNESS,255*BRIGHTNESS));
     LEDPattern white = LEDPattern.solid(new Color(255*BRIGHTNESS,255*BRIGHTNESS,255*BRIGHTNESS));
     LEDPattern orange = LEDPattern.solid(new Color(255*BRIGHTNESS,50*BRIGHTNESS,0*BRIGHTNESS));

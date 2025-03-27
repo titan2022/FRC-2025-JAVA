@@ -39,7 +39,7 @@ public class OdometryLocalizer extends Localizer {
   }
 
   public void addVisionMeasurement(LocalizerMeasurement measurement) {
-    if (measurement.distance > 1.0) {
+    if (measurement.distance > 1.5) {
       return;
     }
     Matrix<N3, N1> stdDevs = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
