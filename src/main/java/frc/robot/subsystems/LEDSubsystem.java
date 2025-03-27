@@ -51,7 +51,7 @@ public class LEDSubsystem extends SubsystemBase {
     Distance ledSpacing = Meters.of(1 / 120.0);
     LEDPattern scrollingRainbowPattern = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.25), ledSpacing);
 
-    LEDPattern greenTeal = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, new Color(0*BRIGHTNESS,255*BRIGHTNESS,0*BRIGHTNESS), new Color(25 * BRIGHTNESS, 158 * BRIGHTNESS, 158 * BRIGHTNESS)); 
+    LEDPattern greenTeal = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, new Color(0*BRIGHTNESS,100*BRIGHTNESS,0*BRIGHTNESS), new Color(15 * BRIGHTNESS, 50 * BRIGHTNESS, 50 * BRIGHTNESS)); 
     LEDPattern greenTealScroll = greenTeal.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.25), ledSpacing);
     LEDPattern breathe = white.breathe(Seconds.of(0.5));
 

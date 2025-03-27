@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     setBindings();
     setUpAutos();
-
+    localizers.enableMixing();
     // Initialize the tag layout earlier
     AprilTagFieldLayout useless = Constants.tagLayout;
     //SignalLogger.setPath("/media/sda1/");
@@ -229,7 +229,6 @@ public class Robot extends TimedRobot {
     //elevator.resetTarget();
     //elevator.resetTarget();
     
-    localizers.enableMixing();
   }
 
   @Override
