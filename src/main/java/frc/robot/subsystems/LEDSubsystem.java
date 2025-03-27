@@ -1,8 +1,13 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.Constants.Unit;
@@ -12,8 +17,12 @@ import frc.robot.utility.ReefLocations;
 public class LEDSubsystem extends SubsystemBase {
     private final static double LOCALIZER_LATENCY_THRESHOLD = 0.1;
 
-    private AddressableLED led = new AddressableLED(0);
-    private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(17);
+    private AddressableLED ledBack = new AddressableLED(0);
+    private AddressableLEDBuffer ledBufferBack = new AddressableLEDBuffer(50);
+    // private AddressableLED ledFrontRight = new AddressableLED(3);
+    // private AddressableLEDBuffer ledBufferFrontRight = new AddressableLEDBuffer(34);
+    // private AddressableLED ledFrontLeft = new AddressableLED(4);
+    // private AddressableLEDBuffer ledBufferFrontLeft = new AddressableLEDBuffer(34);
     private static final int DEFAULT_BLUE_R = 0;
     private static final int DEFAULT_BLUE_G = 0;
     private static final int DEFAULT_BLUE_B = 255;
@@ -38,14 +47,26 @@ public class LEDSubsystem extends SubsystemBase {
     public static final double FINISH_DEADBAND = 0.025; // m
     public static final double FINISH_ANGULAR_DEADBAND = 2 * Unit.DEG; // rad
 
+    LEDPattern rainbowPattern = LEDPattern.rainbow(255, 255);
+    Distance ledSpacing = Meters.of(1 / 120.0);
+    LEDPattern scrollingRainbowPattern = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.25), ledSpacing);
+
+
+
     public LEDSubsystem(CoralScorerSubsystem coralScorer, CoralIntakeSubsystem coralIntake, Localizers localizers) {
         this.coralScorer = coralScorer;
         this.coralIntake = coralIntake;
         this.localizers = localizers;
 
-        led.setLength(ledBuffer.getLength());
-        led.setData(ledBuffer);
-        led.start();
+        ledBack.setLength(ledBufferBack.getLength());
+        ledBack.setData(ledBufferBack);
+        ledBack.start();
+        // ledFrontLeft.setLength(ledBufferFrontLeft.getLength());
+        // ledFrontLeft.setData(ledBufferFrontLeft);
+        // ledFrontLeft.start();
+        // ledFrontRight.setLength(ledBufferFrontRight.getLength());
+        // ledFrontRight.setData(ledBufferFrontRight);
+        // ledFrontRight.start();
     }
 
     @Override
@@ -71,12 +92,13 @@ public class LEDSubsystem extends SubsystemBase {
             } else if (aprilTagVisible) {
                 fill(ORANGE_R, ORANGE_G, ORANGE_B);
             } else {
-                fill(WHITE_R, WHITE_G, WHITE_B);
+                fill(DEFAULT_BLUE_R, DEFAULT_BLUE_G, DEFAULT_BLUE_B);
             }
-        } if (coralIntake.isIntaking()) {
-            pulse(WHITE_R, WHITE_G, WHITE_B, 0);
+        } else if (coralIntake.isIntaking()) {
+            pulse(WHITE_R, WHITE_G, WHITE_B, 0.5);
         } else {
-            fill(DEFAULT_BLUE_R, DEFAULT_BLUE_G, DEFAULT_BLUE_B);
+            // fill(DEFAULT_BLUE_R, DEFAULT_BLUE_G, DEFAULT_BLUE_B);
+            scrollingRainbowPattern.applyTo(ledBufferBack);
         }
 
         update();
@@ -89,9 +111,15 @@ public class LEDSubsystem extends SubsystemBase {
      * @param b
      */
     public void fill(int r, int g, int b) {
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, r, g, b);
+        for (var i = 0; i < ledBufferBack.getLength(); i++) {
+            ledBufferBack.setRGB(i, r, g, b);
         }
+        // for (var i = 0; i < ledBufferFrontLeft.getLength(); i++) {
+        //     ledBufferFrontLeft.setRGB(i, r, g, b);
+        // }
+        // for (var i = 0; i < ledBufferFrontRight.getLength(); i++) {
+        //     ledBufferFrontRight.setRGB(i, r, g, b);
+        // }
     }
 
     /**
@@ -101,9 +129,12 @@ public class LEDSubsystem extends SubsystemBase {
      * @param b
      */
     public void fillLeft(int r, int g, int b) {
-        for (var i = 0; i < ledBuffer.getLength() / 2; i++) {
-            ledBuffer.setRGB(i, r, g, b);
+        for (var i = 0; i < ledBufferBack.getLength() / 2; i++) {
+            ledBufferBack.setRGB(i, r, g, b);
         }
+        // for (var i = 0; i < ledBufferFrontLeft.getLength(); i++) {
+        //     ledBufferFrontLeft.setRGB(i, r, g, b);
+        // }
     }
 
     /**
@@ -113,9 +144,12 @@ public class LEDSubsystem extends SubsystemBase {
      * @param b
      */
     public void fillRight(int r, int g, int b) {
-        for (var i = ledBuffer.getLength() / 2; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, r, g, b);
+        for (var i = ledBufferBack.getLength() / 2; i < ledBufferBack.getLength(); i++) {
+            ledBufferBack.setRGB(i, r, g, b);
         }
+        // for (var i = 0; i < ledBufferFrontRight.getLength(); i++) {
+        //     ledBufferFrontRight.setRGB(i, r, g, b);
+        // }
     }
 
     /**
@@ -128,16 +162,16 @@ public class LEDSubsystem extends SubsystemBase {
     public void pulse(int r, int g, int b, double period) {
         double time = Timer.getFPGATimestamp();
         double brightness = (Math.sin(((2 * Math.PI) / period) * time) + 1) / 2;
-
-        for (var i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, (int)(r * brightness), (int)(g * brightness), (int)(b * brightness));
-        }
+        fill((int)(r * brightness), (int)(g * brightness), (int)(b * brightness));
     }
 
     /**
      * Update LED strip based on buffer.
      */
     private void update() {
-        led.setData(ledBuffer);
+        ledBack.setData(ledBufferBack);
+        // ledFrontLeft.setData(ledBufferFrontLeft);
+        // ledFrontRight.setData(ledBufferFrontRight);
+
     }
 }

@@ -1,6 +1,8 @@
 package frc.robot.utility;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.utility.Localizer.LocalizerMeasurement;
 import frc.robot.utility.networking.NetworkingCall;
 
@@ -57,18 +59,27 @@ public class Localizers {
     hasSubscribedToVision = false;
   }
 
+
+  BooleanPublisher getMeasurementPublisher = NetworkTableInstance.getDefault().getBooleanTopic("vision - can get measurement").publish();
+  DoublePublisher latencyPublisher = NetworkTableInstance.getDefault().getDoubleTopic("vision - latency").publish();
+  DoublePublisher timeSincePublisher = NetworkTableInstance.getDefault().getDoubleTopic("vision - time since last message").publish();
+
   /**
    * Updates the state of the localization estimates
    */
   public void step() {
     if(HAS_TITAN_PROCESSING) {
       if (visionLocalizer.getMeasurement() == null) {
-        SmartDashboard.putBoolean("vision - can get measurement", false);
+        getMeasurementPublisher.set(false);
+        // SmartDashboard.putBoolean("vision - can get measurement", false);
         return;
       }
-      SmartDashboard.putBoolean("vision - can get measurement", true);
-      SmartDashboard.putNumber("vision - latency", visionLocalizer.getMeasurement().getLatency());
-      SmartDashboard.putNumber("vision - time since last message", visionLocalizer.getMeasurement().getTimeSince());
+      getMeasurementPublisher.set(true);
+      latencyPublisher.set(visionLocalizer.getMeasurement().getLatency());
+      timeSincePublisher.set(visionLocalizer.getMeasurement().getTimeSince());
+      // SmartDashboard.putBoolean("vision - can get measurement", true);
+      // SmartDashboard.putNumber("vision - latency", visionLocalizer.getMeasurement().getLatency());
+      // SmartDashboard.putNumber("vision - time since last message", visionLocalizer.getMeasurement().getTimeSince());
       visionLocalizer.step();
     }
     odometryLocalizer.step();

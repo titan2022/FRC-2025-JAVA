@@ -1,29 +1,22 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.units.Units;
-
-
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class ElevatorSubsystem extends SubsystemBase {
   private static final double MAX_VOLTAGE = 3.0;
@@ -128,7 +121,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override // every 20ms
     public void execute() {
-      SmartDashboard.putNumber("Elevator Target", elevateTarget);
+      // SmartDashboard.putNumber("Elevator Target", elevateTarget);
       setPosition(elevateTarget);
 
     }
@@ -195,12 +188,15 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command manualElevationCommand(CommandXboxController controller) {
     return new ManualElevationCommand(this, controller);
   }
+
+  DoublePublisher heightPublisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator Height").publish();
  
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Elevator Target", (0));
-    SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
-    SmartDashboard.putNumber("Motion Magic is Running", rightMotorLeader.getMotionMagicIsRunning().getValue().value );
+    // SmartDashboard.putNumber("Elevator Target", (0));
+    heightPublisher.set(getElevatorPosition());
+    // SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
+    // SmartDashboard.putNumber("Motion Magic is Running", rightMotorLeader.getMotionMagicIsRunning().getValue().value );
   }
 
 }

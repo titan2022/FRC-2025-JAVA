@@ -1,14 +1,11 @@
 package frc.robot.commands.drive;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.subsystems.drive.RotationalDrivebase;
-
-import static frc.robot.utility.Constants.Unit.*;
 
 public class RotationalDriveCommand extends Command {
     private RotationalDrivebase drive;
@@ -57,7 +54,7 @@ public class RotationalDriveCommand extends Command {
     @Override
     public void execute() {
         double joy = applyDeadband(xbox.getRightX(), 0.1);
-        SmartDashboard.putNumber("rot_input", joy);
+        // SmartDashboard.putNumber("rot_input", joy);
         drive.setRotationalVelocity(new Rotation2d(joy));
     }
 

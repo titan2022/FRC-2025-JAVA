@@ -1,30 +1,24 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
-
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.pathplanner.lib.path.RotationTarget;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final double MIN_ANGLE = 90;    
-  private static final double MAX_ANGLE = 30; 
+  private static final double MAX_ANGLE = 35; 
   private static final double REV_OFFSET = -160; // Offset for REV absolute encoder 
   private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if `false`
   private static final double MAX_VOLTAGE = 4.0;
@@ -98,7 +92,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     pivotMotor.setVoltage(-voltage);
     lastSpeed = velocity;
     lastTime = Timer.getFPGATimestamp();
-    SmartDashboard.putNumber("Voltage", voltage);
+    // SmartDashboard.putNumber("Voltage", voltage);
   }
 
   public enum AngleTarget {
@@ -273,11 +267,11 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     goToRotation(target);
-    SmartDashboard.putNumber("Pivot Target", target);
-    SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
-    SmartDashboard.putBoolean("has Algae", hasAlgae());
-    SmartDashboard.putString("intake Velocity", intakeRollersMotor.getVelocity().getValue().toString());
-    SmartDashboard.putString("intake Current", intakeRollersMotor.getStatorCurrent().getValue().toString());
+    // SmartDashboard.putNumber("Pivot Target", target);
+    // SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
+    // SmartDashboard.putBoolean("has Algae", hasAlgae());
+    // SmartDashboard.putString("intake Velocity", intakeRollersMotor.getVelocity().getValue().toString());
+    // SmartDashboard.putString("intake Current", intakeRollersMotor.getStatorCurrent().getValue().toString());
 
   }
 }

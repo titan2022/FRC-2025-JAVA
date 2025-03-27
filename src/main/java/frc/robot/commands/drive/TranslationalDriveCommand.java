@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.subsystems.drive.TranslationalDrivebase;
@@ -36,7 +35,7 @@ public class TranslationalDriveCommand extends Command {
         this.maxVel = maxVel;
         addRequirements(drive);
 
-        SmartDashboard.putBoolean("cmd_started", true);
+        // SmartDashboard.putBoolean("cmd_started", true);
     }
 
     @Override
@@ -96,8 +95,8 @@ public class TranslationalDriveCommand extends Command {
         //     velocity = velocity.rotateBy(heading);
         // }
 
-        SmartDashboard.putNumber("Target Velocity X", velocity.times(speedMult).getX());
-        SmartDashboard.putNumber("Target Velocity Y", velocity.times(speedMult).getY());
+        // SmartDashboard.putNumber("Target Velocity X", velocity.times(speedMult).getX());
+        // SmartDashboard.putNumber("Target Velocity Y", velocity.times(speedMult).getY());
         drive.setVelocity(velocity.times(speedMult));
     }
 

@@ -1,31 +1,20 @@
 package frc.robot.commands.drive;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.subsystems.drive.TunerConstants;
+import frc.robot.utility.Constants.Unit;
 import frc.robot.utility.Localizer;
 import frc.robot.utility.ReefLocations;
-import frc.robot.utility.Constants.Unit;
-
-import static edu.wpi.first.units.Units.DegreesPerSecond;
-import static edu.wpi.first.units.Units.InchesPerSecond;
 
 
 public class NaiveDriveToPoseCommand extends Command {
@@ -34,20 +23,21 @@ public class NaiveDriveToPoseCommand extends Command {
   private final Localizer localizer;
 
   /// The max speed, in meters per second
-  public static final double MAX_SPEED_AUTOALIGN = 1; // m/s
-  public static final double MAX_ACCELERATION_AUTOALIGN = 1.5; // m/s^2
+  public static final double MAX_SPEED_AUTOALIGN = 4; // m/s
+  public static final double MAX_ACCELERATION_AUTOALIGN = 4; // m/s^2
   /// The max angular speed, in radians per second
   public static final double MAX_ANGULAR_SPEED_AUTOALIGN = 200.0 * Unit.DEG; // rad/s
   public static final double MAX_ANGULAR_ACCELERATION_AUTOALIGN = 200.0 * Unit.DEG; // rad/s^2
 
-  
+  public static final double FINISH_DEADBAND = 1 * Unit.IN;
+  public static final double FINISH_ANGULAR_DEADBAND = 2 * Unit.DEG;
   
   public Pose2d target;
 
   private final ProfiledPIDController pidX = new ProfiledPIDController(
-    6, // kP
+    4, // kP
     0, // kI
-    1.5, // kD
+    0.5, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
@@ -55,10 +45,10 @@ public class NaiveDriveToPoseCommand extends Command {
   );
 
   private final ProfiledPIDController pidY = new ProfiledPIDController(
-    6, // kP
+    4, // kP
     0, // kI
-    1.5, // kD
-    new TrapezoidProfile.Constraints(
+    0.5, // kD
+    new TrapezoidProfile.Constraints( 
       MAX_SPEED_AUTOALIGN,
       MAX_ACCELERATION_AUTOALIGN
     )
@@ -118,7 +108,7 @@ public class NaiveDriveToPoseCommand extends Command {
     //publisherTarget.set(target);
   }
   
-  StructPublisher<ChassisSpeeds> chassisPub = NetworkTableInstance.getDefault().getStructTopic("autoAlignVel", ChassisSpeeds.struct).publish();
+  // StructPublisher<ChassisSpeeds> chassisPub = NetworkTableInstance.getDefault().getStructTopic("autoAlignVel", ChassisSpeeds.struct).publish();
 
   @Override
   public void execute() {
@@ -129,8 +119,8 @@ public class NaiveDriveToPoseCommand extends Command {
       pidTheta.calculate(measurement.getRotation().getRadians(), target.getRotation().getRadians())
     );
 
-    SmartDashboard.putNumberArray("X PID", new Double[] {measurement.getX(), target.getX(), pidX.calculate(measurement.getX(), target.getX())});
-    chassisPub.set(test);
+    // SmartDashboard.putNumberArray("X PID", new Double[] {measurement.getX(), target.getX(), pidX.calculate(measurement.getX(), target.getX())});
+    // chassisPub.set(test);
     drivetrain.setFieldVelocities(test);
 
     // Pose2d robotPose = drivetrain.getState().Pose;
@@ -144,21 +134,21 @@ public class NaiveDriveToPoseCommand extends Command {
     //   //.withRotationalDeadband(DegreesPerSecond.of(15))
     //   //.withForwardPerspective(ForwardPerspectiveValue.BlueAlliance)
     // );
-    SmartDashboard.putNumber("NaiveDriveToPoseCommand target x-velocity", pidX.getSetpoint().velocity);
-    SmartDashboard.putNumber("NaiveDriveToPoseCommand target y-velocity", pidY.getSetpoint().velocity);
-    SmartDashboard.putNumber("NaiveDriveToPoseCommand target theta-velocity", pidTheta.getSetpoint().velocity);
+    // SmartDashboard.putNumber("NaiveDriveToPoseCommand target x-velocity", pidX.getSetpoint().velocity);
+    // SmartDashboard.putNumber("NaiveDriveToPoseCommand target y-velocity", pidY.getSetpoint().velocity);
+    // SmartDashboard.putNumber("NaiveDriveToPoseCommand target theta-velocity", pidTheta.getSetpoint().velocity);
   }
 
   StructPublisher<Pose2d> publisherTarget = NetworkTableInstance.getDefault().getStructTopic("targetAuto", Pose2d.struct).publish();
-  StructPublisher<Transform2d> publisherDiff = NetworkTableInstance.getDefault().getStructTopic("autoDiff", Transform2d.struct).publish();
+  // StructPublisher<Transform2d> publisherDiff = NetworkTableInstance.getDefault().getStructTopic("autoDiff", Transform2d.struct).publish();
 
   @Override
   public boolean isFinished() {
     // Pose2d measurement = getMeasurement();
     // Pose2d target = getTarget();
-    //publisherTarget.set(target);
+    publisherTarget.set(target);
     // publisherDiff.set(target.minus(measurement));
-    // return (measurement.minus(target).getTranslation().getNorm() <= FINISH_DEADBAND) && (Math.abs(measurement.minus(target).getRotation().getRadians()) <= FINISH_ANGULAR_DEADBAND);
+    //return (measurement.minus(target).getTranslation().getNorm() <= FINISH_DEADBAND) && (Math.abs(measurement.minus(target).getRotation().getRadians()) <= FINISH_ANGULAR_DEADBAND);
     return false;
   }
 

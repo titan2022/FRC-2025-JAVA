@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.RotationTarget;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,6 +25,7 @@ import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.CoralScorerSubsystem;
 import frc.robot.subsystems.DealgifierSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.utility.Constants;
@@ -58,10 +60,16 @@ public class Robot extends TimedRobot {
     new TitanProcessingLocalizer(5804)
   );
 
+  private final LEDSubsystem ledSubsystem = new LEDSubsystem(coralScorer, coralIntake, localizers);
+
+
   @Override
   public void robotInit() {
     setBindings();
     setUpAutos();
+
+    // Initialize the tag layout earlier
+    AprilTagFieldLayout useless = Constants.tagLayout;
     //SignalLogger.setPath("/media/sda1/");
   }
 
@@ -70,8 +78,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run(); 
     localizers.step();
 
-    SmartDashboard.putNumber("x-distance to tag 17", localizers.getVision().getMeasurement().pose.getX() - Constants.tagLayout.getTagPose(17).get().getX());
-    SmartDashboard.putNumber("y-distance to tag 17", localizers.getVision().getMeasurement().pose.getY() - Constants.tagLayout.getTagPose(17).get().getY());
+    // SmartDashboard.putNumber("x-distance to tag 17", localizers.getVision().getMeasurement().pose.getX() - Constants.tagLayout.getTagPose(17).get().getX());
+    // SmartDashboard.putNumber("y-distance to tag 17", localizers.getVision().getMeasurement().pose.getY() - Constants.tagLayout.getTagPose(17).get().getY());
   }
 
   @Override

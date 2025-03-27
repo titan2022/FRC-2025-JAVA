@@ -5,18 +5,11 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Robot;
-import frc.robot.utility.Constants.Unit;
-
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 
 public class CoralScorerSubsystem extends SubsystemBase {
   private static final double PROXIMITY_THRESHOLD = 0.021;
@@ -60,9 +53,9 @@ public class CoralScorerSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Canandcolor proximity", canandcolor.getProximity());
-    SmartDashboard.putBoolean("Coral shifted", coralShifted);
-    SmartDashboard.putBoolean("coral Moving", coralMoving);
+    // SmartDashboard.putNumber("Canandcolor proximity", canandcolor.getProximity());
+    // SmartDashboard.putBoolean("Coral shifted", coralShifted);
+    // SmartDashboard.putBoolean("coral Moving", coralMoving);
 
   }
 
