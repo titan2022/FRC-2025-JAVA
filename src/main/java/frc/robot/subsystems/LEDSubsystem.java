@@ -26,9 +26,9 @@ public class LEDSubsystem extends SubsystemBase {
     private AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(50);
     
     private AddressableLEDBufferView ledBufferViewLeft = new AddressableLEDBufferView(ledBuffer, 0, 24); 
-    private AddressableLEDBufferView ledBufferViewRight = new AddressableLEDBufferView(ledBuffer, 25, 50).reversed(); 
+    private AddressableLEDBufferView ledBufferViewRight = new AddressableLEDBufferView(ledBuffer, 25, 49).reversed(); 
 
-    private final double BRIGHTNESS = 1;
+    private final double BRIGHTNESS = 0.5;
 
     private CoralScorerSubsystem coralScorer;
     private CoralIntakeSubsystem coralIntake;
@@ -44,14 +44,14 @@ public class LEDSubsystem extends SubsystemBase {
 
     LEDPattern blue = LEDPattern.solid(new Color(0*BRIGHTNESS,0*BRIGHTNESS,255*BRIGHTNESS));
     LEDPattern white = LEDPattern.solid(new Color(255*BRIGHTNESS,255*BRIGHTNESS,255*BRIGHTNESS));
-    LEDPattern orange = LEDPattern.solid(new Color(247*BRIGHTNESS,161*BRIGHTNESS,32*BRIGHTNESS));
+    LEDPattern orange = LEDPattern.solid(new Color(255*BRIGHTNESS,50*BRIGHTNESS,0*BRIGHTNESS));
     LEDPattern purple = LEDPattern.solid(new Color(123*BRIGHTNESS,17*BRIGHTNESS,245*BRIGHTNESS));
 
     LEDPattern rainbowPattern = LEDPattern.rainbow(255, 255);
     Distance ledSpacing = Meters.of(1 / 120.0);
     LEDPattern scrollingRainbowPattern = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.25), ledSpacing);
 
-    LEDPattern greenTeal = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, new Color(0*BRIGHTNESS,255*BRIGHTNESS,0*BRIGHTNESS), new Color(17*BRIGHTNESS,245*BRIGHTNESS,207*BRIGHTNESS)); 
+    LEDPattern greenTeal = LEDPattern.gradient(LEDPattern.GradientType.kContinuous, new Color(0*BRIGHTNESS,255*BRIGHTNESS,0*BRIGHTNESS), new Color(25 * BRIGHTNESS, 158 * BRIGHTNESS, 158 * BRIGHTNESS)); 
     LEDPattern greenTealScroll = greenTeal.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.25), ledSpacing);
     LEDPattern breathe = white.breathe(Seconds.of(0.5));
 
@@ -81,7 +81,7 @@ public class LEDSubsystem extends SubsystemBase {
         target = ReefLocations.nearestRightScoringLocation(measurement);
         alignedReefRight = (measurement.minus(target).getTranslation().getNorm() <= FINISH_DEADBAND) && (Math.abs(measurement.minus(target).getRotation().getRadians()) <= FINISH_ANGULAR_DEADBAND);
 
-        if (coralScorer.getSawCoralInLastFrame()) {
+        if (coralScorer.canSeeCoral()) {
             if (alignedReefLeft) {
                 purple.applyTo(ledBufferViewRight);
             } else if (alignedReefRight) {
