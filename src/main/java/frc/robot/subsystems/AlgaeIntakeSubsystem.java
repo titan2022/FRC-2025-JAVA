@@ -31,7 +31,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   public static final Current ALGAE_INTAKE_HAS_GP_CURRENT = Amps.of(4.5);
   
   private static final TalonFX pivotMotor = new TalonFX(32, "rio");
-  private static final TalonFX intakeRollersMotor = new TalonFX(21, "rio");
+  private static final TalonFX intakeRollersMotor = new TalonFX(55, "rio");
   private boolean hasAlgae = false;
 
   // We have a REV through-bore encoder
