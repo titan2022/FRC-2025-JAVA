@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
     new TitanProcessingLocalizer(5804)
   );
 
-  private final LEDSubsystem ledSubsystem = new LEDSubsystem(coralScorer, coralIntake, localizers);
+  private final LEDSubsystem ledSubsystem = new LEDSubsystem(coralScorer, coralIntake, algaeIntakeSubsystem, localizers);
 
 
   @Override
