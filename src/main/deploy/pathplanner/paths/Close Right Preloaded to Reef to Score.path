@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 6.0
+        "x": 7.17,
+        "y": 2.982
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 6.92,
+        "y": 2.982
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.0,
-        "y": 6.0
+        "x": 5.338,
+        "y": 2.89
       },
       "prevControl": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 5.807321509646356,
+        "y": 2.440291960730893
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "2'"
     }
   ],
   "rotationTargets": [],
@@ -33,24 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Intake coral",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.6960431654676257,
+      "name": "Elevate to L2",
+      "waypointRelativePos": 0.5873694207027543,
+      "endWaypointRelativePos": 0.8950617283950618,
       "command": {
         "type": "named",
         "data": {
-          "name": "Intake coral"
-        }
-      }
-    },
-    {
-      "name": "Elevate to L1",
-      "waypointRelativePos": 0.7982014388489173,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Elevate L1"
+          "name": "Elevate L2"
         }
       }
     }
@@ -65,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "Right Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

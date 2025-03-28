@@ -3,47 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 6.0
+        "x": 5.338,
+        "y": 2.89
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 5.740153354875829,
+        "y": 2.1934499569207877
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "2'"
     },
     {
       "anchor": {
-        "x": 5.0,
-        "y": 6.0
+        "x": 3.84,
+        "y": 2.9
       },
       "prevControl": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 4.516317255090013,
+        "y": 2.224419517954543
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "4' Algae"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Elevate to L1",
-      "waypointRelativePos": 0.849477682811016,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Elevate L1"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.5,
     "maxAcceleration": 4.5,
@@ -54,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "Shorter Right Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 119.99999999999999
   },
   "useDefaultConstraints": true
 }

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.65813524590164,
-        "y": 1.9251946721311468
+        "x": 5.0877438185631485,
+        "y": 2.657405986363876
       },
       "isLocked": false,
       "linkedName": "2' Algae"
@@ -20,8 +20,8 @@
         "y": 0.687
       },
       "prevControl": {
-        "x": 1.73,
-        "y": 0.9035063509461103
+        "x": 1.7272799060273423,
+        "y": 0.9050541780887135
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

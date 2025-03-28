@@ -166,11 +166,11 @@ public class Robot extends TimedRobot {
     );
     NamedCommands.registerCommand("Dealgify L2", 
       elevator.elevateCommand(ElevationTarget.AlgaeL2)
-      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.75)
+      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.5)
     );
     NamedCommands.registerCommand("Dealgify L3", 
       elevator.elevateCommand(ElevationTarget.AlgaeL3)
-      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.75)
+      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.3)
     );
 
     // TODO: Figure out how to finish elevating before ending the command
@@ -183,8 +183,8 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
-    NamedCommands.registerCommand("Reef left align", NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(1) );
-    NamedCommands.registerCommand("Reef right align", NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(1));
+    NamedCommands.registerCommand("Reef left align", NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(.75) );
+    NamedCommands.registerCommand("Reef right align", NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(.75));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
