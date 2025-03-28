@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle Preload to 12' Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgify L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "12' Algae to 1' Spin Move"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reef left align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -7,49 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Close Right Preloaded to Reef to Score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Reef right align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2' to 2' Algae"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Dealgify L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2' Algae to Coral Station"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Coral Station to 3'"
+            "pathName": "Close Left Start to 11'"
           }
         },
         {
@@ -67,7 +25,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3' to Coral Station to Intake"
+            "pathName": "11' to 10' Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgify L3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "10' Algae to Coral Station"
           }
         },
         {
@@ -79,13 +49,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Station to 2'"
+            "pathName": "Coral Station to 10'"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Reef right align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "10' to Coral Station"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station to 11'"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reef left align"
           }
         },
         {

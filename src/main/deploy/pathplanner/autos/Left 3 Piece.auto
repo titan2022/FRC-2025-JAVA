@@ -13,6 +13,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Reef right align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Score coral"
           }
         },
@@ -49,6 +55,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Reef right align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Score coral"
           }
         },
@@ -68,6 +80,12 @@
           "type": "path",
           "data": {
             "pathName": "Coral Station to 11'"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reef left align"
           }
         },
         {

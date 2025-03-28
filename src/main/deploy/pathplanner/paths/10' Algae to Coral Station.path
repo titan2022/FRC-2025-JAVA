@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.600899035568619,
-        "y": 5.986510782297374
+        "x": 5.2375,
+        "y": 5.357085189270996
       },
       "isLocked": false,
       "linkedName": "10' Algae"
@@ -20,8 +20,8 @@
         "y": 7.3
       },
       "prevControl": {
-        "x": 2.2977696217170793,
-        "y": 6.7155541789432
+        "x": 1.7960835486410538,
+        "y": 7.1387949211757205
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "Elevate to intake level",
-      "waypointRelativePos": 0.0466744457409575,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
