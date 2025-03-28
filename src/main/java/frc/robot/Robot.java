@@ -175,7 +175,7 @@ public class Robot extends TimedRobot {
     );
     NamedCommands.registerCommand("Dealgify L3", 
       elevator.elevateCommand(ElevationTarget.AlgaeL3)
-      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.3)
+      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.5)
     );
 
     // TODO: Figure out how to finish elevating before ending the command
