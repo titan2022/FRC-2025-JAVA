@@ -97,7 +97,7 @@ public class TunerConstants {
 
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(1.935); // 1.955: undershot // 1.935: overshot // 1.930, 1.925: new threads, overshot
+    private static final Distance kWheelRadius = Inches.of(1.945); // 1.955: undershot // 1.935: overshot // 1.930, 1.925: new threads, overshot
     // old treads: // 1.935: undershoots // 1.920: overshoots but scores 1 coral and dealgae
 
     private static final boolean kInvertLeftSide = false;
