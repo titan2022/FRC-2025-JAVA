@@ -38,6 +38,7 @@ public class LEDSubsystem extends SubsystemBase {
     private boolean aprilTagVisible = false;
     private boolean alignedReefLeft = false;
     private boolean alignedReefRight = false;
+    private boolean halfFrameToggle = false;
 
     public static final double FINISH_DEADBAND = 0.025; // m
     public static final double FINISH_ANGULAR_DEADBAND = 2 * Unit.DEG; // rad
@@ -68,6 +69,11 @@ public class LEDSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        halfFrameToggle = !halfFrameToggle;
+        if (!halfFrameToggle) {
+            return;
+        }
+
         if (localizers.getVision().getMeasurement().getTimeSince() < LOCALIZER_LATENCY_THRESHOLD) {
             aprilTagVisible = true;
         } else {
