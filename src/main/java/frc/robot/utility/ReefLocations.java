@@ -76,12 +76,12 @@ public final class ReefLocations {
             Rotation2d.kZero);
 
     BLUE_L1_POSES = new Pose2d[12];
-    BLUE_L1_POSES[0] = A;
-    BLUE_L1_POSES[1] = B;
+    BLUE_L1_POSES[0] = C;
+    BLUE_L1_POSES[1] = D;
     for (int i = 2; i < 12; i += 2) {
       var rotAngle = Rotation2d.fromDegrees(30 * i);
       BLUE_L1_POSES[i] = C.rotateAround(BLUE_REEF, rotAngle);
-      BLUE_POSES[i + 1] = D.rotateAround(BLUE_REEF, rotAngle);
+      BLUE_L1_POSES[i + 1] = D.rotateAround(BLUE_REEF, rotAngle);
     }
 
     RED_L1_POSES = new Pose2d[12];
