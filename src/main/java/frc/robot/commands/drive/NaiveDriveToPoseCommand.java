@@ -19,6 +19,7 @@ import frc.robot.utility.ReefLocations;
 
 public class NaiveDriveToPoseCommand extends Command {
   private boolean isLeftSide = false;
+  private boolean isL1 = false;
   private final CommandSwerveDrivetrain drivetrain;
   private final Localizer localizer;
 
@@ -70,12 +71,27 @@ public class NaiveDriveToPoseCommand extends Command {
     this.isLeftSide = isLeftSide;
   }
 
+  public NaiveDriveToPoseCommand(CommandSwerveDrivetrain drivetrain, Localizer localizer, boolean isLeftSide, boolean isL1) {
+    this.drivetrain = drivetrain;
+    this.localizer = localizer;
+    this.isLeftSide = isLeftSide;
+    this.isL1 = isL1;
+  }
+
   public static NaiveDriveToPoseCommand driveToNearestLeftScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
     return new NaiveDriveToPoseCommand(drivetrain, localizer, true);
   }
 
   public static NaiveDriveToPoseCommand driveToNearestRightScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
     return new NaiveDriveToPoseCommand(drivetrain, localizer, false);
+  }
+
+  public static NaiveDriveToPoseCommand driveToNearestLeftL1ScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
+    return new NaiveDriveToPoseCommand(drivetrain, localizer, true, true);
+  }
+
+  public static NaiveDriveToPoseCommand driveToNearestRightL1ScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
+    return new NaiveDriveToPoseCommand(drivetrain, localizer, false, true);
   }
 
   private Pose2d getMeasurement() {
@@ -87,6 +103,12 @@ public class NaiveDriveToPoseCommand extends Command {
   }
 
   private Pose2d getTarget() {
+    if(isL1){
+      if (isLeftSide) {
+        return ReefLocations.nearestLeftL1ScoringLocation(localizer.getMeasurement().pose);
+      }
+      return ReefLocations.nearestRightL1ScoringLocation(localizer.getMeasurement().pose);
+    }
     if (isLeftSide) {
       return ReefLocations.nearestLeftScoringLocation(localizer.getMeasurement().pose);
     }

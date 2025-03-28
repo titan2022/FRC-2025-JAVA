@@ -18,10 +18,14 @@ public final class ReefLocations {
   public static final Pose2d[] BLUE_POSES;
   public static final Pose2d[] RED_POSES;
 
+  public static final Pose2d[] BLUE_L1_POSES;
+  public static final Pose2d[] RED_L1_POSES;
+
   public static final Translation2d BLUE_REEF;
   public static final Translation2d RED_REEF;
 
   public static final double OFFSET_FROM_REEF_CENTER = .165;
+  public static final double L1_OFFSET_FROM_REEF_CENTER = .55;
 
   static StructArrayPublisher<Pose2d> bluePosePub = NetworkTableInstance.getDefault().getStructArrayTopic("blue reef poses", Pose2d.struct).publish();
   static StructArrayPublisher<Pose2d> redPosePub = NetworkTableInstance.getDefault().getStructArrayTopic("red reef poses", Pose2d.struct).publish();
@@ -57,6 +61,32 @@ public final class ReefLocations {
     RED_POSES = new Pose2d[12];
     for (int i = 0; i < 12; i++) {
       RED_POSES[i] = BLUE_POSES[i].rotateAround(Constants.FIELD_CENTER, Rotation2d.kPi);
+    }
+
+    //For L1 Poses
+    var C =
+        new Pose2d(
+            tag18X - Constants.RobotSize.LONG_RADIUS,
+            Constants.FIELD_WIDTH_METERS / 2 + L1_OFFSET_FROM_REEF_CENTER,
+            Rotation2d.kZero);
+    var D =
+        new Pose2d(
+            tag18X - Constants.RobotSize.LONG_RADIUS,
+            Constants.FIELD_WIDTH_METERS / 2 - L1_OFFSET_FROM_REEF_CENTER,
+            Rotation2d.kZero);
+
+    BLUE_L1_POSES = new Pose2d[12];
+    BLUE_L1_POSES[0] = A;
+    BLUE_L1_POSES[1] = B;
+    for (int i = 2; i < 12; i += 2) {
+      var rotAngle = Rotation2d.fromDegrees(30 * i);
+      BLUE_L1_POSES[i] = C.rotateAround(BLUE_REEF, rotAngle);
+      BLUE_POSES[i + 1] = D.rotateAround(BLUE_REEF, rotAngle);
+    }
+
+    RED_L1_POSES = new Pose2d[12];
+    for (int i = 0; i < 12; i++) {
+      RED_L1_POSES[i] = BLUE_L1_POSES[i].rotateAround(Constants.FIELD_CENTER, Rotation2d.kPi);
     }
 
     bluePosePub.set(BLUE_POSES);
@@ -105,6 +135,36 @@ public final class ReefLocations {
 
   public static Pose2d nearestRightScoringLocation(Pose2d currentLocation) {
     Pose2d[] poses = Constants.getColor() == Alliance.Red ? RED_POSES : BLUE_POSES;
+
+    double minDistance = Double.POSITIVE_INFINITY;
+    Pose2d minPose = poses[0];
+    for(int i = 1; i < 12; i+=2) {
+      if(poses[i].minus(currentLocation).getTranslation().getNorm() < minDistance) {
+        minDistance = poses[i].minus(currentLocation).getTranslation().getNorm();
+        minPose = poses[i];
+      }
+    }
+
+    return minPose;
+  }
+
+  public static Pose2d nearestLeftL1ScoringLocation(Pose2d currentLocation) {
+    Pose2d[] poses = Constants.getColor() == Alliance.Red ? RED_L1_POSES : BLUE_L1_POSES;
+
+    double minDistance = Double.POSITIVE_INFINITY;
+    Pose2d minPose = poses[0];
+    for(int i = 0; i < 12; i+=2) {
+      if(poses[i].minus(currentLocation).getTranslation().getNorm() < minDistance) {
+        minDistance = poses[i].minus(currentLocation).getTranslation().getNorm();
+        minPose = poses[i];
+      }
+    }
+
+    return minPose;
+  }
+
+  public static Pose2d nearestRightL1ScoringLocation(Pose2d currentLocation) {
+    Pose2d[] poses = Constants.getColor() == Alliance.Red ? RED_L1_POSES : BLUE_L1_POSES;
 
     double minDistance = Double.POSITIVE_INFINITY;
     Pose2d minPose = poses[0];
