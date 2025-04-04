@@ -37,7 +37,7 @@ public class NaiveDriveToPoseCommand extends Command {
 
   private final ProfiledPIDController pidX = new ProfiledPIDController(
     4, // kP
-    0, // kI
+    0.0, // kI
     0.5, // kD
     new TrapezoidProfile.Constraints(
       MAX_SPEED_AUTOALIGN,
@@ -47,7 +47,7 @@ public class NaiveDriveToPoseCommand extends Command {
 
   private final ProfiledPIDController pidY = new ProfiledPIDController(
     4, // kP
-    0, // kI
+    0.0, // kI
     0.5, // kD
     new TrapezoidProfile.Constraints( 
       MAX_SPEED_AUTOALIGN,
@@ -166,12 +166,9 @@ public class NaiveDriveToPoseCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    // Pose2d measurement = getMeasurement();
-    // Pose2d target = getTarget();
+    Pose2d measurement = getMeasurement();
     publisherTarget.set(target);
-    // publisherDiff.set(target.minus(measurement));
-    //return (measurement.minus(target).getTranslation().getNorm() <= FINISH_DEADBAND) && (Math.abs(measurement.minus(target).getRotation().getRadians()) <= FINISH_ANGULAR_DEADBAND);
-    return false;
+    return (measurement.minus(target).getTranslation().getNorm() <= FINISH_DEADBAND) && (Math.abs(measurement.minus(target).getRotation().getRadians()) <= FINISH_ANGULAR_DEADBAND);
   }
 
   @Override

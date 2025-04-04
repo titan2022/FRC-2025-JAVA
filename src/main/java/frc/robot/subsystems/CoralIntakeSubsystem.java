@@ -10,7 +10,7 @@ public class CoralIntakeSubsystem extends SubsystemBase {
   private static final TalonFX intakeMotor = new TalonFX(60, "rio");
 
   // TODO: Figure out this speed
-  private static final double INTAKE_SPEED = -3; // in volts
+  private static final double INTAKE_SPEED = -4; // in volts
 
   public boolean isIntaking = false;
 
