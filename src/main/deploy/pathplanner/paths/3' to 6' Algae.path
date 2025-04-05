@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.338,
-        "y": 2.89
+        "x": 5.05,
+        "y": 2.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.579004760664478,
-        "y": 2.8235417022708402
+        "x": 4.207684426229508,
+        "y": 1.4176741803278685
       },
       "isLocked": false,
-      "linkedName": "2'"
+      "linkedName": "3' "
     },
     {
       "anchor": {
-        "x": 5.096,
-        "y": 2.94
+        "x": 3.2007172131147543,
+        "y": 4.00701844262295
       },
       "prevControl": {
-        "x": 5.198555578386163,
-        "y": 2.712003611120966
+        "x": 2.0139344262295085,
+        "y": 3.1678790983606553
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "2' Algae"
+      "linkedName": "6' Algae"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Elevate to L2",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Dealgify L2"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.5,
     "maxAcceleration": 6.5,
@@ -42,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.3100070709161
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Right Paths",

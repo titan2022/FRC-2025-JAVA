@@ -35,7 +35,7 @@
     {
       "name": "Intake coral",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.6044634377967707,
+      "endWaypointRelativePos": 0.7972742759795547,
       "command": {
         "type": "named",
         "data": {
@@ -45,7 +45,7 @@
     },
     {
       "name": "Elevate to L3",
-      "waypointRelativePos": 0.64624881291548,
+      "waypointRelativePos": 0.7972742759795541,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -56,8 +56,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.5,
+    "maxAcceleration": 6.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

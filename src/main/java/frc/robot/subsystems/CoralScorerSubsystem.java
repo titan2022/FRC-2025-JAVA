@@ -16,7 +16,7 @@ public class CoralScorerSubsystem extends SubsystemBase {
   private static final double MOVE_CORAL_SPEED = 1.8; // in volts
   private static final double SCORE_CORAL_SPEED = 1.8; // in volts
   private static final long SCORE_CORAL_TIMEOUT = 1 * 300000; // microseconds
-  private static final long INDEX_CORAL_TIMEOUT = 1 * 300000; // microseconds
+  private static final long INDEX_CORAL_TIMEOUT = 1 * 500000; // microseconds
   private static final long SHIFT_FORWARD_CORAL_TIMEOUT = 1 * 30000;
 
   private static final long SHIFT_BACKWARD_CORAL_TIMEOUT = 1 * 48000;

@@ -41,22 +41,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "wait",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake coral"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              }
-            ]
+            "waitTime": 0.5
           }
         },
         {
@@ -80,32 +67,61 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3' to Coral Station to Intake"
+            "pathName": "3' to 6' Algae"
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake coral"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              }
-            ]
+            "name": "Dealgify L2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Station to 2'"
+            "pathName": "6' Algae to Coral Station"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Coral Station to 6'"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reef left align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6' to Right Coral Station"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Coral Station to 4'"
           }
         },
         {
@@ -118,37 +134,6 @@
           "type": "named",
           "data": {
             "name": "Score coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2' to Coral Station to Intake"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake coral"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Right Coral Station to 4'"
           }
         }
       ]

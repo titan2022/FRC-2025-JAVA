@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.338,
-        "y": 2.89
+        "x": 3.18,
+        "y": 3.85
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.579004760664478,
-        "y": 2.8235417022708402
+        "x": 2.3198289927613818,
+        "y": 2.9922425924940907
       },
       "isLocked": false,
-      "linkedName": "2'"
+      "linkedName": "6'"
     },
     {
       "anchor": {
-        "x": 5.096,
-        "y": 2.94
+        "x": 1.605,
+        "y": 0.687
       },
       "prevControl": {
-        "x": 5.198555578386163,
-        "y": 2.712003611120966
+        "x": 2.312402078298792,
+        "y": 1.416616599646226
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "2' Algae"
+      "linkedName": "Right Coral Station"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Elevate to intake level",
+      "waypointRelativePos": 0.15900056785916802,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Elevate to intake level"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.5,
     "maxAcceleration": 6.5,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.3100070709161
+    "rotation": 54.21102654081665
   },
   "reversed": false,
-  "folder": "Right Paths",
+  "folder": "Shorter Right Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

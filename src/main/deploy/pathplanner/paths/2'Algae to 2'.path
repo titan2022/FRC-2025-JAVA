@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.338,
-        "y": 2.89
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 5.579004760664478,
-        "y": 2.8235417022708402
-      },
-      "isLocked": false,
-      "linkedName": "2'"
-    },
-    {
-      "anchor": {
         "x": 5.096,
         "y": 2.94
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.337004760664478,
+        "y": 2.87354170227084
+      },
+      "isLocked": false,
+      "linkedName": "2' Algae"
+    },
+    {
+      "anchor": {
+        "x": 5.338,
+        "y": 2.89
+      },
       "prevControl": {
-        "x": 5.198555578386163,
-        "y": 2.712003611120966
+        "x": 5.440555578386163,
+        "y": 2.662003611120966
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "2' Algae"
+      "linkedName": "2'"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Elevate to L3",
+      "waypointRelativePos": 0.5019875070982386,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Elevate L3"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.5,
     "maxAcceleration": 6.5,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.3100070709161
+    "rotation": 119.99999999999999
   },
   "reversed": false,
   "folder": "Right Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 119.3100070709161
   },
   "useDefaultConstraints": true
 }

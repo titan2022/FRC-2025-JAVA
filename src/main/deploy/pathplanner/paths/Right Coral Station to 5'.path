@@ -20,8 +20,8 @@
         "y": 2.9329999999999994
       },
       "prevControl": {
-        "x": 2.8807153448014566,
-        "y": 2.0403421865480507
+        "x": 1.9899590163934426,
+        "y": 2.976075819672131
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,10 +31,33 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake coral",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.7450312322544006,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake coral"
+        }
+      }
+    },
+    {
+      "name": "Elevate to L3",
+      "waypointRelativePos": 0.7495741056218052,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Elevate L3"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.5,
+    "maxAcceleration": 6.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
