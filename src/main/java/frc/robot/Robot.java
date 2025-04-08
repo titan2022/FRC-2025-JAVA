@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.RotationTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -18,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
-import frc.robot.commands.drive.NaiveDriveToPoseCommand;
+import frc.robot.commands.drive.PathPlannerAutoAlign;
 import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem;
 import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem.AngleTarget;
 import frc.robot.subsystems.CoralIntakeSubsystem;
@@ -35,6 +36,7 @@ import frc.robot.utility.Localizers;
 import frc.robot.utility.OdometryLocalizer;
 import frc.robot.utility.ReefLocations;
 import frc.robot.utility.TitanProcessingLocalizer;
+
 
 
 public class Robot extends TimedRobot {
@@ -57,6 +59,7 @@ public class Robot extends TimedRobot {
   private final DealgifierSubsystem dealgifier = new DealgifierSubsystem();
   private final GroundCoralAlgaeIntakeSubsystem algaeIntakeSubsystem = new GroundCoralAlgaeIntakeSubsystem();
 
+
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
     new TitanProcessingLocalizer(5804)
@@ -64,6 +67,7 @@ public class Robot extends TimedRobot {
 
   private final LEDSubsystem ledSubsystem = new LEDSubsystem(coralScorer, coralIntake, algaeIntakeSubsystem, localizers);
 
+  private PathPlannerAutoAlign autoAlign = new PathPlannerAutoAlign(drivetrain, localizers.getOdometry());
 
   @Override
   public void robotInit() {
@@ -144,11 +148,11 @@ public class Robot extends TimedRobot {
     robotController.a().whileTrue(dealgifier.dealgifyCommand());
 
     // Auto align
-    driveController.leftTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()));
-    driveController.rightTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()));
+    driveController.leftTrigger().whileTrue(autoAlign.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()));
+    driveController.rightTrigger().whileTrue(autoAlign.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()));
     //Auto align L1
-    driveController.x().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftL1ScoringLocation(drivetrain, localizers.getOdometry()));
-    driveController.b().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightL1ScoringLocation(drivetrain, localizers.getOdometry()));
+    driveController.x().whileTrue(autoAlign.driveToNearestLeftL1ScoringLocation(drivetrain, localizers.getOdometry()));
+    driveController.b().whileTrue(autoAlign.driveToNearestRightL1ScoringLocation(drivetrain, localizers.getOdometry()));
 
     
     //Algae Intake Controls
@@ -190,8 +194,8 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
-    NamedCommands.registerCommand("Reef left align", NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(.75) );
-    NamedCommands.registerCommand("Reef right align", NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(.75));
+    NamedCommands.registerCommand("Reef left align", autoAlign.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(.75) );
+    NamedCommands.registerCommand("Reef right align", autoAlign.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(.75));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
