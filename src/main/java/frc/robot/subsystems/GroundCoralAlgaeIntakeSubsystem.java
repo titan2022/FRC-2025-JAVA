@@ -15,33 +15,36 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-// Little summary of what we need to do for GroundCoralAlgaeIntakeSubsystem, according to my interpretation of Neel:
+// Little summary of what we need to do for GroundCoralAlgaeIntakeSubsystem, according to my interpretation of Neel + my own efforts:
 
-// We need intake coral and score coral commands
-// Becasue coral spins differently than algae the voltages 
+// We need to change the execute() method for the Intake/Score methods. Should probably have an Xbox button.
+// I just put down a dummy value for that but that needs to change
+// We need to find all the constants for the Coral values
+// (done) We need intake coral and score coral commands
+// (done) Becasue coral spins differently than algae the voltages
 // should be opposite of algae values negative voltage (so the coral should be positive) 
-// add (algae/coral)ResetTarget into the rest of code
-
-// keep bool for coral intake status
-
-
+// (not done) I can't find where the resetTarget() was used in the code
+// So idk how best to add the coralResetTarget and algaeIntakeTarget into the rest of code
+// (done) keep bool for coral intake status
 
 public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
   // We need to have four angles for the dual algae/coral scorer
-  // Coral pickup angle, Coral scoring angle, algae pickup angle, algae scoring angle
-  
+  // Coral pickup angle, Coral scoring angle, algae pickup angle, algae scoring
+  // angle
+
   private static final double ALGAE_MIN_ANGLE = 90;
+  private static final double ALGAE_MAX_ANGLE = 35;
+
   private static final double CORAL_MIN_ANGLE = 0; // !!! Need this set
   private static final double CORAL_MAX_ANGLE = 0; // !!! Need this set
-  private static final double ALGAE_MAX_ANGLE = 35;
 
   private static final double ALGAE_SCORE_VALUE = 65;
   private static final double ALGAE_HOLD_VALUE = 60;
 
   private static final double CORAL_SCORE_VALUE = 0; // !!! Need this set
   private static final double CORAL_HOLD_VALUE = 0; // !!! Need this set
-  
+
   private static final double REV_OFFSET = -160; // Offset for REV absolute encoder
   private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if
                                                            // `false`
@@ -59,8 +62,6 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0; // !!! Need this set
   public static final AngularVelocity CORAL_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(0); // !!! Need this set
   public static final Current CORAL_INTAKE_HAS_GP_CURRENT = Amps.of(0); // !!! Need this set
-
-
 
   private static final TalonFX pivotMotor = new TalonFX(32, "rio");
   private static final TalonFX intakeRollersMotor = new TalonFX(55, "rio");
@@ -88,8 +89,8 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private double lastSpeed = 0;
   private double lastTime = 0;
 
-  private double target = ALGAE_MIN_ANGLE; 
-  // We might want to change this to CORAL_MIN_ANGLE 
+  private double target = ALGAE_MIN_ANGLE;
+  // We might want to change this to CORAL_MIN_ANGLE
   // depending on which we want to score first
 
   public GroundCoralAlgaeIntakeSubsystem() {
@@ -114,11 +115,11 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   public void stopRotating() {
     goToRotation(getRevMeasurement());
   }
-  
 
   public void algaeResetTarget() {
     target = ALGAE_MAX_ANGLE;
   }
+
   public void coralResetTarget() {
     target = CORAL_MAX_ANGLE;
   }
@@ -135,7 +136,6 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Voltage", voltage);
   }
 
-
   public enum AngleTarget {
     // Unit: Degrees
     AlgaeIntake(ALGAE_MAX_ANGLE),
@@ -145,7 +145,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     CoralIntake(CORAL_MAX_ANGLE),
     CoralScore(CORAL_SCORE_VALUE),
-    CoralHold(CORAL_HOLD_VALUE), 
+    CoralHold(CORAL_HOLD_VALUE),
     CoralStow(CORAL_MIN_ANGLE);
 
     private double targetValue;
@@ -218,7 +218,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   }
 
   public boolean hasCoral() {
-    //mostly same from hasAlgae()
+    // mostly same from hasAlgae()
     Current intakeCurrent = intakeRollersMotor.getStatorCurrent().getValue();
 
     AngularVelocity intakeVelocity = intakeRollersMotor.getVelocity().getValue();
@@ -240,7 +240,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     target = AngleTarget.CoralIntake.getValue();
     hasCoral = true;
   }
-  
+
   public void startAlgaeIntaking() {
     intakeRollersMotor.setVoltage(CORAL_INTAKE_SPEED);
     // ^^^ I believe the CORAL_INTAKE_SPEED should have no negative because it
@@ -288,19 +288,19 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   public boolean getHasAlgae() {
     return hasAlgae;
   }
-  
+
   public boolean getHasCoral() {
     return hasCoral;
   }
 
   public Command intakeCommand() {
-    return new AlgaeIntakeCommand(this);
+    return new GroundCoralAlgaeIntakeCommand(this);
   }
 
-  public class AlgaeIntakeCommand extends Command {
+  public class GroundCoralAlgaeIntakeCommand extends Command {
     private final GroundCoralAlgaeIntakeSubsystem intake;
 
-    public AlgaeIntakeCommand(GroundCoralAlgaeIntakeSubsystem intake) {
+    public GroundCoralAlgaeIntakeCommand(GroundCoralAlgaeIntakeSubsystem intake) {
       this.intake = intake;
       addRequirements(intake);
     }
@@ -312,23 +312,39 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-      if (!hasAlgae())
-        intake.startIntaking();
-      else {
-        intake.stopIntaking();
+      final boolean shouldDoCoral = false;
+      // !!! Change all this later !!! Need some way to control whether we are doing coral or algae.
+      // This could potentially be a button or some other control.
+      
+      // Using the temporary value for controlling Algae vs Coral shouldDoCoral
+      if (shouldDoCoral) {
+        if (!hasCoral()) {
+          intake.startCoralIntaking();
+        } else {
+          intake.stopCoralIntaking();
+        }
+      } else {
+        if (!hasAlgae()) {
+          intake.startAlgaeIntaking();
+        } else {
+          intake.stopAlgaeIntaking();
+        }
       }
 
     }
 
     @Override
     public boolean isFinished() {
-      // return hasAlgae();
+      // return hasAlgae() or hasCoral();
       return false;
     }
 
     @Override
     public void end(boolean isInterrupted) {
-      intake.stopIntaking();
+      // We might need a more refined method to check which is active before running stop for both.
+      // However simply running both individually should work
+      intake.stopAlgaeIntaking();
+      intake.stopCoralIntaking();
     }
   }
 
@@ -351,8 +367,18 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-      intake.startScoring();
+      final boolean shouldDoCoral = false;
+      // !!! Change all this later !!! Need some way to control whether we are doing coral or algae.
+      // This could potentially be a button or some other control.
+      
+      // Using the temporary value for controlling Algae vs Coral shouldDoCoral
+      if (shouldDoCoral) {
+        intake.startCoralScoring();
+      } else {
+        intake.startAlgaeScoring();
+      }
 
+      
     }
 
     @Override
@@ -362,7 +388,10 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void end(boolean isInterrupted) {
-      intake.stopScoring();
+      // We might need a more refined method to check which is active before running stop for both.
+      // However simply running both individually should work
+      intake.stopAlgaeIntaking();
+      intake.stopCoralIntaking();
     }
   }
 
