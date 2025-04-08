@@ -36,8 +36,8 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private static final double ALGAE_MIN_ANGLE = 90;
   private static final double ALGAE_MAX_ANGLE = 35;
 
-  private static final double CORAL_MIN_ANGLE = 0; // !!! Need this set
-  private static final double CORAL_MAX_ANGLE = 0; // !!! Need this set
+  private static final double CORAL_MIN_ANGLE = -40; // !!! Need this set
+  private static final double CORAL_MAX_ANGLE = 65; // !!! Need this set
 
   private static final double ALGAE_SCORE_VALUE = 65;
   private static final double ALGAE_HOLD_VALUE = 60;

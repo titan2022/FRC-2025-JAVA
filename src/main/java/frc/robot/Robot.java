@@ -19,14 +19,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
 import frc.robot.commands.drive.NaiveDriveToPoseCommand;
-import frc.robot.subsystems.AlgaeIntakeSubsystem;
-import frc.robot.subsystems.AlgaeIntakeSubsystem.AngleTarget;
+import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem;
+import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem.AngleTarget;
 import frc.robot.subsystems.CoralIntakeSubsystem;
 import frc.robot.subsystems.CoralScorerSubsystem;
 import frc.robot.subsystems.DealgifierSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
+import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem.GroundCoralAlgaeIntakeCommand;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.utility.Constants;
 import frc.robot.utility.Localizers;
@@ -53,7 +55,7 @@ public class Robot extends TimedRobot {
   private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final DealgifierSubsystem dealgifier = new DealgifierSubsystem();
-  private final AlgaeIntakeSubsystem algaeIntakeSubsystem = new AlgaeIntakeSubsystem();
+  private final GroundCoralAlgaeIntakeSubsystem algaeIntakeSubsystem = new GroundCoralAlgaeIntakeSubsystem();
 
   private final Localizers localizers = new Localizers(
     new OdometryLocalizer(drivetrain), 
