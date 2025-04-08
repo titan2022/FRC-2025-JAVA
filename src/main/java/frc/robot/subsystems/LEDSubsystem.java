@@ -32,7 +32,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     private CoralScorerSubsystem coralScorer;
     private CoralIntakeSubsystem coralIntake;
-    private AlgaeIntakeSubsystem algaeIntakeSubsystem;
+    private GroundCoralAlgaeIntakeSubsystem algaeIntakeSubsystem;
     private Localizers localizers;
 
     private boolean aprilTagVisible = false;
@@ -56,7 +56,7 @@ public class LEDSubsystem extends SubsystemBase {
     LEDPattern greenTealScroll = greenTeal.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.25), ledSpacing);
     LEDPattern breathe = white.breathe(Seconds.of(0.5));
 
-    public LEDSubsystem(CoralScorerSubsystem coralScorer, CoralIntakeSubsystem coralIntake, AlgaeIntakeSubsystem algaeIntakeSubsystem, Localizers localizers) {
+    public LEDSubsystem(CoralScorerSubsystem coralScorer, CoralIntakeSubsystem coralIntake, GroundCoralAlgaeIntakeSubsystem algaeIntakeSubsystem, Localizers localizers) {
         this.coralScorer = coralScorer;
         this.coralIntake = coralIntake;
         this.algaeIntakeSubsystem = algaeIntakeSubsystem;
