@@ -38,9 +38,10 @@ public class PositionPIDCommand extends Command{
         new PIDConstants(5, 0, 0)
     );
 
-    private final Timer timer = new Timer();
+    private final Trigger endTrigger;
+    private final Trigger endTriggerDebounced;
 
-    private final Debouncer endTriggerDebouncer = new Debouncer(0.04);
+    private final double endTriggerDebounce = 0.04;
 
     public static final double FINISH_DEADBAND = 1 * Unit.IN;
     public static final double FINISH_ANGULAR_DEADBAND = 2 * Unit.DEG;
@@ -50,17 +51,34 @@ public class PositionPIDCommand extends Command{
     private PositionPIDCommand(CommandSwerveDrivetrain drivetrain, Pose2d goalPose) {
         this.drivetrain = drivetrain;
         this.goalPose = goalPose;
+        endTrigger = new Trigger(() -> {
+            Pose2d diff = drivetrain.getState().Pose.relativeTo(goalPose);
+
+            var rotation = MathUtil.isNear(
+                0.0, 
+                diff.getRotation().getRotations(), 
+                FINISH_ANGULAR_DEADBAND, 
+                0.0, 
+                1.0
+            );
+    
+            var position = diff.getTranslation().getNorm() < FINISH_DEADBAND;
+    
+            var speed = drivetrain.getState().Speeds.vxMetersPerSecond < FINISH_SPEED_DEADBAND.in(MetersPerSecond);
+            
+            return rotation && position && speed;
+        });
+        endTriggerDebounced = endTrigger.debounce(endTriggerDebounce);
     }
 
     public static Command generateCommand(CommandSwerveDrivetrain drivetrain, Pose2d goalPose, Time timeout){
         return new PositionPIDCommand(drivetrain, goalPose).withTimeout(timeout).finallyDo(() -> {
-            drivetrain.setFieldVelocities(new ChassisSpeeds(0,0,0));
+            drivetrain.brake();
         });
     }
 
     @Override
     public void initialize() {
-        timer.restart();
     }
 
     @Override
@@ -68,7 +86,7 @@ public class PositionPIDCommand extends Command{
         PathPlannerTrajectoryState goalState = new PathPlannerTrajectoryState();
         goalState.pose = goalPose;
 
-        drivetrain.setFieldVelocities(
+        drivetrain.setVelocities(
             driveController.calculateRobotRelativeSpeeds(
                 drivetrain.getState().Pose, goalState
             )
@@ -77,28 +95,11 @@ public class PositionPIDCommand extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        timer.stop();
     }
 
     @Override
     public boolean isFinished() {
-
-        Pose2d diff = drivetrain.getState().Pose.relativeTo(goalPose);
-
-        var rotation = MathUtil.isNear(
-            0.0, 
-            diff.getRotation().getRotations(), 
-            FINISH_ANGULAR_DEADBAND, 
-            0.0, 
-            1.0
-        );
-
-        var position = diff.getTranslation().getNorm() < FINISH_DEADBAND;
-
-        var speed = drivetrain.getState().Speeds.vxMetersPerSecond < FINISH_SPEED_DEADBAND.in(MetersPerSecond);
-        
-        return endTriggerDebouncer.calculate(
-            rotation && position && speed
-        );
+        return endTriggerDebounced.getAsBoolean();
+       
     }
 }

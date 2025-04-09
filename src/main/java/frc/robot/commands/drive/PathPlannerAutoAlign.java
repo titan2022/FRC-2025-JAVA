@@ -38,46 +38,23 @@ public class PathPlannerAutoAlign{
   private final CommandSwerveDrivetrain drivetrain;
   private final Localizer localizer;
 
-  /// The max speed, in meters per second
-  public static final double MAX_SPEED_AUTOALIGN = 4; // m/s
-  public static final double MAX_ACCELERATION_AUTOALIGN = 4; // m/s^2
-  /// The max angular speed, in radians per second
-  public static final double MAX_ANGULAR_SPEED_AUTOALIGN = 200.0 * Unit.DEG; // rad/s
-  public static final double MAX_ANGULAR_ACCELERATION_AUTOALIGN = 200.0 * Unit.DEG; // rad/s^2
-
-  public static final double FINISH_DEADBAND = 1 * Unit.IN;
-  public static final double FINISH_ANGULAR_DEADBAND = 2 * Unit.DEG;
-
   public static final Time AutoAlignAdjustTimeout = Seconds.of(0.6);
 
-  public static final PathConstraints pathConstraints = new PathConstraints(2.0, 2.0, 1/2 * Math.PI, 1 * Math.PI); 
+  public static final PathConstraints pathConstraints = new PathConstraints(4.0, 4.0, 200.0 * Unit.DEG,200.0 * Unit.DEG); 
 
-  
+  StructPublisher<Pose2d> posePub = NetworkTableInstance.getDefault().getStructTopic("targetPose", Pose2d.struct).publish();
 
   public PathPlannerAutoAlign(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
     this.drivetrain = drivetrain;
     this.localizer = localizer;
   }
 
-
-  public Command driveToNearestLeftScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
-    Pose2d target = getTarget(true, false);
-    return getPathFromWaypoint(getWaypointFromTarget(target));
-  }
-
-  public Command driveToNearestRightScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
-    Pose2d target = getTarget(false, false);
-    return getPathFromWaypoint(getWaypointFromTarget(target));
-  }
-
-  public Command driveToNearestLeftL1ScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
-    Pose2d target = getTarget(true, true);
-    return  getPathFromWaypoint(getWaypointFromTarget(target));
-  }
-
-  public Command driveToNearestRightL1ScoringLocation(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
-    Pose2d target = getTarget(false, true);
-    return  getPathFromWaypoint(getWaypointFromTarget(target));
+  public Command generateCommand(boolean isLeftSide, boolean isL1){
+    return Commands.defer(() -> {
+      Pose2d target = getTarget(isLeftSide, isL1);
+      posePub.set(target);
+      return getPathFromWaypoint(target);
+    }, Set.of());
   }
 
   private Pose2d getMeasurement() {
@@ -86,7 +63,7 @@ public class PathPlannerAutoAlign{
   }
 
   private Pose2d getTarget(boolean isLeftSide, boolean isL1) {
-    if(isL1){
+    posePub.set(drivetrain.getState().Pose);    if(isL1){
       if (isLeftSide) {
         return ReefLocations.nearestLeftL1ScoringLocation(localizer.getMeasurement().pose);
       }

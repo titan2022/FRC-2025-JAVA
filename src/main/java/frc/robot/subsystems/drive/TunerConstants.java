@@ -45,11 +45,13 @@ public class TunerConstants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(100).withKI(0.3).withKD(7.5)
-        .withKS(0.22487).withKV(0.11236);
+        .withKP(14).withKI(0.0).withKD(0.0)
+        .withKS(5.4854).withKV(0.072502).withKA(0.43636);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
+
+     
     private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
@@ -93,11 +95,11 @@ public class TunerConstants {
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double kCoupleRatio = 3.5714285714285716;
+    private static final double kCoupleRatio = 3.125;
 
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(1.953); // 1.955: undershot // 1.935: overshot // 1.930, 1.925: new threads, overshot
+    private static final Distance kWheelRadius = Meters.of(0.050115); // 1.955: undershot // 1.935: overshot // 1.930, 1.925: new threads, overshot
     // old treads: // 1.935: undershoots // 1.920: overshoots but scores 1 coral and dealgae
 
     private static final boolean kInvertLeftSide = false;

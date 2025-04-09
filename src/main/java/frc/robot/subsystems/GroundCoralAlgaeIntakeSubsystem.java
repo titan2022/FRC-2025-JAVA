@@ -397,7 +397,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    goToRotation(target);
+    //goToRotation(target);
     // SmartDashboard.putNumber("Pivot Target", target);
     // SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
     // SmartDashboard.putBoolean("has Algae", hasAlgae());

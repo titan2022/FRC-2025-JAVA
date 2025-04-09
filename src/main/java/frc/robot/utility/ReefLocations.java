@@ -24,7 +24,7 @@ public final class ReefLocations {
   public static final Translation2d BLUE_REEF;
   public static final Translation2d RED_REEF;
 
-  public static final double OFFSET_FROM_REEF_CENTER = .165;
+  public static final double OFFSET_FROM_REEF_CENTER = .157;
   public static final double L1_OFFSET_FROM_REEF_CENTER = .55;
 
   static StructArrayPublisher<Pose2d> bluePosePub = NetworkTableInstance.getDefault().getStructArrayTopic("blue reef poses", Pose2d.struct).publish();

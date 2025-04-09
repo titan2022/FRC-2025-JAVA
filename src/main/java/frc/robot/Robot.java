@@ -148,11 +148,11 @@ public class Robot extends TimedRobot {
     robotController.a().whileTrue(dealgifier.dealgifyCommand());
 
     // Auto align
-    driveController.leftTrigger().whileTrue(autoAlign.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()));
-    driveController.rightTrigger().whileTrue(autoAlign.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()));
+    driveController.leftTrigger().whileTrue(autoAlign.generateCommand(true,false));
+    driveController.rightTrigger().whileTrue(autoAlign.generateCommand(false,false));
     //Auto align L1
-    driveController.x().whileTrue(autoAlign.driveToNearestLeftL1ScoringLocation(drivetrain, localizers.getOdometry()));
-    driveController.b().whileTrue(autoAlign.driveToNearestRightL1ScoringLocation(drivetrain, localizers.getOdometry()));
+    driveController.x().whileTrue(autoAlign.generateCommand(true,true));
+    driveController.b().whileTrue(autoAlign.generateCommand(false,true));
 
     
     //Algae Intake Controls
@@ -194,8 +194,8 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
-    NamedCommands.registerCommand("Reef left align", autoAlign.driveToNearestLeftScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(.75) );
-    NamedCommands.registerCommand("Reef right align", autoAlign.driveToNearestRightScoringLocation(drivetrain, localizers.getOdometry()).withTimeout(.75));
+    NamedCommands.registerCommand("Reef left align", autoAlign.generateCommand(true, false).withTimeout(.75) );
+    NamedCommands.registerCommand("Reef right align", autoAlign.generateCommand(false,false).withTimeout(.75));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
