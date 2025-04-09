@@ -29,7 +29,6 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevationTarget;
-import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem.GroundCoralAlgaeIntakeCommand;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
 import frc.robot.utility.Constants;
 import frc.robot.utility.Localizers;
@@ -57,7 +56,7 @@ public class Robot extends TimedRobot {
   private final CoralIntakeSubsystem coralIntake = new CoralIntakeSubsystem();
   private final ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final DealgifierSubsystem dealgifier = new DealgifierSubsystem();
-  private final GroundCoralAlgaeIntakeSubsystem algaeIntakeSubsystem = new GroundCoralAlgaeIntakeSubsystem();
+  private final GroundCoralAlgaeIntakeSubsystem groundCoralAlgaeIntakeSubsytem = new GroundCoralAlgaeIntakeSubsystem();
 
 
   private final Localizers localizers = new Localizers(
@@ -65,7 +64,7 @@ public class Robot extends TimedRobot {
     new TitanProcessingLocalizer(5804)
   );
 
-  private final LEDSubsystem ledSubsystem = new LEDSubsystem(coralScorer, coralIntake, algaeIntakeSubsystem, localizers);
+  private final LEDSubsystem ledSubsystem = new LEDSubsystem(coralScorer, coralIntake, groundCoralAlgaeIntakeSubsytem, localizers);
 
   private PathPlannerAutoAlign autoAlign = new PathPlannerAutoAlign(drivetrain, localizers.getOdometry());
 
@@ -105,11 +104,6 @@ public class Robot extends TimedRobot {
       coralScorer.scoreCoralCommand()
     );
 
-    // Backwards coral scoring
-    robotController.b().whileTrue(
-      coralScorer.timedScoreCoralCommand(true)
-    );
-
     // Shifting coral forward when elevator passes bumper
     //coralScorer.setDefaultCommand(coralScorer.coralShiftingCommand(elevator));
 
@@ -144,9 +138,6 @@ public class Robot extends TimedRobot {
        )
     );
 
-    // Dealgifier controls
-    robotController.a().whileTrue(dealgifier.dealgifyCommand());
-
     // Auto align
     driveController.leftTrigger().whileTrue(autoAlign.generateCommand(true,false));
     driveController.rightTrigger().whileTrue(autoAlign.generateCommand(false,false));
@@ -155,12 +146,20 @@ public class Robot extends TimedRobot {
     driveController.b().whileTrue(autoAlign.generateCommand(false,true));
 
     
-    //Algae Intake Controls
+    //Ground Coral Intake Controls
     robotController.rightTrigger  ().whileTrue(
-      algaeIntakeSubsystem.intakeCommand()
+      groundCoralAlgaeIntakeSubsytem.intakeCoralCommand()
     );
     robotController.leftTrigger().whileTrue(
-      algaeIntakeSubsystem.scoreCommand()
+      groundCoralAlgaeIntakeSubsytem.scoreCoralCommand()
+    );
+
+    // Ground Algae Intake Controls
+    robotController.a().whileTrue(
+      groundCoralAlgaeIntakeSubsytem.intakeAlgaeCommand()
+    );
+    robotController.b().whileTrue(
+      groundCoralAlgaeIntakeSubsytem.scoreAlgaeCommand()
     );
   }
 

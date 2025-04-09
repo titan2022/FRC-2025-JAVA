@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -33,33 +34,32 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   // Coral pickup angle, Coral scoring angle, algae pickup angle, algae scoring
   // angle
 
-  private static final double ALGAE_MIN_ANGLE = 90;
-  private static final double ALGAE_MAX_ANGLE = 35;
+  private static final double MAX_ANGLE = 90;
 
-  private static final double CORAL_MIN_ANGLE = -40; // !!! Need this set
-  private static final double CORAL_MAX_ANGLE = 65; // !!! Need this set
-
+  private static final double ALGAE_INTAKE_ANGLE = 35;
   private static final double ALGAE_SCORE_VALUE = 65;
   private static final double ALGAE_HOLD_VALUE = 60;
 
-  private static final double CORAL_SCORE_VALUE = 0; // !!! Need this set
-  private static final double CORAL_HOLD_VALUE = 0; // !!! Need this set
+  private static final double CORAL_INTAKE_ANGLE = -40; // !!! Need this set
+  private static final double CORAL_SCORE_VALUE = 70; // !!! Need this set
+  private static final double CORAL_HOLD_VALUE = 80; // !!! Need this set
 
   private static final double REV_OFFSET = -160; // Offset for REV absolute encoder
-  private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if
-                                                           // `false`
+
   private static final double MAX_VOLTAGE = 4.0;
   private static final double JOYSTICK_DEADBAND = 0.12;
 
   public static final double ALGAE_INTAKE_SPEED = 9;
-  public static final double ALGAE_OUTTAKE_SPEED = -12;
+  public static final double ALGAE_OUTTAKE_SPEED = 12;
   public static final double HOLD_ALGAE_INTAKE_VOLTAGE = 0.20;
+
   public static final AngularVelocity ALGAE_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(-4500 / 60);
   public static final Current ALGAE_INTAKE_HAS_GP_CURRENT = Amps.of(4.5);
 
-  public static final double CORAL_INTAKE_SPEED = 0; // !!! Need this set
-  public static final double CORAL_OUTTAKE_SPEED = 0; // !!! Need this set
-  public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0; // !!! Need this set
+  public static final double CORAL_INTAKE_SPEED = 4; // !!! Need this set
+  public static final double CORAL_OUTTAKE_SPEED = 4; // !!! Need this set
+  public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0.1; // !!! Need this set
+
   public static final AngularVelocity CORAL_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(0); // !!! Need this set
   public static final Current CORAL_INTAKE_HAS_GP_CURRENT = Amps.of(0); // !!! Need this set
 
@@ -89,9 +89,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private double lastSpeed = 0;
   private double lastTime = 0;
 
-  private double target = ALGAE_MIN_ANGLE;
-  // We might want to change this to CORAL_MIN_ANGLE
-  // depending on which we want to score first
+  private double target = MAX_ANGLE;
 
   public GroundCoralAlgaeIntakeSubsystem() {
     encoder.setInverted(false);
@@ -116,13 +114,11 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     goToRotation(getRevMeasurement());
   }
 
-  public void algaeResetTarget() {
-    target = ALGAE_MAX_ANGLE;
+  public void resetTarget() {
+    target = MAX_ANGLE;
   }
 
-  public void coralResetTarget() {
-    target = CORAL_MAX_ANGLE;
-  }
+  
 
   public void goToRotation(double goalRotation) {
     pid.setGoal(goalRotation);
@@ -138,15 +134,14 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
   public enum AngleTarget {
     // Unit: Degrees
-    AlgaeIntake(ALGAE_MAX_ANGLE),
+    AlgaeIntake(ALGAE_INTAKE_ANGLE),
     AlgaeScore(ALGAE_SCORE_VALUE),
     AlgaeHold(ALGAE_HOLD_VALUE),
-    AlgaeStow(ALGAE_MIN_ANGLE),
 
-    CoralIntake(CORAL_MAX_ANGLE),
+    CoralIntake(CORAL_INTAKE_ANGLE),
     CoralScore(CORAL_SCORE_VALUE),
     CoralHold(CORAL_HOLD_VALUE),
-    CoralStow(CORAL_MIN_ANGLE);
+    Stow(MAX_ANGLE);
 
     private double targetValue;
 
@@ -236,40 +231,17 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   }
 
   public void startCoralIntaking() {
-    intakeRollersMotor.setVoltage(-ALGAE_INTAKE_SPEED);
+    intakeRollersMotor.setVoltage(-CORAL_INTAKE_SPEED);
     target = AngleTarget.CoralIntake.getValue();
     hasCoral = true;
   }
 
   public void startAlgaeIntaking() {
-    intakeRollersMotor.setVoltage(CORAL_INTAKE_SPEED);
+    intakeRollersMotor.setVoltage(ALGAE_INTAKE_SPEED);
     // ^^^ I believe the CORAL_INTAKE_SPEED should have no negative because it
     // needs to be the opposite of the ALGAE_INTAKE_SPEED but correct if wrong
     target = AngleTarget.AlgaeIntake.getValue();
     hasAlgae = true;
-  }
-
-  public void startAlgaeScoring() {
-    intakeRollersMotor.setVoltage(-ALGAE_OUTTAKE_SPEED);
-    target = AngleTarget.AlgaeScore.getValue();
-  }
-
-  public void startCoralScoring() {
-    intakeRollersMotor.setVoltage(CORAL_OUTTAKE_SPEED);
-    // Positive Coral Outtake speed because of same rationale above
-    target = AngleTarget.CoralScore.getValue();
-  }
-
-  public void stopAlgaeScoring() {
-    intakeRollersMotor.setVoltage(0);
-    target = AngleTarget.AlgaeStow.getValue();
-    hasAlgae = false;
-  }
-
-  public void stopCoralScoring() {
-    intakeRollersMotor.setVoltage(0);
-    target = AngleTarget.CoralStow.getValue();
-    hasCoral = false;
   }
 
   public void stopAlgaeIntaking() {
@@ -285,6 +257,23 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
   }
 
+  public void startAlgaeScoring() {
+    intakeRollersMotor.setVoltage(-ALGAE_OUTTAKE_SPEED);
+    target = AngleTarget.AlgaeScore.getValue();
+  }
+
+  public void startCoralScoring() {
+    intakeRollersMotor.setVoltage(CORAL_OUTTAKE_SPEED);
+    // Positive Coral Outtake speed because of same rationale above
+    target = AngleTarget.CoralScore.getValue();
+  }
+
+  public void stopScoring() {
+    intakeRollersMotor.setVoltage(0);
+    target = AngleTarget.Stow.getValue();
+    hasAlgae = false;
+  }
+
   public boolean getHasAlgae() {
     return hasAlgae;
   }
@@ -293,14 +282,50 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     return hasCoral;
   }
 
-  public Command intakeCommand() {
-    return new GroundCoralAlgaeIntakeCommand(this);
+  public Command intakeCoralCommand() {
+    return new GroundCoralIntakeCommand(this);
   }
 
-  public class GroundCoralAlgaeIntakeCommand extends Command {
+  public class GroundCoralIntakeCommand extends Command {
     private final GroundCoralAlgaeIntakeSubsystem intake;
 
-    public GroundCoralAlgaeIntakeCommand(GroundCoralAlgaeIntakeSubsystem intake) {
+    public GroundCoralIntakeCommand(GroundCoralAlgaeIntakeSubsystem intake) {
+      this.intake = intake;
+      addRequirements(intake);
+    }
+
+    @Override
+    public void initialize() {
+    }
+
+    @Override
+    public void execute() {
+      if (!hasCoral()) {
+        intake.startCoralIntaking();
+      } else {
+        intake.stopCoralIntaking();
+      }
+    }
+
+    @Override
+    public boolean isFinished() {
+      return hasCoral();
+    }
+
+    @Override
+    public void end(boolean isInterrupted) {
+      intake.stopCoralIntaking();
+    }
+  }
+
+  public Command scoreCoralCommand() {
+    return new GroundCoralScoreCommand(this);
+  }
+
+  public class GroundCoralScoreCommand extends Command {
+    private final GroundCoralAlgaeIntakeSubsystem intake;
+
+    public GroundCoralScoreCommand(GroundCoralAlgaeIntakeSubsystem intake) {
       this.intake = intake;
       addRequirements(intake);
     }
@@ -312,50 +337,64 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-      final boolean shouldDoCoral = false;
-      // !!! Change all this later !!! Need some way to control whether we are doing coral or algae.
-      // This could potentially be a button or some other control.
-      
-      // Using the temporary value for controlling Algae vs Coral shouldDoCoral
-      if (shouldDoCoral) {
-        if (!hasCoral()) {
-          intake.startCoralIntaking();
-        } else {
-          intake.stopCoralIntaking();
-        }
-      } else {
-        if (!hasAlgae()) {
-          intake.startAlgaeIntaking();
-        } else {
-          intake.stopAlgaeIntaking();
-        }
-      }
-
+      intake.startCoralScoring();
     }
 
     @Override
     public boolean isFinished() {
-      // return hasAlgae() or hasCoral();
       return false;
     }
 
     @Override
     public void end(boolean isInterrupted) {
-      // We might need a more refined method to check which is active before running stop for both.
-      // However simply running both individually should work
-      intake.stopAlgaeIntaking();
       intake.stopCoralIntaking();
     }
   }
 
-  public Command scoreCommand() {
-    return new GroundCoralAlgaeScoreCommand(this);
+  public Command intakeAlgaeCommand() {
+    return new GroundCoralIntakeCommand(this);
   }
 
-  public class GroundCoralAlgaeScoreCommand extends Command {
+  public class GroundAlgaeIntakeCommand extends Command {
     private final GroundCoralAlgaeIntakeSubsystem intake;
 
-    public GroundCoralAlgaeScoreCommand(GroundCoralAlgaeIntakeSubsystem intake) {
+    public GroundAlgaeIntakeCommand(GroundCoralAlgaeIntakeSubsystem intake) {
+      this.intake = intake;
+      addRequirements(intake);
+    }
+
+    @Override
+    public void initialize() {
+    }
+
+    @Override
+    public void execute() {
+      if (!hasCoral()) {
+        intake.startAlgaeIntaking();
+      } else {
+        intake.stopAlgaeIntaking();
+      }
+    }
+
+    @Override
+    public boolean isFinished() {
+      return hasAlgae();
+    }
+
+    @Override
+    public void end(boolean isInterrupted) {
+      intake.stopAlgaeIntaking();
+    }
+  }
+
+  public Command scoreAlgaeCommand() {
+    return new GroundCoralScoreCommand(this);
+  }
+
+  public class GroundAlgaeScoreCommand extends Command {
+    private final GroundCoralAlgaeIntakeSubsystem intake;
+
+    public GroundAlgaeScoreCommand(GroundCoralAlgaeIntakeSubsystem intake) {
       this.intake = intake;
       addRequirements(intake);
     }
@@ -367,18 +406,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-      final boolean shouldDoCoral = false;
-      // !!! Change all this later !!! Need some way to control whether we are doing coral or algae.
-      // This could potentially be a button or some other control.
-      
-      // Using the temporary value for controlling Algae vs Coral shouldDoCoral
-      if (shouldDoCoral) {
-        intake.startCoralScoring();
-      } else {
-        intake.startAlgaeScoring();
-      }
-
-      
+      intake.startAlgaeScoring();
     }
 
     @Override
@@ -388,19 +416,17 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void end(boolean isInterrupted) {
-      // We might need a more refined method to check which is active before running stop for both.
-      // However simply running both individually should work
       intake.stopAlgaeIntaking();
-      intake.stopCoralIntaking();
     }
   }
 
   @Override
   public void periodic() {
-    //goToRotation(target);
-    // SmartDashboard.putNumber("Pivot Target", target);
-    // SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
-    // SmartDashboard.putBoolean("has Algae", hasAlgae());
+    goToRotation(target);
+    SmartDashboard.putNumber("Pivot Target", target);
+    SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
+    SmartDashboard.putBoolean("has Algae", hasAlgae());
+    SmartDashboard.putBoolean("has Coral", hasCoral());
     // SmartDashboard.putString("intake Velocity",
     // intakeRollersMotor.getVelocity().getValue().toString());
     // SmartDashboard.putString("intake Current",
