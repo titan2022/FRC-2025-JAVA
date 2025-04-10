@@ -90,7 +90,7 @@ public class PathPlannerAutoAlign{
     );
 
     if (waypoints.get(0).anchor().getDistance(waypoints.get(1).anchor()) < 0.01) {
-        return PositionPIDCommand.generateCommand(drivetrain, waypoint, AutoAlignAdjustTimeout);
+        return PositionPIDCommand.generateCommand(drivetrain, localizer, waypoint, AutoAlignAdjustTimeout);
         
     }
 
@@ -104,7 +104,7 @@ public class PathPlannerAutoAlign{
     path.preventFlipping = true;
 
     return AutoBuilder.followPath(path).andThen(
-          PositionPIDCommand.generateCommand(drivetrain, waypoint, AutoAlignAdjustTimeout)
+          PositionPIDCommand.generateCommand(drivetrain, localizer, waypoint, AutoAlignAdjustTimeout)
         );
   }
 
