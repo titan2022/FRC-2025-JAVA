@@ -38,9 +38,9 @@ public class PathPlannerAutoAlign{
   private final CommandSwerveDrivetrain drivetrain;
   private final Localizer localizer;
 
-  public static final Time AutoAlignAdjustTimeout = Seconds.of(0.6);
+  public static final Time AutoAlignAdjustTimeout = Seconds.of(1);
 
-  public static final PathConstraints pathConstraints = new PathConstraints(4.0, 4.0, 200.0 * Unit.DEG,200.0 * Unit.DEG); 
+  public static final PathConstraints pathConstraints = new PathConstraints(2.0, 2.0, 200.0 * Unit.DEG,200.0 * Unit.DEG); 
 
   StructPublisher<Pose2d> posePub = NetworkTableInstance.getDefault().getStructTopic("targetPose", Pose2d.struct).publish();
 
@@ -97,7 +97,7 @@ public class PathPlannerAutoAlign{
     PathPlannerPath path = new PathPlannerPath(
         waypoints, 
         pathConstraints,
-        new IdealStartingState(getVelocityMagnitude(drivetrain.getVelocities()), drivetrain.getState().Pose.getRotation()), 
+        new IdealStartingState(getVelocityMagnitude(drivetrain.getState().Speeds), drivetrain.getState().Pose.getRotation()), 
         new GoalEndState(0.0, waypoint.getRotation())
     );
 

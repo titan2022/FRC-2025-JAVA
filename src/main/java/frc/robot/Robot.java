@@ -193,8 +193,8 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
-    NamedCommands.registerCommand("Reef left align", autoAlign.generateCommand(true, false).withTimeout(.75) );
-    NamedCommands.registerCommand("Reef right align", autoAlign.generateCommand(false,false).withTimeout(.75));
+    NamedCommands.registerCommand("Reef left align", autoAlign.generateCommand(true, false).withTimeout(1.5) );
+    NamedCommands.registerCommand("Reef right align", autoAlign.generateCommand(false,false).withTimeout(1.5));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
