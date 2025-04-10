@@ -32,7 +32,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     private CoralScorerSubsystem coralScorer;
     private CoralIntakeSubsystem coralIntake;
-    private GroundCoralAlgaeIntakeSubsystem algaeIntakeSubsystem;
+    private GroundCoralAlgaeIntakeSubsystem groundCoralAlgaeIntake;
     private Localizers localizers;
 
     private boolean aprilTagVisible = false;
@@ -59,7 +59,7 @@ public class LEDSubsystem extends SubsystemBase {
     public LEDSubsystem(CoralScorerSubsystem coralScorer, CoralIntakeSubsystem coralIntake, GroundCoralAlgaeIntakeSubsystem algaeIntakeSubsystem, Localizers localizers) {
         this.coralScorer = coralScorer;
         this.coralIntake = coralIntake;
-        this.algaeIntakeSubsystem = algaeIntakeSubsystem;
+        this.groundCoralAlgaeIntake = algaeIntakeSubsystem;
         this.localizers = localizers;
 
         led.setLength(ledBuffer.getLength());
@@ -100,7 +100,7 @@ public class LEDSubsystem extends SubsystemBase {
             }
         } else if (coralIntake.isIntaking()) {
             breathe.applyTo(ledBuffer);
-        } else if (algaeIntakeSubsystem.getHasAlgae()){
+        } else if (groundCoralAlgaeIntake.getHasAlgae() || groundCoralAlgaeIntake.getHasCoral()){
             greenTealScroll.applyTo(ledBufferViewLeft);
             greenTealScroll.applyTo(ledBufferViewRight);
         } else {

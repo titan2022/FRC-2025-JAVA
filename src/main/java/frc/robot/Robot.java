@@ -171,7 +171,7 @@ public class Robot extends TimedRobot {
     elevator.elevateCommand(ElevationTarget.L2)
     //.alongWith(coralScorer.coralShiftingCommand(elevator))
     );
-    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3)
+    NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3).withTimeout(0.5)
     //.alongWith(coralScorer.coralShiftingCommand(elevator))
     );
     NamedCommands.registerCommand("Dealgify L2", 

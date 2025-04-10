@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 6.0
+        "x": 0.6593237704918034,
+        "y": 3.9590676229508195
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 1.659323770491802,
+        "y": 3.9590676229508195
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.0,
-        "y": 6.0
+        "x": 2.733196721311475,
+        "y": 3.8272028688524586
       },
       "prevControl": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 1.733196721311475,
+        "y": 3.8272028688524586
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,30 +31,7 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Intake coral",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.6960431654676257,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Intake coral"
-        }
-      }
-    },
-    {
-      "name": "Elevate to L1",
-      "waypointRelativePos": 0.7982014388489173,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Elevate L1"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.5,
     "maxAcceleration": 3.0,
@@ -64,7 +41,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 0.0
   },
   "reversed": false,

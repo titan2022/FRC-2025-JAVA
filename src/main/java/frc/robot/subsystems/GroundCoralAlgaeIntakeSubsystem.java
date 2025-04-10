@@ -195,7 +195,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     intakeRollersMotor.set(speed);
   }
 
-  public boolean hasAlgae() {
+  public boolean hasFinishedIntakingAlgae() {
     Current intakeCurrent = intakeRollersMotor.getStatorCurrent().getValue();
 
     AngularVelocity intakeVelocity = intakeRollersMotor.getVelocity().getValue();
@@ -212,7 +212,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     }
   }
 
-  public boolean hasCoral() {
+  public boolean hasFinishedIntakingCoral() {
     // mostly same from hasAlgae()
     Current intakeCurrent = intakeRollersMotor.getStatorCurrent().getValue();
 
@@ -300,7 +300,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-      if (!hasCoral()) {
+      if (!hasFinishedIntakingCoral()) {
         intake.startCoralIntaking();
       } else {
         intake.stopCoralIntaking();
@@ -309,7 +309,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public boolean isFinished() {
-      return hasCoral();
+      return hasFinishedIntakingCoral();
     }
 
     @Override
@@ -369,7 +369,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-      if (!hasCoral()) {
+      if (!hasFinishedIntakingCoral()) {
         intake.startAlgaeIntaking();
       } else {
         intake.stopAlgaeIntaking();
@@ -378,7 +378,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public boolean isFinished() {
-      return hasAlgae();
+      return hasFinishedIntakingAlgae();
     }
 
     @Override
@@ -422,11 +422,11 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    goToRotation(target);
-    SmartDashboard.putNumber("Pivot Target", target);
-    SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
-    SmartDashboard.putBoolean("has Algae", hasAlgae());
-    SmartDashboard.putBoolean("has Coral", hasCoral());
+    // goToRotation(target);
+    // SmartDashboard.putNumber("Pivot Target", target);
+    // SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
+    // SmartDashboard.putBoolean("has Algae", hasFinishedIntakingAlgae());
+    // SmartDashboard.putBoolean("has Coral", hasFinishedIntakingCoral());
     // SmartDashboard.putString("intake Velocity",
     // intakeRollersMotor.getVelocity().getValue().toString());
     // SmartDashboard.putString("intake Current",
