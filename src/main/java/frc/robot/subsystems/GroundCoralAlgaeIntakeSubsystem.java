@@ -43,7 +43,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private static final double ALGAE_HOLD_VALUE = 40;
 
   private static final double CORAL_INTAKE_ANGLE = -45; // !!! Need this set
-  private static final double CORAL_SCORE_VALUE = 50; // !!! Need this set
+  private static final double CORAL_SCORE_VALUE = 55; // !!! Need this set
   private static final double CORAL_HOLD_VALUE = 40; // !!! Need this set
 
   // TODO: calibrate this
@@ -77,9 +77,9 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET);
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-      0.15, // kP
+      0.07, // kP
       0.000, // kI
-      0.005, // kD
+      0.000, // kD
       new TrapezoidProfile.Constraints(
           5000.0,
           5000.0));
@@ -124,6 +124,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   
 
   public void goToRotation(double goalRotation) {
+    SmartDashboard.putNumber("arm diff", goalRotation - getRevMeasurement());
     pid.setGoal(goalRotation);
     double pidVal = pid.calculate(getRevMeasurement());
     double velocity = pid.getSetpoint().velocity;

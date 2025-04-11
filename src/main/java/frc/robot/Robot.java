@@ -147,7 +147,7 @@ public class Robot extends TimedRobot {
 
     
     //Ground Coral Intake Controls
-    robotController.rightTrigger  ().whileTrue(
+    robotController.rightTrigger().whileTrue(
       groundCoralAlgaeIntakeSubsytem.intakeCoralCommand()
     );
     robotController.leftTrigger().whileTrue(
