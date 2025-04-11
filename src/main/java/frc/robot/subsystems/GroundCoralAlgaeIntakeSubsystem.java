@@ -1,15 +1,23 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Amp;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
+
+import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,42 +43,39 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   // angle
 
   private static final double MAX_ANGLE = 60;
-
   private static final double STOW_ANGLE = 50;
 
   private static final double ALGAE_INTAKE_ANGLE = 35;
   private static final double ALGAE_SCORE_VALUE = 45;
   private static final double ALGAE_HOLD_VALUE = 40;
 
-  private static final double CORAL_INTAKE_ANGLE = -45; // !!! Need this set
-  private static final double CORAL_SCORE_VALUE = 55; // !!! Need this set
-  private static final double CORAL_HOLD_VALUE = 40; // !!! Need this set
+  private static final double CORAL_INTAKE_ANGLE = -45; 
+  private static final double CORAL_SCORE_VALUE = 55; 
+  private static final double CORAL_HOLD_VALUE = 40; 
 
   // TODO: calibrate this
   private static final double REV_OFFSET = 165.8; // Offset for REV absolute encoder
 
   private static final double MAX_VOLTAGE = 4.0;
-  private static final double JOYSTICK_DEADBAND = 0.12;
 
   public static final double ALGAE_INTAKE_SPEED = 9;
   public static final double ALGAE_OUTTAKE_SPEED = 12;
   public static final double HOLD_ALGAE_INTAKE_VOLTAGE = 0.20;
 
-  public static final AngularVelocity ALGAE_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(-4500 / 60);
-  public static final Current ALGAE_INTAKE_HAS_GP_CURRENT = Amps.of(4.5);
+  public static final double ALGAE_INTAKE_HAS_GP_CURRENT = 4.5;
 
-  public static final double CORAL_INTAKE_SPEED = 4; // !!! Need this set
-  public static final double CORAL_OUTTAKE_SPEED = 8; // !!! Need this set
-  public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0.1; // !!! Need this set
+  public static final double CORAL_INTAKE_SPEED = 4; 
+  public static final double CORAL_OUTTAKE_SPEED = 8;
+  public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0.1; 
 
-  public static final AngularVelocity CORAL_INTAKE_HAS_GP_VELOCITY = RotationsPerSecond.of(4000/60); // !!! Need this set
-  public static final Current CORAL_INTAKE_HAS_GP_CURRENT = Amps.of(5); // !!! Need this set
+  public static final double CORAL_INTAKE_HAS_GP_CURRENT = 5; 
+
+  public static final Time DEBOUNCE_TIME = Seconds.of(0.04);
+
+  public static final double ANGLE_DEADBAND = 2;
 
   private static final TalonFX pivotMotor = new TalonFX(32, "rio");
   private static final TalonFX intakeRollersMotor = new TalonFX(55, "rio");
-  private boolean hasAlgae = false;
-  private boolean hasCoral = false;
-
   // We have a REV through-bore encoder
   // Programming manual:
   // https://docs.wpilib.org/en/stable/docs/software/hardware-apis/sensors/encoders-software.html#quadrature-encoders-the-encoder-class
@@ -89,13 +94,13 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
       0.800,
       0.000);
 
-  private double lastSpeed = 0;
-  private double lastTime = 0;
-
   private double target = MAX_ANGLE;
+
+  private final Debouncer debouncer;
 
   public GroundCoralAlgaeIntakeSubsystem() {
     encoder.setInverted(false);
+    debouncer = new Debouncer(DEBOUNCE_TIME.in(Seconds), DebounceType.kRising);
   }
 
   public double getRevMeasurement() {
@@ -121,8 +126,6 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     target = MAX_ANGLE;
   }
 
-  
-
   public void goToRotation(double goalRotation) {
     SmartDashboard.putNumber("arm diff", goalRotation - getRevMeasurement());
     pid.setGoal(goalRotation);
@@ -131,8 +134,6 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     double feedforwardval = feedforward.calculate(pid.getSetpoint().position, velocity);
     double voltage = Math.max(Math.min(pidVal + feedforwardval, MAX_VOLTAGE), -MAX_VOLTAGE);
     pivotMotor.setVoltage(-voltage);
-    lastSpeed = velocity;
-    lastTime = Timer.getFPGATimestamp();
     // SmartDashboard.putNumber("Voltage", voltage);
   }
 
@@ -162,91 +163,26 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     intakeRollersMotor.set(speed);
   }
 
-  public boolean hasFinishedIntakingAlgae() {
-    Current intakeCurrent = intakeRollersMotor.getStatorCurrent().getValue();
-
-    AngularVelocity intakeVelocity = intakeRollersMotor.getVelocity().getValue();
-    double intakeAcceleration = intakeRollersMotor.getAcceleration().getValueAsDouble();
-
-    Current intakeHasGamePieceCurrent = ALGAE_INTAKE_HAS_GP_CURRENT;
-    AngularVelocity intakeHasGamePieceVelocity = ALGAE_INTAKE_HAS_GP_VELOCITY;
-
-    if ((intakeCurrent.gte(intakeHasGamePieceCurrent))
-        && (intakeVelocity.gte(intakeHasGamePieceVelocity))) {
-      return true;
-    } else {
-      return false;
-    }
+  public boolean hasAlgae() {
+    boolean current = intakeRollersMotor.getStatorCurrent().getValue().in(Amp) > ALGAE_INTAKE_HAS_GP_CURRENT;
+    return debouncer.calculate(current);
   }
 
-  public boolean hasFinishedIntakingCoral() {
-    // mostly same from hasAlgae()
-    Current intakeCurrent = intakeRollersMotor.getStatorCurrent().getValue();
-
-    AngularVelocity intakeVelocity = intakeRollersMotor.getVelocity().getValue();
-    double intakeAcceleration = intakeRollersMotor.getAcceleration().getValueAsDouble();
-
-    Current intakeHasGamePieceCurrent = CORAL_INTAKE_HAS_GP_CURRENT;
-    AngularVelocity intakeHasGamePieceVelocity = CORAL_INTAKE_HAS_GP_VELOCITY;
-
-    if ((intakeCurrent.gte(intakeHasGamePieceCurrent))
-        && (intakeVelocity.gte(intakeHasGamePieceVelocity))) {
-      return true;
-    } else {
-      return false;
-    }
+  public boolean hasCoral() {
+    boolean current = intakeRollersMotor.getStatorCurrent().getValue().in(Amp) > CORAL_INTAKE_HAS_GP_CURRENT;
+    return debouncer.calculate(current);
   }
 
-  public void startCoralIntaking() {
-    intakeRollersMotor.setVoltage(CORAL_INTAKE_SPEED);
-    target = AngleTarget.CoralIntake.getValue();
-    hasCoral = true;
-  }
-
-  public void startAlgaeIntaking() {
-    intakeRollersMotor.setVoltage(-ALGAE_INTAKE_SPEED);
-    // ^^^ I believe the CORAL_INTAKE_SPEED should have no negative because it
-    // needs to be the opposite of the ALGAE_INTAKE_SPEED but correct if wrong
-    target = AngleTarget.AlgaeIntake.getValue();
-    hasAlgae = true;
-  }
-
-  public void stopAlgaeIntaking() {
-    intakeRollersMotor.setVoltage(HOLD_ALGAE_INTAKE_VOLTAGE);
-    target = AngleTarget.AlgaeHold.getValue();
-
-  }
-
-  public void stopCoralIntaking() {
-    intakeRollersMotor.setVoltage(-HOLD_CORAL_INTAKE_VOLTAGE);
-    // Positive Coral Outtake speed because of same rationale above
-    target = AngleTarget.CoralHold.getValue();
-
-  }
-
-  public void startAlgaeScoring() {
-    intakeRollersMotor.setVoltage(ALGAE_OUTTAKE_SPEED);
-    target = AngleTarget.AlgaeScore.getValue();
-  }
-
-  public void startCoralScoring() {
-    intakeRollersMotor.setVoltage(-CORAL_OUTTAKE_SPEED);
-    // Positive Coral Outtake speed because of same rationale above
-    target = AngleTarget.CoralScore.getValue();
-  }
-
-  public void stopScoring() {
-    intakeRollersMotor.setVoltage(0);
-    //target = AngleTarget.Stow.getValue();
-    hasAlgae = false;
+  public boolean atTarget() {
+    return Math.abs(getRevMeasurement() - target) < ANGLE_DEADBAND;
   }
 
   public boolean getHasAlgae() {
-    return hasAlgae;
+    return hasAlgae();
   }
 
   public boolean getHasCoral() {
-    return hasCoral;
+    return hasCoral();
   }
 
   public Command intakeCoralCommand() {
@@ -262,26 +198,24 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     }
 
     @Override
-    public void initialize() {
+    public void initialize() {  
+      intakeRollersMotor.setVoltage(CORAL_INTAKE_SPEED);
+      target = AngleTarget.CoralIntake.getValue();
     }
 
     @Override
     public void execute() {
-      if (!hasFinishedIntakingCoral()) {
-        intake.startCoralIntaking();
-      } else {
-        intake.stopCoralIntaking();
-      }
     }
 
     @Override
     public boolean isFinished() {
-      return hasFinishedIntakingCoral();
+      return hasCoral();
     }
 
     @Override
     public void end(boolean isInterrupted) {
-      intake.stopCoralIntaking();
+      intakeRollersMotor.setVoltage(-HOLD_CORAL_INTAKE_VOLTAGE);
+      target = AngleTarget.CoralHold.getValue();
     }
   }
 
@@ -299,12 +233,14 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void initialize() {
-
+      target = AngleTarget.CoralScore.getValue();
     }
 
     @Override
     public void execute() {
-      intake.startCoralScoring();
+      if(atTarget()){
+        intakeRollersMotor.setVoltage(-CORAL_OUTTAKE_SPEED);
+      }
     }
 
     @Override
@@ -314,7 +250,8 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void end(boolean isInterrupted) {
-      intake.stopCoralIntaking();
+      intakeRollersMotor.setVoltage(0);
+      target = AngleTarget.Stow.getValue();
     }
   }
 
@@ -332,25 +269,23 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void initialize() {
+      intakeRollersMotor.setVoltage(-ALGAE_INTAKE_SPEED);
+      target = AngleTarget.AlgaeIntake.getValue();
     }
 
     @Override
     public void execute() {
-      if (!hasFinishedIntakingCoral()) {
-        intake.startAlgaeIntaking();
-      } else {
-        intake.stopAlgaeIntaking();
-      }
     }
 
     @Override
     public boolean isFinished() {
-      return hasFinishedIntakingAlgae();
+      return hasAlgae();
     }
 
     @Override
     public void end(boolean isInterrupted) {
-      intake.stopAlgaeIntaking();
+      intakeRollersMotor.setVoltage(HOLD_ALGAE_INTAKE_VOLTAGE);
+      target = AngleTarget.AlgaeHold.getValue();
     }
   }
 
@@ -368,12 +303,13 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void initialize() {
-
+      target = AngleTarget.AlgaeScore.getValue();
     }
 
     @Override
     public void execute() {
-      intake.startAlgaeScoring();
+      if(atTarget())
+         intakeRollersMotor.setVoltage(ALGAE_OUTTAKE_SPEED);
     }
 
     @Override
@@ -383,7 +319,8 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void end(boolean isInterrupted) {
-      intake.stopAlgaeIntaking();
+      intakeRollersMotor.setVoltage(0);
+      target = AngleTarget.Stow.getValue();
     }
   }
 
