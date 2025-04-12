@@ -79,7 +79,7 @@ public class PositionPIDCommand extends Command{
   );
 
   private final ProfiledPIDController pidTheta = new ProfiledPIDController(
-    2, // kP
+    4, // kP
     0.0, // kI
     0.25, // kD
     new TrapezoidProfile.Constraints(

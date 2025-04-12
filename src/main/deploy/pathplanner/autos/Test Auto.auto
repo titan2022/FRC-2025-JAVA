@@ -11,71 +11,129 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Test Path #3"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Reef right align"
+                  "pathName": "Test Path #3"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Reef right align"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevate L3"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Elevate L3"
+                  "name": "Score coral"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Test Path Back"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Test Path Back"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Test Path #3"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Reef right align"
+                  "pathName": "Test Path #3"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Reef right align"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevate L3"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Elevate L3"
+                  "name": "Score coral"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Test Path Back"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "Score coral"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Test Path #3"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Reef right align"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevate L3"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score coral"
+                }
+              }
+            ]
           }
         }
       ]

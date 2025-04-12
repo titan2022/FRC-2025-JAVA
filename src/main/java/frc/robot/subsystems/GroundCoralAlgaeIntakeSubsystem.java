@@ -68,9 +68,10 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   public static final double CORAL_OUTTAKE_SPEED = 8;
   public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0.25; 
 
-  public static final double CORAL_INTAKE_HAS_GP_CURRENT = 5; 
+  public static final double CORAL_INTAKE_HAS_GP_CURRENT = 1; 
+  public static final double CORAL_INTAKE_HAS_GP_ROTATIONSPS = 28;
 
-  public static final Time DEBOUNCE_TIME = Seconds.of(0.04);
+  public static final Time DEBOUNCE_TIME = Seconds.of(0.05);
 
   public static final double ANGLE_DEADBAND = 2;
 
@@ -170,7 +171,8 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
   public boolean hasCoral() {
     boolean current = intakeRollersMotor.getStatorCurrent().getValue().in(Amp) > CORAL_INTAKE_HAS_GP_CURRENT;
-    return debouncer.calculate(current);
+    boolean rotation = Math.abs(intakeRollersMotor.getRotorVelocity().getValue().in(RotationsPerSecond)) < CORAL_INTAKE_HAS_GP_ROTATIONSPS;
+    return debouncer.calculate(rotation && current);
   }
 
   public boolean atTarget() {
