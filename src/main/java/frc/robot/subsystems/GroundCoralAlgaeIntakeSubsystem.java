@@ -128,7 +128,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   }
 
   public void goToRotation(double goalRotation) {
-    SmartDashboard.putNumber("arm diff", goalRotation - getRevMeasurement());
+    // SmartDashboard.putNumber("arm diff", goalRotation - getRevMeasurement());
     pid.setGoal(goalRotation);
     double pidVal = pid.calculate(getRevMeasurement());
     double velocity = pid.getSetpoint().velocity;
@@ -328,8 +328,8 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
      goToRotation(target);
-     SmartDashboard.putNumber("Pivot Target", target);
-     SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
+    //  SmartDashboard.putNumber("Pivot Target", target);
+    //  SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
     // SmartDashboard.putBoolean("has Algae", hasFinishedIntakingAlgae());
     // SmartDashboard.putBoolean("has Coral", hasFinishedIntakingCoral());
     // SmartDashboard.putString("intake Velocity",

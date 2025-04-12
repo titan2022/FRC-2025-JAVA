@@ -99,7 +99,7 @@ public class PathPlannerAutoAlign{
         new GoalEndState(0.0, waypoint.getRotation())
     );
     
-    SmartDashboard.putNumber("Rotation", drivetrain.getState().Pose.getRotation().getDegrees());
+    // SmartDashboard.putNumber("Rotation", drivetrain.getState().Pose.getRotation().getDegrees());
 
     path.preventFlipping = true;
 
