@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": -0.46752049180327865,
-        "y": 4.1149077868852455
+        "x": 3.18,
+        "y": 3.85
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.5324795081967226,
-        "y": 4.1149077868852455
+        "x": 2.180000000000001,
+        "y": 3.85
       },
       "isLocked": false,
-      "linkedName": "Test1"
+      "linkedName": "6'"
     },
     {
       "anchor": {
-        "x": 2.4574795081967213,
-        "y": 3.839190573770491
+        "x": -0.46752049180327865,
+        "y": 4.1149077868852455
       },
       "prevControl": {
-        "x": 1.4574795081967213,
-        "y": 3.839190573770491
+        "x": 0.5324795081967213,
+        "y": 4.1149077868852455
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Test1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Elevate to intake level",
+      "waypointRelativePos": 0.09767177739920564,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Elevate to intake level"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.5,
     "maxAcceleration": 3.0,
@@ -41,7 +53,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
+    "velocity": 0,
     "rotation": 0.0
   },
   "reversed": false,

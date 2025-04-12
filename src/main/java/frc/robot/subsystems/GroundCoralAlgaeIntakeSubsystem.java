@@ -62,7 +62,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   public static final double ALGAE_OUTTAKE_SPEED = 12;
   public static final double HOLD_ALGAE_INTAKE_VOLTAGE = 0.20;
 
-  public static final double ALGAE_INTAKE_HAS_GP_CURRENT = 18;
+  public static final double ALGAE_INTAKE_HAS_GP_CURRENT = 8;
 
   public static final double CORAL_INTAKE_SPEED = 4; 
   public static final double CORAL_OUTTAKE_SPEED = 8;
@@ -308,8 +308,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void execute() {
-      if(atTarget())
-         intakeRollersMotor.setVoltage(ALGAE_OUTTAKE_SPEED);
+      intakeRollersMotor.setVoltage(ALGAE_OUTTAKE_SPEED);
     }
 
     @Override

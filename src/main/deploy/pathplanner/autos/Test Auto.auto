@@ -23,7 +23,44 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Reef left align"
+                  "name": "Reef right align"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevate L3"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test Path Back"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test Path #3"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Reef right align"
                 }
               },
               {
