@@ -26,6 +26,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
@@ -40,9 +41,7 @@ public class PathPlannerAutoAlign{
 
   public static final Time AutoAlignAdjustTimeout = Seconds.of(1);
 
-  public static final PathConstraints pathConstraints = new PathConstraints(2.0, 2.0, 200.0 * Unit.DEG,200.0 * Unit.DEG); 
-
-  StructPublisher<Pose2d> posePub = NetworkTableInstance.getDefault().getStructTopic("targetPose", Pose2d.struct).publish();
+  public static final PathConstraints pathConstraints = new PathConstraints(3.0, 3.0, 200.0 * Unit.DEG,200.0 * Unit.DEG); 
 
   public PathPlannerAutoAlign(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
     this.drivetrain = drivetrain;
@@ -52,7 +51,6 @@ public class PathPlannerAutoAlign{
   public Command generateCommand(boolean isLeftSide, boolean isL1){
     return Commands.defer(() -> {
       Pose2d target = getTarget(isLeftSide, isL1);
-      posePub.set(target);
       return getPathFromWaypoint(target);
     }, Set.of());
   }
@@ -63,7 +61,7 @@ public class PathPlannerAutoAlign{
   }
 
   private Pose2d getTarget(boolean isLeftSide, boolean isL1) {
-    posePub.set(drivetrain.getState().Pose);    if(isL1){
+   if(isL1){
       if (isLeftSide) {
         return ReefLocations.nearestLeftL1ScoringLocation(localizer.getMeasurement().pose);
       }
@@ -85,7 +83,7 @@ public class PathPlannerAutoAlign{
 
   private Command getPathFromWaypoint(Pose2d waypoint) {
     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(drivetrain.getState().Pose.getTranslation(), getPathVelocityHeading(drivetrain.getVelocities(), waypoint)),
+        new Pose2d(drivetrain.getState().Pose.getTranslation(), getPathVelocityHeading(ChassisSpeeds.fromRobotRelativeSpeeds(drivetrain.getVelocities(), drivetrain.getState().Pose.getRotation()), waypoint)),
         waypoint
     );
 
@@ -100,6 +98,8 @@ public class PathPlannerAutoAlign{
         new IdealStartingState(getVelocityMagnitude(drivetrain.getState().Speeds), drivetrain.getState().Pose.getRotation()), 
         new GoalEndState(0.0, waypoint.getRotation())
     );
+    
+    SmartDashboard.putNumber("Rotation", drivetrain.getState().Pose.getRotation().getDegrees());
 
     path.preventFlipping = true;
 

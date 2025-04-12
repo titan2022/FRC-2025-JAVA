@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
       .alongWith(dealgifier.dealgifyCommand())
     );
     
-    elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
+    //elevator.setDefaultCommand(elevator.manualElevationCommand(robotController));
 
     // Coral intake controls
 

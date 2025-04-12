@@ -54,7 +54,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private static final double CORAL_HOLD_VALUE = 40; 
 
   // TODO: calibrate this
-  private static final double REV_OFFSET = 165.8; // Offset for REV absolute encoder
+  private static final double REV_OFFSET = -75; // Offset for REV absolute encoder
 
   private static final double MAX_VOLTAGE = 4.0;
 
@@ -62,11 +62,11 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   public static final double ALGAE_OUTTAKE_SPEED = 12;
   public static final double HOLD_ALGAE_INTAKE_VOLTAGE = 0.20;
 
-  public static final double ALGAE_INTAKE_HAS_GP_CURRENT = 4.5;
+  public static final double ALGAE_INTAKE_HAS_GP_CURRENT = 18;
 
   public static final double CORAL_INTAKE_SPEED = 4; 
   public static final double CORAL_OUTTAKE_SPEED = 8;
-  public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0.1; 
+  public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0.25; 
 
   public static final double CORAL_INTAKE_HAS_GP_CURRENT = 5; 
 
@@ -214,7 +214,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void end(boolean isInterrupted) {
-      intakeRollersMotor.setVoltage(-HOLD_CORAL_INTAKE_VOLTAGE);
+      intakeRollersMotor.setVoltage(HOLD_CORAL_INTAKE_VOLTAGE);
       target = AngleTarget.CoralHold.getValue();
     }
   }
@@ -256,7 +256,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   }
 
   public Command intakeAlgaeCommand() {
-    return new GroundCoralIntakeCommand(this);
+    return new GroundAlgaeIntakeCommand(this);
   }
 
   public class GroundAlgaeIntakeCommand extends Command {
@@ -284,13 +284,13 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void end(boolean isInterrupted) {
-      intakeRollersMotor.setVoltage(HOLD_ALGAE_INTAKE_VOLTAGE);
+      intakeRollersMotor.setVoltage(-HOLD_ALGAE_INTAKE_VOLTAGE);
       target = AngleTarget.AlgaeHold.getValue();
     }
   }
 
   public Command scoreAlgaeCommand() {
-    return new GroundCoralScoreCommand(this);
+    return new GroundAlgaeScoreCommand(this);
   }
 
   public class GroundAlgaeScoreCommand extends Command {

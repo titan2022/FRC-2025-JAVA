@@ -39,13 +39,13 @@ public class OdometryLocalizer extends Localizer {
   }
 
   public void addVisionMeasurement(LocalizerMeasurement measurement) {
-    if (measurement.distance > 2.0) {
+    if (measurement.distance > 3.0) {
       return;
     }
     Matrix<N3, N1> stdDevs = new Matrix<N3, N1>(Nat.N3(), Nat.N1());
-    stdDevs.set(0, 0, 1 + 20 * measurement.distance * drivetrain.getVelocities().vxMetersPerSecond);
-    stdDevs.set(1, 0, 1 + 20 * measurement.distance * drivetrain.getVelocities().vyMetersPerSecond);
-    stdDevs.set(2, 0, 1 + 20 * measurement.distance * drivetrain.getVelocities().omegaRadiansPerSecond);
+    stdDevs.set(0, 0, 5 * measurement.distance  + 20 * drivetrain.getVelocities().vxMetersPerSecond);
+    stdDevs.set(1, 0, 5 * measurement.distance + 20 * drivetrain.getVelocities().vyMetersPerSecond);
+    stdDevs.set(2, 0, 5 * measurement.distance + 20 *  drivetrain.getVelocities().omegaRadiansPerSecond);
     drivetrain.addVisionMeasurement(measurement.pose, measurement.measurementTime, stdDevs);
   }
 

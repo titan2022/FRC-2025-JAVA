@@ -59,7 +59,7 @@
   "reversed": false,
   "folder": "Test Paths",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 5.0,
     "rotation": 0.0
   },
   "useDefaultConstraints": true
