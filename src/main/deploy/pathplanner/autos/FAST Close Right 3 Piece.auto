@@ -7,13 +7,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Close Right Preloaded to Reef to Score"
+            "pathName": "Fast Preloaded to Reef to Score"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Reef right align"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Reef right align"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevate L2"
+                }
+              }
+            ]
           }
         },
         {
@@ -49,13 +62,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Station to 3'"
+            "pathName": "Fast Coral Station to 3'"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Reef left align"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Reef left align"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevate L3"
+                }
+              }
+            ]
           }
         },
         {
@@ -79,13 +105,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Station to 2'"
+            "pathName": "Fast Coral Station to 2'"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Reef right align"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Reef right align"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevate L3"
+                }
+              }
+            ]
           }
         },
         {
@@ -109,13 +148,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Station to 3'"
+            "pathName": "Fast Coral Station to 3'"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Reef left align"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Reef left align"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevate L3"
+                }
+              }
+            ]
           }
         },
         {

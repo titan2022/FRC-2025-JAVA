@@ -5,8 +5,8 @@
   "pathFolders": [
     "Left Paths",
     "Middle Paths",
-    "Shorter Right Paths",
     "Right Paths",
+    "Faster Right Paths",
     "Test Paths"
   ],
   "autoFolders": [],

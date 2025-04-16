@@ -8,30 +8,42 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.284857838708059,
-        "y": 1.437291536218435
+        "x": 3.353981682837069,
+        "y": 1.2476698519571772
       },
       "isLocked": false,
       "linkedName": "Right Coral Station"
     },
     {
       "anchor": {
-        "x": 3.705,
-        "y": 2.9329999999999994
+        "x": 5.02125,
+        "y": 2.2114999999999996
       },
       "prevControl": {
-        "x": 2.8807153448014566,
-        "y": 2.0403421865480507
+        "x": 4.9334999999999996,
+        "y": 1.1877499999999996
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "5'"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake coral",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.6044634377967707,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake coral"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.5,
     "maxAcceleration": 7.5,
@@ -41,14 +53,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 62.92791976200725
+    "velocity": 2.0,
+    "rotation": 105.94539590092295
   },
   "reversed": false,
-  "folder": "Shorter Right Paths",
+  "folder": "Faster Right Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 54.21102654081665
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

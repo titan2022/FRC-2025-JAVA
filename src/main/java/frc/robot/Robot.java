@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.CoralIntakeCommand;
 import frc.robot.commands.drive.DrivingCommand;
+import frc.robot.commands.drive.NaiveDriveToPoseCommand;
 import frc.robot.commands.drive.PathPlannerAutoAlign;
 import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem;
 import frc.robot.subsystems.GroundCoralAlgaeIntakeSubsystem.AngleTarget;
@@ -141,6 +142,9 @@ public class Robot extends TimedRobot {
     // Auto align
     driveController.leftTrigger().whileTrue(autoAlign.generateCommand(true,false));
     driveController.rightTrigger().whileTrue(autoAlign.generateCommand(false,false));
+    // Backup Auto Align
+    // driveController.leftTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()));
+    // driveController.rightTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()));
     //Auto align L1
     driveController.x().whileTrue(autoAlign.generateCommand(true,true));
     driveController.b().whileTrue(autoAlign.generateCommand(false,true));
@@ -195,6 +199,9 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Reef left align", autoAlign.generateCommand(true, false).withTimeout(1.5) );
     NamedCommands.registerCommand("Reef right align", autoAlign.generateCommand(false,false).withTimeout(1.5));
+
+    NamedCommands.registerCommand("OLD Reef left align", NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()).withTimeout(.75) );
+    NamedCommands.registerCommand("OLD Reef right align", NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()).withTimeout(.75));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
