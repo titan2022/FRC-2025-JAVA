@@ -65,7 +65,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   public static final double ALGAE_INTAKE_HAS_GP_CURRENT = 8;
 
   public static final double CORAL_INTAKE_SPEED = 4; 
-  public static final double CORAL_OUTTAKE_SPEED = 8;
+  public static final double CORAL_OUTTAKE_SPEED = 10;
   public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0.25; 
 
   public static final double CORAL_INTAKE_HAS_GP_CURRENT = 1; 
@@ -83,7 +83,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET);
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-      0.07, // kP
+      0.14, // kP
       0.000, // kI
       0.000, // kD
       new TrapezoidProfile.Constraints(

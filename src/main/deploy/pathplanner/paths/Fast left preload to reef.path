@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.9,
+        "x": 8.15,
         "y": 6.152
       },
       "isLocked": false,
@@ -16,34 +16,22 @@
     },
     {
       "anchor": {
-        "x": 5.338,
-        "y": 5.161999999999999
+        "x": 5.655,
+        "y": 5.606999999999999
       },
       "prevControl": {
-        "x": 5.663,
-        "y": 5.724916512459884
+        "x": 6.12440319023804,
+        "y": 6.056622780777787
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "11'"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Elevate to L2",
-      "waypointRelativePos": 0.49941656942824175,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Elevate L2"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.5,
     "maxAcceleration": 7.5,
@@ -53,11 +41,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "Left Paths",
+  "folder": "Faster Left Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

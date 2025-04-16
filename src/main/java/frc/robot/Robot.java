@@ -140,11 +140,11 @@ public class Robot extends TimedRobot {
     );
 
     // Auto align
-    driveController.leftTrigger().whileTrue(autoAlign.generateCommand(true,false));
-    driveController.rightTrigger().whileTrue(autoAlign.generateCommand(false,false));
+    // driveController.leftTrigger().whileTrue(autoAlign.generateCommand(true,false));
+    // driveController.rightTrigger().whileTrue(autoAlign.generateCommand(false,false));
     // Backup Auto Align
-    // driveController.leftTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()));
-    // driveController.rightTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()));
+    driveController.leftTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()));
+    driveController.rightTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain,localizers.getOdometry()));
     //Auto align L1
     driveController.x().whileTrue(autoAlign.generateCommand(true,true));
     driveController.b().whileTrue(autoAlign.generateCommand(false,true));
@@ -171,10 +171,7 @@ public class Robot extends TimedRobot {
     // Register named commands
     NamedCommands.registerCommand("Elevate to intake level", elevator.elevateCommand(ElevationTarget.CoralIntake));
     NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
-    NamedCommands.registerCommand("Elevate L2", 
-    elevator.elevateCommand(ElevationTarget.L2)
-    //.alongWith(coralScorer.coralShiftingCommand(elevator))
-    );
+    NamedCommands.registerCommand("Elevate L2", elevator.elevateCommand(ElevationTarget.L2).withTimeout(0.5));
     NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3).withTimeout(0.5)
     //.alongWith(coralScorer.coralShiftingCommand(elevator))
     );
