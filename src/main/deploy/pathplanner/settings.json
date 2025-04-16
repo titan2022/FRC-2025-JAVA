@@ -9,7 +9,12 @@
     "Faster Right Paths",
     "Test Paths"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Left Autos",
+    "Middle Autos",
+    "Test Autos",
+    "Right Autos"
+  ],
   "defaultMaxVel": 5.5,
   "defaultMaxAccel": 7.5,
   "defaultMaxAngVel": 540.0,
