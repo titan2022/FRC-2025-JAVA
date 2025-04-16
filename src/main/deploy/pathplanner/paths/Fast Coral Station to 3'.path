@@ -35,7 +35,7 @@
     {
       "name": "Intake coral",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.6044634377967707,
+      "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
         "data": {
@@ -60,7 +60,7 @@
   "folder": "Faster Right Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 55.0
   },
   "useDefaultConstraints": true
 }
