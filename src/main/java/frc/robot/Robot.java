@@ -140,11 +140,11 @@ public class Robot extends TimedRobot {
     );
 
     // Auto align
-    // driveController.leftTrigger().whileTrue(autoAlign.generateCommand(true,false));
-    // driveController.rightTrigger().whileTrue(autoAlign.generateCommand(false,false));
+    driveController.leftTrigger().whileTrue(autoAlign.generateCommand(true,false));
+    driveController.rightTrigger().whileTrue(autoAlign.generateCommand(false,false));
     // Backup Auto Align
-    driveController.leftTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()));
-    driveController.rightTrigger().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain,localizers.getOdometry()));
+    driveController.leftBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()));
+    driveController.rightBumper().whileTrue(NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain,localizers.getOdometry()));
     //Auto align L1
     driveController.x().whileTrue(autoAlign.generateCommand(true,true));
     driveController.b().whileTrue(autoAlign.generateCommand(false,true));

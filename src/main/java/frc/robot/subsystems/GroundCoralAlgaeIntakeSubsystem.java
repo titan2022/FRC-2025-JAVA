@@ -83,7 +83,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET);
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-      0.14, // kP
+      0.07, // kP
       0.000, // kI
       0.000, // kD
       new TrapezoidProfile.Constraints(
@@ -91,7 +91,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
           5000.0));
   private static final ArmFeedforward feedforward = new ArmFeedforward(
       0.05,
-      0.14,
+      0.16,
       0.800,
       0.000);
 

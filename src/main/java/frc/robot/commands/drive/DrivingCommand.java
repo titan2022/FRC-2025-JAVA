@@ -112,8 +112,8 @@ public class DrivingCommand extends Command {
     driveController.y().onTrue(drivetrain.runOnce(() -> drivetrain.resetFieldOrientation())); 
     
     // Alignment slow-down
-    driveController.rightBumper().whileTrue(drivetrain.runOnce(() -> {translationSpeedMultiplier = 0.18; rotationSpeedMultiplier = 0.4;}));
-    driveController.rightBumper().whileFalse(drivetrain.runOnce(() -> {translationSpeedMultiplier = 1.0; rotationSpeedMultiplier = 1.0;}));
+    // driveController.rightBumper().whileTrue(drivetrain.runOnce(() -> {translationSpeedMultiplier = 0.18; rotationSpeedMultiplier = 0.4;}));
+    // driveController.rightBumper().whileFalse(drivetrain.runOnce(() -> {translationSpeedMultiplier = 1.0; rotationSpeedMultiplier = 1.0;}));
 
     // field-oriented
     driveController.back().onTrue(drivetrain.runOnce(() -> isFieldOriented = true));
