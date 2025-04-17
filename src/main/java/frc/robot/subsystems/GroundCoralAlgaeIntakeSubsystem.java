@@ -91,7 +91,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
           5000.0));
   private static final ArmFeedforward feedforward = new ArmFeedforward(
       0.05,
-      0.07,
+      0.14,
       0.800,
       0.000);
 
