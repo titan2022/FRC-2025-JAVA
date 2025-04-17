@@ -3,47 +3,51 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.1,
-        "y": 3.85
+        "x": 7.6,
+        "y": 0.52
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1000000000000036,
-        "y": 3.85
+        "x": 1.6543032786885243,
+        "y": 1.1419569672131162
       },
       "isLocked": false,
-      "linkedName": "6'"
+      "linkedName": "Right Start"
     },
     {
       "anchor": {
-        "x": -2.0,
-        "y": 4.1149077868852455
+        "x": 2.2536885245901637,
+        "y": 2.005071721311474
       },
       "prevControl": {
-        "x": -1.0,
-        "y": 4.1149077868852455
+        "x": 2.264584315495729,
+        "y": 0.9917631670938738
+      },
+      "nextControl": {
+        "x": 2.2417008196721313,
+        "y": 3.119928278688522
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.1,
+        "y": 3.85
+      },
+      "prevControl": {
+        "x": 2.005860655737705,
+        "y": 3.8272028688524586
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Test1"
+      "linkedName": "6'"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Elevate to intake level",
-      "waypointRelativePos": 0.09767177739920564,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Elevate to intake level"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.5,
     "maxAcceleration": 7.5,
@@ -57,10 +61,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "Far Right Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

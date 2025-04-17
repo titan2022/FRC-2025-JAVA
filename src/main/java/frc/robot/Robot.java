@@ -192,6 +192,13 @@ public class Robot extends TimedRobot {
       )
     );
 
+    NamedCommands.registerCommand("Timed intake coral", 
+      elevator.elevateCommand(ElevationTarget.CoralIntake)
+      .andThen(
+        new CoralIntakeCommand(coralIntake, coralScorer)
+      ).withTimeout(0.75)
+    );
+
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
     NamedCommands.registerCommand("Reef left align", autoAlign.generateCommand(true, false).withTimeout(1.5) );

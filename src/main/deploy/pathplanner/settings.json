@@ -3,10 +3,11 @@
   "robotLength": 0.908,
   "holonomicMode": true,
   "pathFolders": [
+    "Faster Left Paths",
     "Faster Right Paths",
     "Left Paths",
     "Middle Paths",
-    "Faster Left Paths",
+    "Far Right Paths",
     "Right Paths",
     "Test Paths"
   ],
