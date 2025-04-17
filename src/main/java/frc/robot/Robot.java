@@ -170,18 +170,18 @@ public class Robot extends TimedRobot {
   public void setUpAutos() {
     // Register named commands
     NamedCommands.registerCommand("Elevate to intake level", elevator.elevateCommand(ElevationTarget.CoralIntake));
-    NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1));
+    NamedCommands.registerCommand("Elevate L1", elevator.elevateCommand(ElevationTarget.L1).withTimeout(0.5));
     NamedCommands.registerCommand("Elevate L2", elevator.elevateCommand(ElevationTarget.L2).withTimeout(0.5));
     NamedCommands.registerCommand("Elevate L3", elevator.elevateCommand(ElevationTarget.L3).withTimeout(0.5)
     //.alongWith(coralScorer.coralShiftingCommand(elevator))
     );
     NamedCommands.registerCommand("Dealgify L2", 
       elevator.elevateCommand(ElevationTarget.AlgaeL2)
-      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.5)
+      .alongWith(dealgifier.dealgifyCommand()).withTimeout(0.5)
     );
     NamedCommands.registerCommand("Dealgify L3", 
       elevator.elevateCommand(ElevationTarget.AlgaeL3)
-      .alongWith(dealgifier.dealgifyCommand()).withTimeout(.5)
+      .alongWith(dealgifier.dealgifyCommand()).withTimeout(0.5)
     );
 
     // TODO: Figure out how to finish elevating before ending the command
@@ -198,7 +198,7 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("Reef right align", autoAlign.generateCommand(false,false).withTimeout(1.5));
 
     NamedCommands.registerCommand("OLD Reef left align", NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()).withTimeout(.75) );
-    NamedCommands.registerCommand("OLD Reef right align", NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()).withTimeout(.75));
+    NamedCommands.registerCommand("OLD Reef right align", NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain,localizers.getOdometry()).withTimeout(.75));
 
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
