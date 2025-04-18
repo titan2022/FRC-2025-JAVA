@@ -1,0 +1,115 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Right Start to 6'"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OLD Reef right align"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6' to 6' Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Dealgify L3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6' Algae to 6'"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OLD Reef right align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "6' to Coral Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Timed intake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station to 7'"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OLD Reef left align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7' to Coral Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Timed intake coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Station to 6'"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OLD Reef right align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

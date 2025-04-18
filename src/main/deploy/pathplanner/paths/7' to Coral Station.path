@@ -3,51 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.6,
-        "y": 0.52
+        "x": 3.1,
+        "y": 4.202
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6543032786885243,
-        "y": 1.1419569672131162
+        "x": 1.9899590163934429,
+        "y": 4.14323975409836
       },
       "isLocked": false,
-      "linkedName": "Right Start"
+      "linkedName": "7'"
     },
     {
       "anchor": {
-        "x": 2.2536885245901637,
-        "y": 2.005071721311474
+        "x": 0.6832991803278687,
+        "y": 1.4416495901639348
       },
       "prevControl": {
-        "x": 2.264584315495729,
-        "y": 0.9917631670938738
-      },
-      "nextControl": {
-        "x": 2.2417008196721313,
-        "y": 3.119928278688522
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.1,
-        "y": 3.85
-      },
-      "prevControl": {
-        "x": 1.9420081967213112,
-        "y": 5.1698258196721305
+        "x": 1.256875616678915,
+        "y": 2.2608016344529265
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "6'"
+      "linkedName": "Inner Right Coral Station"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Elevate to intake level",
+      "waypointRelativePos": 0.10308848080133143,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Elevate to intake level"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.5,
     "maxAcceleration": 7.5,
@@ -58,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 55.0
   },
   "reversed": false,
   "folder": "Far Right Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

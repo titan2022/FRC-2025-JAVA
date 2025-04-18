@@ -41,7 +41,7 @@ public class PathPlannerAutoAlign{
 
   public static final Time AutoAlignAdjustTimeout = Seconds.of(1.5);
 
-  public static final PathConstraints pathConstraints = new PathConstraints(3.0, 3.0, 200.0 * Unit.DEG,200.0 * Unit.DEG); 
+  public static final PathConstraints pathConstraints = new PathConstraints(5.0, 5.0, 200.0 * Unit.DEG,200.0 * Unit.DEG); 
 
   public PathPlannerAutoAlign(CommandSwerveDrivetrain drivetrain, Localizer localizer) {
     this.drivetrain = drivetrain;
