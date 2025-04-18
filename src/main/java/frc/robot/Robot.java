@@ -201,8 +201,8 @@ public class Robot extends TimedRobot {
 
     NamedCommands.registerCommand("Score coral", coralScorer.timedScoreCoralCommand(false));
 
-    NamedCommands.registerCommand("Reef left align", autoAlign.generateCommand(true, false).withTimeout(1.5) );
-    NamedCommands.registerCommand("Reef right align", autoAlign.generateCommand(false,false).withTimeout(1.5));
+    NamedCommands.registerCommand("Reef left align", autoAlign.generateCommand(true, false).withTimeout(2) );
+    NamedCommands.registerCommand("Reef right align", autoAlign.generateCommand(false,false).withTimeout(2));
 
     NamedCommands.registerCommand("OLD Reef left align", NaiveDriveToPoseCommand.driveToNearestLeftScoringLocation(drivetrain,localizers.getOdometry()).withTimeout(.75) );
     NamedCommands.registerCommand("OLD Reef right align", NaiveDriveToPoseCommand.driveToNearestRightScoringLocation(drivetrain,localizers.getOdometry()).withTimeout(.75));

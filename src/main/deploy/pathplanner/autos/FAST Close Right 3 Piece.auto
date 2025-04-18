@@ -54,9 +54,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "Timed intake coral"
           }
         },
         {
@@ -97,9 +97,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "Timed intake coral"
           }
         },
         {
@@ -140,9 +140,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "Timed intake coral"
           }
         },
         {
