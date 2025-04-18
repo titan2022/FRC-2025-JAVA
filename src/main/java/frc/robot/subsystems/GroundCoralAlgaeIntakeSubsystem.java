@@ -65,7 +65,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   public static final double ALGAE_INTAKE_HAS_GP_CURRENT = 8;
 
   public static final double CORAL_INTAKE_SPEED = 4; 
-  public static final double CORAL_OUTTAKE_SPEED = 10;
+  public static final double CORAL_OUTTAKE_SPEED = 12;
   public static final double HOLD_CORAL_INTAKE_VOLTAGE = 0.25; 
 
   public static final double CORAL_INTAKE_HAS_GP_CURRENT = 1; 

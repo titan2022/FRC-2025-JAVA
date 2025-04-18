@@ -12,6 +12,7 @@ import frc.robot.utility.networking.types.NetworkingPose;
 public class TitanProcessingLocalizer extends Localizer {
   private final NetworkingServer server;
   private LocalizerMeasurement measurement = new LocalizerMeasurement(new Pose2d(), Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+  private final double FRAME_OFFSET = 1.0/39.0;
 
   public TitanProcessingLocalizer(int port) {
     server = new NetworkingServer(port);
@@ -21,7 +22,7 @@ public class TitanProcessingLocalizer extends Localizer {
         // FIXME: Have the coprocessor send the timestamp of the update in UDP
         double timestamp = Utils.getCurrentTimeSeconds();
         Pose2d pose2d = new Pose2d(new Translation2d(pose.position.getX(), pose.position.getY()), new Rotation2d(pose.rotation.getZ()));
-        measurement = new LocalizerMeasurement(pose2d, pose.distance, timestamp);
+        measurement = new LocalizerMeasurement(pose2d, pose.distance, timestamp-FRAME_OFFSET);
         publishMeasurement(measurement);
       });
     }
