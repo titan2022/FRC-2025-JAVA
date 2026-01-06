@@ -25,7 +25,7 @@ import com.pathplanner.lib.path.RotationTarget;
 public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final double MIN_ANGLE = 90;    
   private static final double MAX_ANGLE = 38; 
-  private static final double REV_OFFSET = -160; // Offset for REV absolute encoder 
+  private static final double REV_OFFSET = -100; // Offset for REV absolute encoder 
   private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if `false`
   private static final double MAX_VOLTAGE = 4.0;
   private static final double JOYSTICK_DEADBAND = 0.12;
@@ -44,19 +44,19 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET);
 
     private static final ProfiledPIDController pid = new ProfiledPIDController(
-    0.15, // kP
+    0.000, // kP
     0.000, // kI
-    0.005, // kD
+    0.000, // kD
     new TrapezoidProfile.Constraints(
       5000.0,
       5000.0
     )
   );
   private static final ArmFeedforward feedforward = new ArmFeedforward(
-    0.05 ,
-    0.07, 
-    0.800, 
-    0.000
+    0.0000,
+    0.5000, 
+    0.1000, 
+    0.0000
   );
 
   private double lastSpeed = 0;
@@ -98,7 +98,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     pivotMotor.setVoltage(-voltage);
     lastSpeed = velocity;
     lastTime = Timer.getFPGATimestamp();
-    SmartDashboard.putNumber("Voltage", voltage);
+    SmartDashboard.putNumber("Algae Voltage", voltage);
   }
 
   public enum AngleTarget {
@@ -273,11 +273,11 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     goToRotation(target);
-    SmartDashboard.putNumber("Pivot Target", target);
-    SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
+    SmartDashboard.putNumber("Algae Pivot Target", target);
+    SmartDashboard.putNumber("Algae Encoder Measurement", getRevMeasurement());
     SmartDashboard.putBoolean("has Algae", hasAlgae());
-    SmartDashboard.putString("intake Velocity", intakeRollersMotor.getVelocity().getValue().toString());
-    SmartDashboard.putString("intake Current", intakeRollersMotor.getStatorCurrent().getValue().toString());
+    SmartDashboard.putString("Algae intake Velocity", intakeRollersMotor.getVelocity().getValue().toString());
+    SmartDashboard.putString("Algae intake Current", intakeRollersMotor.getStatorCurrent().getValue().toString());
 
   }
 }
