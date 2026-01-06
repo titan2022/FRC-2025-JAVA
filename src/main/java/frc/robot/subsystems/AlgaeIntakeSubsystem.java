@@ -79,7 +79,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   }
 
   public void rotateAtVoltage(double velocity) {
-    // pivotMotor.setVoltage(0);
+    pivotMotor.setVoltage(0);
   }
 
   public void stopRotating() {
@@ -95,7 +95,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     double velocity = pid.getSetpoint().velocity;
     double feedforwardval = feedforward.calculate(pid.getSetpoint().position, velocity);
     double voltage =  Math.max(Math.min(pidVal + feedforwardval, MAX_VOLTAGE), -MAX_VOLTAGE);
-    // pivotMotor.setVoltage(-voltage);
+    pivotMotor.setVoltage(-voltage);
     lastSpeed = velocity;
     lastTime = Timer.getFPGATimestamp();
     SmartDashboard.putNumber("Voltage", voltage);
@@ -157,7 +157,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   }
   
   public void setAlgaeIntakeMotor(double speed) {
-    // intakeRollersMotor.set(speed);
+    intakeRollersMotor.set(speed);
   }
 
   public boolean hasAlgae() {
@@ -179,23 +179,23 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
   }
 
   public void startIntaking() {
-    // intakeRollersMotor.setVoltage(-ALGAE_INTAKE_SPEED);
+    intakeRollersMotor.setVoltage(-ALGAE_INTAKE_SPEED);
     target = AngleTarget.Intake.getValue();
   }
 
   public void startScoring() {
-    // intakeRollersMotor.setVoltage(-ALGAE_OUTTAKE_SPEED);
+    intakeRollersMotor.setVoltage(-ALGAE_OUTTAKE_SPEED);
     target = AngleTarget.Score.getValue();
   }
 
   public void stopScoring() {
-    // intakeRollersMotor.setVoltage(0);
+    intakeRollersMotor.setVoltage(0);
     target = AngleTarget.Stow.getValue();
   }
 
 
   public void stopIntaking() {
-    // intakeRollersMotor.setVoltage(-HOLD_ALGAE_INTAKE_VOLTAGE);
+    intakeRollersMotor.setVoltage(-HOLD_ALGAE_INTAKE_VOLTAGE);
     target = AngleTarget.Hold.getValue();
 
   }
