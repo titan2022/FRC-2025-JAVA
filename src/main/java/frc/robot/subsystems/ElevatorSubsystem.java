@@ -60,9 +60,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     Elevator_Config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
     Elevator_Config.Feedback.SensorToMechanismRatio = ELEVATION_GEAR_RATIO;
 
-    Elevator_Config.Slot0.kG = 0.2; //0.3
+    // Elevator_Config.Slot0.kG = 0.3; //0.3
+    Elevator_Config.Slot0.kG = 0.3;
     Elevator_Config.Slot0.kS = 0.05; //0.4
-    Elevator_Config.Slot0.kV = 0.02; //0.001
+    // Elevator_Config.Slot0.kV = 0.06; //0.001
+    Elevator_Config.Slot0.kV = 0.06;
     Elevator_Config.Slot0.kA = 0.001; //0.0
     Elevator_Config.Slot0.kP = 0.5; //0.5
     Elevator_Config.Slot0.kI = 0.0;
@@ -149,7 +151,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     CoralIntake(0),
     L1(17.171630859375),
     L2(24.106689453125),
-    L3(40.598),
+    // L3(40.598),
+    L3(39.598),
     AlgaeL2(20.899),
     AlgaeL3(36.899)
     ;
