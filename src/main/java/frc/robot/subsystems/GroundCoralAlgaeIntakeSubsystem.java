@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -45,7 +46,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private static final double CORAL_SCORE_VALUE = 0; // !!! Need this set
   private static final double CORAL_HOLD_VALUE = 0; // !!! Need this set
 
-  private static final double REV_OFFSET = -160; // Offset for REV absolute encoder
+  private static final double REV_OFFSET = -100; // Offset for REV absolute encoder
   private static final boolean USING_MOTION_MAGIC = false; // Uses `ProfiledPIDController` with REV absolute encoder if
                                                            // `false`
   private static final double MAX_VOLTAGE = 4.0;
@@ -74,17 +75,17 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   private static final DutyCycleEncoder encoder = new DutyCycleEncoder(0, 360, REV_OFFSET);
 
   private static final ProfiledPIDController pid = new ProfiledPIDController(
-      0.15, // kP
+      0.000, // kP
       0.000, // kI
-      0.005, // kD
+      0.000, // kD
       new TrapezoidProfile.Constraints(
           5000.0,
           5000.0));
   private static final ArmFeedforward feedforward = new ArmFeedforward(
-      0.05,
-      0.07,
-      0.800,
-      0.000);
+      0.0500,
+      0.5000,
+      0.5000,
+      0.0000);
 
   private double lastSpeed = 0;
   private double lastTime = 0;
@@ -133,7 +134,7 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
     pivotMotor.setVoltage(-voltage);
     lastSpeed = velocity;
     lastTime = Timer.getFPGATimestamp();
-    // SmartDashboard.putNumber("Voltage", voltage);
+    SmartDashboard.putNumber("Algae Voltage", voltage);
   }
 
   public enum AngleTarget {
@@ -398,8 +399,8 @@ public class GroundCoralAlgaeIntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     goToRotation(target);
-    // SmartDashboard.putNumber("Pivot Target", target);
-    // SmartDashboard.putNumber("Encoder Measurement", getRevMeasurement());
+    SmartDashboard.putNumber("Algae Pivot Target", target);
+    SmartDashboard.putNumber("Algae Encoder Measurement", getRevMeasurement());
     // SmartDashboard.putBoolean("has Algae", hasAlgae());
     // SmartDashboard.putString("intake Velocity",
     // intakeRollersMotor.getVelocity().getValue().toString());
